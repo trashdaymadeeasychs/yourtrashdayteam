@@ -1,0 +1,1351 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Your Trash Day Team | The Bin Boy + Trash Day Made Easy</title>
+  <meta name="description" content="The Bin Boy and Trash Day Made Easy have teamed up for weekly bin roll-out and roll-in service plus monthly bin washing for homes, businesses, and properties.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://yourtrashdayteam.com/">
+  <meta property="og:title" content="Clean Bins. Easy Trash Days. One Simple Weekly Service.">
+  <meta property="og:description" content="Weekly bin roll-out and roll-in service with monthly bin washing from The Bin Boy and Trash Day Made Easy.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://yourtrashdayteam.com/">
+  <meta property="og:image" content="https://yourtrashdayteam.com/og-social-preview.jpg">
+  <link rel="icon" href="/assets/images/favicon.ico">
+  <script src="https://js.stripe.com/v3/"></script>
+  <style>
+    :root {
+      --navy: #0e1f3d;
+      --navy-2: #15243f;
+      --green: #1faa4d;
+      --green-2: #10823a;
+      --gold: #e0a52e;
+      --blue: #37aee2;
+      --ink: #142033;
+      --muted: #586273;
+      --line: #dfe6ea;
+      --paper: #f7f9f5;
+      --white: #ffffff;
+      --danger: #b42318;
+      --success: #147a38;
+      --radius: 14px;
+      --shadow: 0 20px 60px rgba(14, 31, 61, .12);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; }
+    button, input, select, textarea { font: inherit; }
+    .skip-link {
+      position: absolute;
+      left: 16px;
+      top: -80px;
+      z-index: 20;
+      padding: 10px 14px;
+      background: var(--navy);
+      color: var(--white);
+      border-radius: 999px;
+      transition: top .2s ease;
+    }
+    .skip-link:focus { top: 16px; }
+    .site-shell { overflow: hidden; }
+    .container {
+      width: min(1140px, calc(100% - 36px));
+      margin: 0 auto;
+    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(247, 249, 245, .94);
+      border-bottom: 1px solid rgba(14, 31, 61, .08);
+      backdrop-filter: blur(14px);
+    }
+    .nav {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+    .brand-lockup {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+    .brand-logo {
+      width: auto;
+      object-fit: contain;
+      background: var(--white);
+      border: 1px solid rgba(14, 31, 61, .1);
+      border-radius: 12px;
+      padding: 6px;
+      box-shadow: 0 8px 24px rgba(14, 31, 61, .08);
+    }
+    .brand-logo.bin-boy { height: 54px; }
+    .brand-logo.tdme { height: 44px; }
+    .brand-plus {
+      color: var(--green);
+      font-weight: 900;
+      font-size: 24px;
+      line-height: 1;
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 0 0 auto;
+    }
+    .phone-link {
+      color: var(--navy);
+      font-weight: 800;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .btn {
+      appearance: none;
+      border: 0;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 46px;
+      padding: 13px 20px;
+      color: var(--white);
+      background: var(--green-2);
+      font-weight: 900;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+      box-shadow: 0 14px 28px rgba(16, 130, 58, .22);
+      white-space: nowrap;
+    }
+    .btn:hover { background: #0c7332; transform: translateY(-1px); }
+    .btn:active { transform: translateY(1px); }
+    .btn.secondary {
+      color: var(--navy);
+      background: var(--white);
+      border: 1px solid rgba(14, 31, 61, .12);
+      box-shadow: none;
+    }
+    .btn.full { width: 100%; }
+    .btn[disabled] {
+      opacity: .62;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .hero {
+      position: relative;
+      min-height: calc(100dvh - 76px);
+      display: grid;
+      align-items: center;
+      padding: 54px 0 34px;
+      background:
+        linear-gradient(105deg, rgba(55, 174, 226, .18), transparent 42%),
+        linear-gradient(180deg, #ffffff 0%, #f7f9f5 100%);
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.03fr) minmax(320px, .75fr);
+      gap: 42px;
+      align-items: center;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 18px;
+      color: var(--green-2);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 34px;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--gold);
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      max-width: 760px;
+      margin-bottom: 22px;
+      color: var(--navy);
+      font-size: clamp(42px, 7.4vw, 82px);
+      line-height: .98;
+      letter-spacing: 0;
+    }
+    .hero-copy {
+      max-width: 650px;
+      color: #344052;
+      font-size: clamp(18px, 2vw, 22px);
+      line-height: 1.42;
+      margin-bottom: 28px;
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+    .hero-note {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .hero-note span {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .hero-note span::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--gold);
+    }
+    .hero-card {
+      position: relative;
+      padding: 22px;
+      background: var(--white);
+      border: 1px solid rgba(14, 31, 61, .1);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: 12px;
+      border: 1px solid rgba(31, 170, 77, .18);
+      border-radius: calc(var(--radius) - 4px);
+      pointer-events: none;
+    }
+    .logo-pair {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      position: relative;
+      z-index: 1;
+    }
+    .logo-tile {
+      display: grid;
+      place-items: center;
+      min-height: 190px;
+      padding: 20px;
+      background: #f3f8f9;
+      border-radius: 12px;
+      border: 1px solid rgba(14, 31, 61, .08);
+    }
+    .logo-tile img { max-height: 150px; object-fit: contain; }
+    .price-stamp {
+      position: absolute;
+      right: -18px;
+      bottom: 28px;
+      z-index: 2;
+      width: 168px;
+      min-height: 168px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 18px;
+      background: var(--navy);
+      color: var(--white);
+      border: 6px solid var(--gold);
+      border-radius: 999px;
+      box-shadow: 0 18px 44px rgba(14, 31, 61, .24);
+      transform: rotate(4deg);
+    }
+    .price-stamp strong {
+      display: block;
+      font-size: 42px;
+      line-height: .96;
+    }
+    .price-stamp span {
+      display: block;
+      margin-top: 6px;
+      color: #dce8ef;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.25;
+    }
+    section { padding: 84px 0; }
+    .section-head {
+      max-width: 760px;
+      margin-bottom: 34px;
+    }
+    h2 {
+      color: var(--navy);
+      font-size: clamp(32px, 4.4vw, 54px);
+      line-height: 1.02;
+      margin-bottom: 16px;
+      letter-spacing: 0;
+    }
+    .section-head p, .wide-copy {
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.55;
+    }
+    .pain-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      align-items: stretch;
+    }
+    .pain-list {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .pain-list li {
+      display: grid;
+      grid-template-columns: 38px 1fr;
+      gap: 12px;
+      align-items: start;
+      padding: 18px;
+      background: var(--white);
+      border: 1px solid rgba(14, 31, 61, .1);
+      border-radius: var(--radius);
+    }
+    .mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      background: rgba(31, 170, 77, .14);
+      color: var(--green-2);
+      font-weight: 900;
+    }
+    .pain-list strong { display: block; color: var(--navy); margin-bottom: 4px; }
+    .pain-list span { color: var(--muted); line-height: 1.45; }
+    .service-panel {
+      height: 100%;
+      padding: 30px;
+      color: var(--white);
+      background: var(--navy);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .service-panel h3 {
+      font-size: 30px;
+      line-height: 1.08;
+      margin-bottom: 18px;
+    }
+    .service-panel p {
+      color: #dce8ef;
+      line-height: 1.6;
+      margin-bottom: 22px;
+    }
+    .service-steps {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .service-steps li {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      font-weight: 800;
+    }
+    .step-num {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      color: var(--navy);
+      background: var(--gold);
+      font-size: 13px;
+      font-weight: 900;
+      flex: 0 0 auto;
+    }
+    .benefits {
+      background: var(--white);
+      border-top: 1px solid rgba(14, 31, 61, .08);
+      border-bottom: 1px solid rgba(14, 31, 61, .08);
+    }
+    .benefit-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .benefit {
+      min-height: 180px;
+      padding: 22px;
+      border-radius: var(--radius);
+      border: 1px solid rgba(14, 31, 61, .1);
+      background: #fbfcf9;
+    }
+    .benefit strong {
+      display: block;
+      color: var(--navy);
+      font-size: 21px;
+      margin-bottom: 10px;
+    }
+    .benefit p {
+      color: var(--muted);
+      line-height: 1.52;
+      margin: 0;
+    }
+    .offer-band {
+      padding: 34px;
+      border-radius: var(--radius);
+      color: var(--white);
+      background:
+        linear-gradient(135deg, rgba(31, 170, 77, .88), rgba(14, 31, 61, .98)),
+        var(--navy);
+      box-shadow: var(--shadow);
+    }
+    .offer-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 280px;
+      gap: 28px;
+      align-items: center;
+    }
+    .offer-band h2 { color: var(--white); }
+    .offer-band p { color: #e7f2ed; line-height: 1.56; }
+    .price-box {
+      padding: 24px;
+      background: rgba(255, 255, 255, .12);
+      border: 1px solid rgba(255, 255, 255, .22);
+      border-radius: var(--radius);
+      text-align: center;
+    }
+    .price-box .amount {
+      display: block;
+      font-size: 58px;
+      line-height: .96;
+      font-weight: 900;
+    }
+    .price-box .cadence {
+      display: block;
+      margin: 8px 0 14px;
+      color: #f5d889;
+      font-weight: 900;
+    }
+    .price-box small {
+      display: block;
+      color: #e7f2ed;
+      line-height: 1.45;
+    }
+    .signup-section {
+      background: linear-gradient(180deg, #f7f9f5, #eef5f7);
+    }
+    .signup-layout {
+      display: grid;
+      grid-template-columns: minmax(0, .78fr) minmax(360px, 1fr);
+      gap: 38px;
+      align-items: start;
+    }
+    .signup-aside {
+      position: sticky;
+      top: 102px;
+    }
+    .aside-card {
+      padding: 24px;
+      border-radius: var(--radius);
+      background: var(--white);
+      border: 1px solid rgba(14, 31, 61, .1);
+      box-shadow: 0 16px 40px rgba(14, 31, 61, .08);
+    }
+    .aside-card h3 {
+      color: var(--navy);
+      font-size: 28px;
+      line-height: 1.1;
+      margin-bottom: 14px;
+    }
+    .aside-card p {
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .aside-list {
+      display: grid;
+      gap: 12px;
+      margin: 20px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .aside-list li {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      color: #344052;
+      line-height: 1.42;
+    }
+    .aside-list li::before {
+      content: "";
+      width: 9px;
+      height: 9px;
+      margin-top: 6px;
+      border-radius: 999px;
+      background: var(--green);
+      flex: 0 0 auto;
+    }
+    .signup-card {
+      padding: 26px;
+      background: var(--white);
+      border: 1px solid rgba(14, 31, 61, .1);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .form-section {
+      padding: 0 0 26px;
+      margin-bottom: 26px;
+      border-bottom: 1px solid var(--line);
+    }
+    .form-section:last-of-type {
+      border-bottom: 0;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    .form-section h3 {
+      margin-bottom: 16px;
+      color: var(--navy);
+      font-size: 23px;
+    }
+    .field-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .field { margin-bottom: 16px; }
+    .field.full { grid-column: 1 / -1; }
+    label, .field-label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--navy);
+      font-size: 14px;
+      font-weight: 900;
+    }
+    input, select, textarea, .stripe-card-element {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid #bdc9d1;
+      border-radius: 10px;
+      padding: 13px 14px;
+      color: var(--ink);
+      background: var(--white);
+      outline: none;
+      transition: border .16s ease, box-shadow .16s ease, background .16s ease;
+    }
+    textarea {
+      min-height: 96px;
+      resize: vertical;
+    }
+    input:focus, select:focus, textarea:focus, .stripe-card-element.stripe-focus {
+      border-color: var(--green-2);
+      box-shadow: 0 0 0 4px rgba(31, 170, 77, .14);
+    }
+    input.input-error, select.input-error, textarea.input-error, .stripe-card-element.stripe-error {
+      border-color: var(--danger);
+      background: #fff8f7;
+    }
+    .field-error {
+      min-height: 18px;
+      margin-top: 6px;
+      color: var(--danger);
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .choice-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .choice-grid.seven { grid-template-columns: repeat(7, 1fr); }
+    .choice {
+      position: relative;
+    }
+    .choice input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .choice span {
+      display: grid;
+      place-items: center;
+      min-height: 48px;
+      padding: 10px 8px;
+      border: 1px solid #bdc9d1;
+      border-radius: 999px;
+      color: var(--navy);
+      background: #fbfcf9;
+      font-size: 14px;
+      font-weight: 900;
+      text-align: center;
+      cursor: pointer;
+      transition: border .16s ease, background .16s ease, color .16s ease, transform .16s ease;
+    }
+    .choice input:checked + span {
+      color: var(--white);
+      border-color: var(--green-2);
+      background: var(--green-2);
+      box-shadow: 0 10px 18px rgba(16, 130, 58, .18);
+    }
+    .choice input:focus-visible + span {
+      outline: 3px solid rgba(224, 165, 46, .5);
+      outline-offset: 2px;
+    }
+    .choice span:active { transform: translateY(1px); }
+    .conditional {
+      display: none;
+      margin-top: 16px;
+      padding: 16px;
+      border-radius: var(--radius);
+      background: #f4f9f6;
+      border: 1px solid rgba(31, 170, 77, .16);
+    }
+    .conditional.is-visible { display: block; }
+    .payment-summary {
+      display: grid;
+      gap: 10px;
+      padding: 18px;
+      border-radius: var(--radius);
+      background: #f8fbfc;
+      border: 1px solid var(--line);
+    }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      color: #344052;
+      line-height: 1.35;
+    }
+    .summary-row strong { color: var(--navy); }
+    .consent-box {
+      display: grid;
+      grid-template-columns: 22px 1fr;
+      gap: 10px;
+      align-items: start;
+      margin-top: 16px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfcf9;
+    }
+    .consent-box input {
+      width: 18px;
+      min-height: 18px;
+      margin: 2px 0 0;
+      accent-color: var(--green-2);
+    }
+    .consent-box span {
+      color: #344052;
+      font-size: 14px;
+      line-height: 1.45;
+      font-weight: 700;
+    }
+    .form-status {
+      display: none;
+      margin-top: 18px;
+      padding: 15px 16px;
+      border-radius: var(--radius);
+      font-weight: 800;
+      line-height: 1.45;
+    }
+    .form-status.is-visible { display: block; }
+    .form-status.error {
+      color: var(--danger);
+      background: #fff4f2;
+      border: 1px solid rgba(180, 35, 24, .22);
+    }
+    .form-status.success {
+      color: var(--success);
+      background: #f0fbf4;
+      border: 1px solid rgba(20, 122, 56, .22);
+    }
+    .hp-field {
+      position: absolute;
+      left: -9999px;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+    .fine-print {
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    .footer {
+      padding: 34px 0;
+      color: #dce8ef;
+      background: var(--navy);
+    }
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .footer strong { color: var(--white); }
+    .footer a { color: #f5d889; font-weight: 800; text-decoration: none; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .hero-grid, .pain-grid, .offer-layout, .signup-layout {
+        grid-template-columns: 1fr;
+      }
+      .hero { min-height: auto; }
+      .signup-aside { position: static; }
+      .benefit-grid { grid-template-columns: 1fr 1fr; }
+      .choice-grid.seven { grid-template-columns: repeat(4, 1fr); }
+      .price-stamp {
+        right: 12px;
+        bottom: 12px;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .container { width: min(100% - 28px, 1140px); }
+      .nav {
+        min-height: 92px;
+        align-items: flex-start;
+        padding: 12px 0;
+      }
+      .brand-lockup { gap: 7px; }
+      .brand-logo.bin-boy { height: 44px; }
+      .brand-logo.tdme { height: 36px; }
+      .brand-plus { font-size: 18px; }
+      .nav-actions { align-items: flex-end; flex-direction: column; gap: 6px; }
+      .phone-link { font-size: 13px; }
+      .nav-actions .btn { min-height: 38px; padding: 9px 12px; font-size: 13px; }
+      .hero { padding: 40px 0 24px; }
+      h1 { font-size: clamp(40px, 12vw, 58px); }
+      .hero-actions .btn { width: 100%; }
+      section { padding: 58px 0; }
+      .logo-tile { min-height: 152px; }
+      .logo-tile img { max-height: 116px; }
+      .price-stamp {
+        position: static;
+        width: auto;
+        min-height: 0;
+        margin-top: 16px;
+        border-radius: var(--radius);
+        transform: none;
+      }
+      .benefit-grid, .field-grid, .choice-grid, .choice-grid.seven {
+        grid-template-columns: 1fr;
+      }
+      .signup-card { padding: 20px; }
+      .offer-band { padding: 24px; }
+      .footer-inner { align-items: flex-start; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#signup">Skip to signup</a>
+  <div class="site-shell">
+    <header class="topbar">
+      <div class="container nav">
+        <div class="brand-lockup" aria-label="The Bin Boy and Trash Day Made Easy">
+          <img class="brand-logo bin-boy" src="/assets/images/the-bin-boy-logo.webp" alt="The Bin Boy">
+          <span class="brand-plus" aria-hidden="true">+</span>
+          <img class="brand-logo tdme" src="/logo-nav.jpg" alt="Trash Day Made Easy">
+        </div>
+        <div class="nav-actions">
+          <a class="phone-link" href="tel:8439553132">843-955-3132</a>
+          <a class="btn" href="#signup">Start Service</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="container hero-grid">
+          <div>
+            <p class="eyebrow">A Charleston service team</p>
+            <h1 id="hero-title">Clean bins. Easy trash days. One simple weekly service.</h1>
+            <p class="hero-copy">The Bin Boy and Trash Day Made Easy have teamed up to help homes, businesses, and properties keep trash areas cleaner, easier, and more reliable every week.</p>
+            <div class="hero-actions">
+              <a class="btn" href="#signup">Sign Up For $70/Month</a>
+              <a class="btn secondary" href="#offer">See What Is Included</a>
+            </div>
+            <div class="hero-note" aria-label="Service highlights">
+              <span>Licensed and insured</span>
+              <span>Five-star Google reviewed</span>
+              <span>No service contract</span>
+            </div>
+          </div>
+          <div class="hero-card" aria-label="Partner logos and offer price">
+            <div class="logo-pair">
+              <div class="logo-tile">
+                <img src="/assets/images/the-bin-boy-logo.webp" alt="The Bin Boy logo">
+              </div>
+              <div class="logo-tile">
+                <img src="/logo-nav.jpg" alt="Trash Day Made Easy logo">
+              </div>
+            </div>
+            <div class="price-stamp" aria-label="$70 per month">
+              <div>
+                <strong>$70</strong>
+                <span>per month for weekly valet plus monthly wash</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="pain-title">
+        <div class="container pain-grid">
+          <div class="section-head">
+            <p class="eyebrow">The trash day problem</p>
+            <h2 id="pain-title">Dirty bins and missed roll-ins make the whole property feel harder to manage.</h2>
+            <p>Whether it is a home, storefront, office, short-term rental, or managed property, trash areas create a steady stream of small problems that quickly become visible.</p>
+          </div>
+          <ul class="pain-list">
+            <li><span class="mark">1</span><span><strong>Bins get dirty fast</strong>Odors, residue, and pests build up between regular trash days.</span></li>
+            <li><span class="mark">2</span><span><strong>Cans get missed</strong>Late roll-outs, forgotten roll-ins, and overflowing bins create curb appeal issues.</span></li>
+            <li><span class="mark">3</span><span><strong>Staff time gets wasted</strong>Owners and teams end up managing trash instead of running the property.</span></li>
+            <li><span class="mark">4</span><span><strong>Customers notice</strong>Messy service areas, smells, and cans left out too long make a bad first impression.</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="offer" class="benefits" aria-labelledby="service-title">
+        <div class="container">
+          <div class="pain-grid">
+            <div class="service-panel">
+              <h2 id="service-title">Two local crews. One cleaner weekly routine.</h2>
+              <p>Your Trash Day Team combines reliable weekly bin roll-out and roll-in service from Trash Day Made Easy with monthly bin washing from The Bin Boy.</p>
+              <ul class="service-steps">
+                <li><span class="step-num">1</span>We roll bins out before pickup.</li>
+                <li><span class="step-num">2</span>We bring bins back after collection.</li>
+                <li><span class="step-num">3</span>The Bin Boy washes bins once each month.</li>
+                <li><span class="step-num">4</span>You get a simpler, cleaner trash day.</li>
+              </ul>
+            </div>
+            <div>
+              <div class="section-head">
+                <p class="eyebrow">Why it works</p>
+                <h2>Less mess, less odor, less thinking about trash.</h2>
+                <p>This is built for people who want a dependable recurring service, clear communication, and a cleaner-looking property without adding another chore.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="benefit-grid" aria-label="Service benefits">
+            <div class="benefit"><strong>Cleaner Bins</strong><p>Monthly washing helps remove buildup, grime, and trash residue.</p></div>
+            <div class="benefit"><strong>Less Odor</strong><p>Cleaner cans and timely movement help trash areas stay fresher.</p></div>
+            <div class="benefit"><strong>Reliable Trash Day Support</strong><p>Weekly roll-out and roll-in support keeps bins where they need to be.</p></div>
+            <div class="benefit"><strong>Better Curb Appeal</strong><p>Bins spend less time sitting out and trash zones look more cared for.</p></div>
+            <div class="benefit"><strong>Licensed and Insured</strong><p>Local crews with the coverage and professionalism property owners expect.</p></div>
+            <div class="benefit"><strong>Five-Star Google Reviewed</strong><p>Backed by the service reputation both brands have built locally.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="pricing-title">
+        <div class="container">
+          <div class="offer-band">
+            <div class="offer-layout">
+              <div>
+                <h2 id="pricing-title">$70/month for the combined service.</h2>
+                <p>Includes weekly bin roll-out and roll-in service plus monthly bin washing. Auto-billed on the 1st of each month after account approval. No service contract. Cancel anytime.</p>
+                <a class="btn" href="#signup">Reserve Your Service</a>
+              </div>
+              <div class="price-box">
+                <span class="amount">$70</span>
+                <span class="cadence">per month</span>
+                <small>Weekly valet service and monthly bin washing in one simple plan.</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="signup" class="signup-section" aria-labelledby="signup-title">
+        <div class="container signup-layout">
+          <aside class="signup-aside">
+            <div class="aside-card">
+              <p class="eyebrow">Start service</p>
+              <h2 id="signup-title">Tell us where to help and store your payment securely.</h2>
+              <p>Your account will be saved as Pending Approval. We will review the service address, confirm details, and then bill the stored card on the 1st of each month once service is approved.</p>
+              <ul class="aside-list">
+                <li>Card details are handled by Stripe and are never stored on this website.</li>
+                <li>Your card will be stored for recurring monthly billing.</li>
+                <li>You can ask us to pause or cancel service anytime.</li>
+              </ul>
+            </div>
+          </aside>
+
+          <form id="signup-form" class="signup-card" novalidate>
+            <div class="hp-field" aria-hidden="true">
+              <label for="company_website">Company Website</label>
+              <input id="company_website" name="company_website" type="text" tabindex="-1" autocomplete="off">
+            </div>
+
+            <div class="form-section">
+              <h3>Account Details</h3>
+              <div class="field-grid">
+                <div class="field full">
+                  <span class="field-label">Customer Type</span>
+                  <div class="choice-grid">
+                    <label class="choice"><input type="radio" name="customer_type" value="Residential" checked><span>Residential</span></label>
+                    <label class="choice"><input type="radio" name="customer_type" value="Business"><span>Business</span></label>
+                    <label class="choice"><input type="radio" name="customer_type" value="Property Owner"><span>Property Owner</span></label>
+                    <label class="choice"><input type="radio" name="customer_type" value="Property Manager"><span>Manager</span></label>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="name">Name *</label>
+                  <input id="name" name="name" autocomplete="name" required>
+                  <div class="field-error" id="err-name"></div>
+                </div>
+                <div class="field">
+                  <label for="company_name">Company or Property Name</label>
+                  <input id="company_name" name="company_name" autocomplete="organization">
+                </div>
+                <div class="field full">
+                  <label for="address">Service Address *</label>
+                  <input id="address" name="address" autocomplete="street-address" required>
+                  <div class="field-error" id="err-address"></div>
+                </div>
+                <div class="field">
+                  <label for="phone">Phone *</label>
+                  <input id="phone" name="phone" type="tel" autocomplete="tel" required>
+                  <div class="field-error" id="err-phone"></div>
+                </div>
+                <div class="field">
+                  <label for="email">Email *</label>
+                  <input id="email" name="email" type="email" autocomplete="email" required>
+                  <div class="field-error" id="err-email"></div>
+                </div>
+                <div class="field">
+                  <label for="number_of_bins">Number of Bins *</label>
+                  <input id="number_of_bins" name="number_of_bins" type="number" min="1" max="30" inputmode="numeric" required>
+                  <div class="field-error" id="err-number_of_bins"></div>
+                </div>
+                <div class="field">
+                  <label for="notes">Gate Code or Notes</label>
+                  <input id="notes" name="notes" autocomplete="off">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h3>Pickup Schedule</h3>
+              <div class="field full">
+                <span class="field-label">Trash Day *</span>
+                <div class="choice-grid seven" id="trash-day-options">
+                  <label class="choice"><input type="radio" name="trash_pickup_day" value="Monday"><span>Monday</span></label>
+                  <label class="choice"><input type="radio" name="trash_pickup_day" value="Tuesday"><span>Tuesday</span></label>
+                  <label class="choice"><input type="radio" name="trash_pickup_day" value="Wednesday"><span>Wednesday</span></label>
+                  <label class="choice"><input type="radio" name="trash_pickup_day" value="Thursday"><span>Thursday</span></label>
+                  <label class="choice"><input type="radio" name="trash_pickup_day" value="Friday"><span>Friday</span></label>
+                  <label class="choice"><input type="radio" name="trash_pickup_day" value="Saturday"><span>Saturday</span></label>
+                  <label class="choice"><input type="radio" name="trash_pickup_day" value="Sunday"><span>Sunday</span></label>
+                </div>
+                <div class="field-error" id="err-trash_pickup_day"></div>
+              </div>
+
+              <div class="field full">
+                <span class="field-label">Recycling</span>
+                <div class="choice-grid">
+                  <label class="choice"><input type="radio" name="recycling_frequency" value="No Recycling" checked><span>No Recycling</span></label>
+                  <label class="choice"><input type="radio" name="recycling_frequency" value="Weekly Recycling"><span>Weekly Recycling</span></label>
+                  <label class="choice"><input type="radio" name="recycling_frequency" value="Bi-Weekly Recycling"><span>Bi-Weekly Recycling</span></label>
+                </div>
+              </div>
+
+              <div id="recycling-details" class="conditional">
+                <div class="field full">
+                  <span class="field-label">Recycling Pickup Day</span>
+                  <div class="choice-grid seven">
+                    <label class="choice"><input type="radio" name="recycling_pickup_day" value="Monday"><span>Monday</span></label>
+                    <label class="choice"><input type="radio" name="recycling_pickup_day" value="Tuesday"><span>Tuesday</span></label>
+                    <label class="choice"><input type="radio" name="recycling_pickup_day" value="Wednesday"><span>Wednesday</span></label>
+                    <label class="choice"><input type="radio" name="recycling_pickup_day" value="Thursday"><span>Thursday</span></label>
+                    <label class="choice"><input type="radio" name="recycling_pickup_day" value="Friday"><span>Friday</span></label>
+                    <label class="choice"><input type="radio" name="recycling_pickup_day" value="Saturday"><span>Saturday</span></label>
+                    <label class="choice"><input type="radio" name="recycling_pickup_day" value="Sunday"><span>Sunday</span></label>
+                  </div>
+                  <div class="field-error" id="err-recycling_pickup_day"></div>
+                </div>
+                <div id="recycling-week-wrap" class="field full">
+                  <span class="field-label">Bi-Weekly Recycling Week</span>
+                  <div class="choice-grid">
+                    <label class="choice"><input type="radio" name="recycling_week" value="Week A"><span>Week A</span></label>
+                    <label class="choice"><input type="radio" name="recycling_week" value="Week B"><span>Week B</span></label>
+                  </div>
+                  <div class="field-error" id="err-recycling_week"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h3>Payment Authorization</h3>
+              <div class="payment-summary">
+                <div class="summary-row"><span>Monthly plan</span><strong>$70/month</strong></div>
+                <div class="summary-row"><span>Includes</span><strong>Weekly valet plus monthly wash</strong></div>
+                <div class="summary-row"><span>Billing</span><strong>Auto-billed on the 1st</strong></div>
+                <div class="summary-row"><span>Today</span><strong>$0 pending approval</strong></div>
+              </div>
+
+              <div class="field-grid" style="margin-top:16px;">
+                <div class="field">
+                  <label for="name_on_card">Name on Card *</label>
+                  <input id="name_on_card" name="name_on_card" autocomplete="cc-name" required>
+                  <div class="field-error" id="err-name_on_card"></div>
+                </div>
+                <div class="field">
+                  <label for="billing_zip">Billing ZIP *</label>
+                  <input id="billing_zip" name="billing_zip" inputmode="numeric" autocomplete="postal-code" required>
+                  <div class="field-error" id="err-billing_zip"></div>
+                </div>
+                <div class="field full">
+                  <label for="card-number-element">Card Number *</label>
+                  <div id="card-number-element" class="stripe-card-element"></div>
+                  <div class="field-error" id="err-card-number"></div>
+                </div>
+                <div class="field">
+                  <label for="card-expiry-element">Expiration *</label>
+                  <div id="card-expiry-element" class="stripe-card-element"></div>
+                  <div class="field-error" id="err-card-expiry"></div>
+                </div>
+                <div class="field">
+                  <label for="card-cvc-element">CVC *</label>
+                  <div id="card-cvc-element" class="stripe-card-element"></div>
+                  <div class="field-error" id="err-card-cvc"></div>
+                </div>
+              </div>
+
+              <label class="consent-box">
+                <input id="billing_consent" name="billing_consent" type="checkbox" required>
+                <span>I authorize Your Trash Day Team, The Bin Boy, and Trash Day Made Easy to securely store my credit card with Stripe and charge it $70 on the 1st of each month after my account is approved. I understand there is no service contract and service continues until I ask to pause or cancel.</span>
+              </label>
+              <div class="field-error" id="err-billing_consent"></div>
+              <p class="fine-print">Stripe securely handles card details. This site stores only Stripe customer references and safe card display details like brand and last four digits.</p>
+            </div>
+
+            <button id="submit-btn" class="btn full" type="submit">Submit For Approval</button>
+            <div id="form-status" class="form-status" role="status" aria-live="polite"></div>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-inner">
+        <div><strong>Your Trash Day Team</strong><br>The Bin Boy + Trash Day Made Easy</div>
+        <div><a href="tel:8439553132">843-955-3132</a></div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      var form = document.getElementById('signup-form');
+      var submitBtn = document.getElementById('submit-btn');
+      var statusEl = document.getElementById('form-status');
+      var recyclingDetails = document.getElementById('recycling-details');
+      var recyclingWeekWrap = document.getElementById('recycling-week-wrap');
+      var stripe;
+      var cardNumber;
+      var cardExpiry;
+      var cardCvc;
+      var cardState = {
+        number: {complete: false},
+        expiry: {complete: false},
+        cvc: {complete: false}
+      };
+
+      function byName(name) {
+        return form.querySelector('[name="' + name + '"]');
+      }
+
+      function checkedValue(name) {
+        var el = form.querySelector('[name="' + name + '"]:checked');
+        return el ? el.value : '';
+      }
+
+      function value(name) {
+        var el = byName(name);
+        return el ? el.value.trim() : '';
+      }
+
+      function setError(name, message) {
+        var err = document.getElementById('err-' + name);
+        var field = byName(name) || document.getElementById(name);
+        if (err) err.textContent = message || '';
+        if (field && field.classList) field.classList.toggle('input-error', !!message);
+      }
+
+      function setChoiceError(name, message) {
+        var err = document.getElementById('err-' + name);
+        if (err) err.textContent = message || '';
+      }
+
+      function setCardError(key, message) {
+        var id = key === 'number' ? 'card-number' : key === 'expiry' ? 'card-expiry' : 'card-cvc';
+        var err = document.getElementById('err-' + id);
+        var mount = document.getElementById(id + '-element');
+        if (err) err.textContent = message || '';
+        if (mount) mount.classList.toggle('stripe-error', !!message);
+      }
+
+      function showStatus(type, message) {
+        statusEl.className = 'form-status ' + type + ' is-visible';
+        statusEl.textContent = message;
+      }
+
+      function clearStatus() {
+        statusEl.className = 'form-status';
+        statusEl.textContent = '';
+      }
+
+      function toggleRecycling() {
+        var freq = checkedValue('recycling_frequency');
+        var needsDay = freq === 'Weekly Recycling' || freq === 'Bi-Weekly Recycling';
+        var needsWeek = freq === 'Bi-Weekly Recycling';
+        recyclingDetails.classList.toggle('is-visible', needsDay);
+        recyclingWeekWrap.style.display = needsWeek ? '' : 'none';
+        if (!needsDay) {
+          form.querySelectorAll('[name="recycling_pickup_day"], [name="recycling_week"]').forEach(function (el) { el.checked = false; });
+          setChoiceError('recycling_pickup_day', '');
+          setChoiceError('recycling_week', '');
+        }
+        if (!needsWeek) {
+          form.querySelectorAll('[name="recycling_week"]').forEach(function (el) { el.checked = false; });
+          setChoiceError('recycling_week', '');
+        }
+      }
+
+      function validateForm() {
+        var ok = true;
+        clearStatus();
+        ['name', 'address', 'phone', 'email', 'number_of_bins', 'name_on_card', 'billing_zip', 'billing_consent'].forEach(function (name) {
+          setError(name, '');
+        });
+        ['trash_pickup_day', 'recycling_pickup_day', 'recycling_week'].forEach(function (name) {
+          setChoiceError(name, '');
+        });
+        ['number', 'expiry', 'cvc'].forEach(function (key) {
+          setCardError(key, '');
+        });
+
+        ['name', 'address', 'phone', 'email', 'number_of_bins', 'name_on_card', 'billing_zip'].forEach(function (name) {
+          if (!value(name)) {
+            setError(name, 'Required.');
+            ok = false;
+          }
+        });
+
+        if (value('email') && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value('email'))) {
+          setError('email', 'Enter a valid email address.');
+          ok = false;
+        }
+
+        var bins = Number(value('number_of_bins'));
+        if (!bins || bins < 1) {
+          setError('number_of_bins', 'Enter at least 1 bin.');
+          ok = false;
+        }
+
+        if (!checkedValue('trash_pickup_day')) {
+          setChoiceError('trash_pickup_day', 'Choose one trash day.');
+          ok = false;
+        }
+
+        var freq = checkedValue('recycling_frequency');
+        if ((freq === 'Weekly Recycling' || freq === 'Bi-Weekly Recycling') && !checkedValue('recycling_pickup_day')) {
+          setChoiceError('recycling_pickup_day', 'Choose a recycling pickup day.');
+          ok = false;
+        }
+        if (freq === 'Bi-Weekly Recycling' && !checkedValue('recycling_week')) {
+          setChoiceError('recycling_week', 'Choose Week A or Week B.');
+          ok = false;
+        }
+
+        if (!byName('billing_consent').checked) {
+          setError('billing_consent', 'You must authorize stored monthly billing to continue.');
+          ok = false;
+        }
+
+        if (!cardState.number.complete) {
+          setCardError('number', 'Enter your card number.');
+          ok = false;
+        }
+        if (!cardState.expiry.complete) {
+          setCardError('expiry', 'Enter the expiration date.');
+          ok = false;
+        }
+        if (!cardState.cvc.complete) {
+          setCardError('cvc', 'Enter the CVC.');
+          ok = false;
+        }
+
+        if (!ok) {
+          showStatus('error', 'Please fix the highlighted fields.');
+        }
+        return ok;
+      }
+
+      function payload(paymentMethodId) {
+        return {
+          customer_type: checkedValue('customer_type'),
+          name: value('name'),
+          company_name: value('company_name'),
+          address: value('address'),
+          phone: value('phone'),
+          email: value('email'),
+          number_of_bins: value('number_of_bins'),
+          notes: value('notes'),
+          trash_pickup_day: checkedValue('trash_pickup_day'),
+          recycling_frequency: checkedValue('recycling_frequency'),
+          recycling_pickup_day: checkedValue('recycling_pickup_day'),
+          recycling_week: checkedValue('recycling_week'),
+          name_on_card: value('name_on_card'),
+          billing_zip: value('billing_zip'),
+          billing_consent: byName('billing_consent').checked,
+          payment_method_id: paymentMethodId,
+          company_website: value('company_website'),
+          source: 'yourtrashdayteam-home'
+        };
+      }
+
+      function mountCardElement(element, selector, key, errorId) {
+        element.mount(selector);
+        element.on('change', function (event) {
+          cardState[key].complete = event.complete;
+          setCardError(key, event.error ? event.error.message : '');
+        });
+        element.on('focus', function () {
+          document.querySelector(selector).classList.add('stripe-focus');
+        });
+        element.on('blur', function () {
+          document.querySelector(selector).classList.remove('stripe-focus');
+        });
+      }
+
+      async function initStripe() {
+        try {
+          var res = await fetch('/.netlify/functions/partner-config');
+          var cfg = await res.json();
+          if (!cfg.stripe_publishable_key) {
+            showStatus('error', 'Stripe is not configured yet. Please call 843-955-3132 to start service.');
+            submitBtn.disabled = true;
+            return;
+          }
+          stripe = Stripe(cfg.stripe_publishable_key);
+          var elements = stripe.elements({
+            fonts: [],
+            appearance: {
+              theme: 'stripe',
+              variables: {
+                colorPrimary: '#10823a',
+                colorText: '#142033',
+                colorDanger: '#b42318',
+                borderRadius: '10px',
+                fontFamily: 'Arial, Helvetica, sans-serif'
+              }
+            }
+          });
+          cardNumber = elements.create('cardNumber', {showIcon: true});
+          cardExpiry = elements.create('cardExpiry');
+          cardCvc = elements.create('cardCvc');
+          mountCardElement(cardNumber, '#card-number-element', 'number');
+          mountCardElement(cardExpiry, '#card-expiry-element', 'expiry');
+          mountCardElement(cardCvc, '#card-cvc-element', 'cvc');
+        } catch (err) {
+          showStatus('error', 'Payment setup is unavailable. Please call 843-955-3132 to start service.');
+          submitBtn.disabled = true;
+        }
+      }
+
+      form.querySelectorAll('[name="recycling_frequency"]').forEach(function (el) {
+        el.addEventListener('change', toggleRecycling);
+      });
+      toggleRecycling();
+
+      form.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        if (!stripe || !cardNumber) {
+          showStatus('error', 'Payment setup is still loading. Please try again in a moment.');
+          return;
+        }
+        if (!validateForm()) return;
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting...';
+        clearStatus();
+
+        try {
+          var result = await stripe.createPaymentMethod({
+            type: 'card',
+            card: cardNumber,
+            billing_details: {
+              name: value('name_on_card'),
+              email: value('email'),
+              phone: value('phone'),
+              address: {postal_code: value('billing_zip')}
+            }
+          });
+
+          if (result.error) {
+            setCardError('number', result.error.message || 'Card could not be saved.');
+            showStatus('error', result.error.message || 'Card could not be saved.');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Submit For Approval';
+            return;
+          }
+
+          var response = await fetch('/.netlify/functions/partner-signup', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(payload(result.paymentMethod.id))
+          });
+          var data = await response.json();
+          if (!response.ok || !data.success) {
+            throw new Error(data.error || 'Submission failed. Please call 843-955-3132.');
+          }
+
+          form.reset();
+          toggleRecycling();
+          showStatus('success', 'Thanks. Your account was submitted for approval. We will review the address, confirm details, and contact you shortly.');
+          submitBtn.textContent = 'Submitted';
+        } catch (err) {
+          showStatus('error', err.message || 'Something went wrong. Please call 843-955-3132.');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Submit For Approval';
+        }
+      });
+
+      initStripe();
+    })();
+  </script>
+</body>
+</html>
