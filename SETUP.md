@@ -54,7 +54,7 @@ Primary fields include:
 - `trash_pickup_day`
 - `recycling_frequency`
 - `recycling_pickup_day`
-- `recycling_week`
+- `recycling_next_pickup` (customer-picked next recycling pickup date for bi-weekly recycling; Week A/B is determined manually from it. The legacy `recycling_week` column remains for old rows.)
 - `$70/month` plan details
 - Pending Approval status fields
 - Stripe customer, payment method, and SetupIntent references
