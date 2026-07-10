@@ -528,6 +528,7 @@
       font-weight: 600;
     }
     .choice-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .choice-grid.three { grid-template-columns: repeat(3, 1fr); }
     .choice-grid.seven { grid-template-columns: repeat(7, 1fr); }
     .choice { position: relative; }
     .choice input { position: absolute; opacity: 0; pointer-events: none; }
@@ -708,7 +709,7 @@
         border-radius: var(--radius);
         transform: none;
       }
-      .included-grid, .field-grid, .choice-grid, .choice-grid.seven {
+      .included-grid, .field-grid, .choice-grid, .choice-grid.three, .choice-grid.seven {
         grid-template-columns: 1fr;
       }
       .signup-card { padding: 20px; }
@@ -860,11 +861,10 @@
               <div class="field-grid">
                 <div class="field full">
                   <span class="field-label">Customer Type</span>
-                  <div class="choice-grid">
-                    <label class="choice"><input type="radio" name="customer_type" value="Residential" checked><span>Residential</span></label>
+                  <div class="choice-grid three">
+                    <label class="choice"><input type="radio" name="customer_type" value="Residential Homeowner/Renter" checked><span>Residential Homeowner/Renter</span></label>
                     <label class="choice"><input type="radio" name="customer_type" value="Business"><span>Business</span></label>
-                    <label class="choice"><input type="radio" name="customer_type" value="Property Owner"><span>Property Owner</span></label>
-                    <label class="choice"><input type="radio" name="customer_type" value="Property Manager"><span>Manager</span></label>
+                    <label class="choice"><input type="radio" name="customer_type" value="Property Management Company"><span>Property Management Company</span></label>
                   </div>
                 </div>
                 <div class="field">
