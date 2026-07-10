@@ -557,6 +557,56 @@
       outline-offset: 2px;
     }
     .choice span:active { transform: translateY(1px); }
+    .property-block {
+      min-width: 0;
+      margin: 18px 0 0;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+    }
+    .property-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .property-title {
+      font-family: var(--display);
+      font-weight: 700;
+      color: var(--navy);
+      font-size: 1.0625rem;
+    }
+    .remove-property {
+      appearance: none;
+      border: 0;
+      background: none;
+      padding: 6px 10px;
+      border-radius: 8px;
+      color: var(--danger);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .remove-property:hover { background: oklch(0.97 0.015 27); }
+    .add-property {
+      appearance: none;
+      width: 100%;
+      margin-top: 16px;
+      min-height: 48px;
+      padding: 12px 20px;
+      border: 1.5px dashed oklch(0.53 0.15 151 / .55);
+      border-radius: 999px;
+      background: oklch(0.965 0.012 150);
+      color: var(--green-press);
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background .18s var(--ease), border-color .18s var(--ease);
+    }
+    .add-property:hover { background: oklch(0.94 0.02 150); border-color: var(--green-press); }
     .conditional {
       display: none;
       margin-top: 16px;
@@ -876,11 +926,6 @@
                   <label for="company_name">Company or Property Name</label>
                   <input id="company_name" name="company_name" autocomplete="organization">
                 </div>
-                <div class="field full">
-                  <label for="address">Service Address *</label>
-                  <input id="address" name="address" autocomplete="street-address" required>
-                  <div class="field-error" id="err-address"></div>
-                </div>
                 <div class="field">
                   <label for="phone">Phone *</label>
                   <input id="phone" name="phone" type="tel" autocomplete="tel" required>
@@ -891,72 +936,84 @@
                   <input id="email" name="email" type="email" autocomplete="email" required>
                   <div class="field-error" id="err-email"></div>
                 </div>
-                <div class="field">
-                  <label for="number_of_bins">Number of Bins *</label>
-                  <input id="number_of_bins" name="number_of_bins" type="number" min="1" max="30" inputmode="numeric" required>
-                  <div class="field-error" id="err-number_of_bins"></div>
-                </div>
-                <div class="field">
-                  <label for="notes">Gate Code or Notes</label>
-                  <input id="notes" name="notes" autocomplete="off">
-                </div>
-              </div>
-            </div>
-
-            <div class="form-section">
-              <h3>Pickup Schedule</h3>
-              <div class="field full">
-                <span class="field-label">Trash Day *</span>
-                <div class="choice-grid seven" id="trash-day-options">
-                  <label class="choice"><input type="radio" name="trash_pickup_day" value="Monday"><span>Monday</span></label>
-                  <label class="choice"><input type="radio" name="trash_pickup_day" value="Tuesday"><span>Tuesday</span></label>
-                  <label class="choice"><input type="radio" name="trash_pickup_day" value="Wednesday"><span>Wednesday</span></label>
-                  <label class="choice"><input type="radio" name="trash_pickup_day" value="Thursday"><span>Thursday</span></label>
-                  <label class="choice"><input type="radio" name="trash_pickup_day" value="Friday"><span>Friday</span></label>
-                  <label class="choice"><input type="radio" name="trash_pickup_day" value="Saturday"><span>Saturday</span></label>
-                  <label class="choice"><input type="radio" name="trash_pickup_day" value="Sunday"><span>Sunday</span></label>
-                </div>
-                <div class="field-error" id="err-trash_pickup_day"></div>
               </div>
 
-              <div class="field full">
-                <span class="field-label">Recycling</span>
-                <div class="choice-grid">
-                  <label class="choice"><input type="radio" name="recycling_frequency" value="No Recycling" checked><span>No Recycling</span></label>
-                  <label class="choice"><input type="radio" name="recycling_frequency" value="Weekly Recycling"><span>Weekly Recycling</span></label>
-                  <label class="choice"><input type="radio" name="recycling_frequency" value="Bi-Weekly Recycling"><span>Bi-Weekly Recycling</span></label>
-                </div>
-              </div>
-
-              <div id="recycling-details" class="conditional">
-                <div class="field full">
-                  <span class="field-label">Recycling Pickup Day</span>
-                  <div class="choice-grid seven">
-                    <label class="choice"><input type="radio" name="recycling_pickup_day" value="Monday"><span>Monday</span></label>
-                    <label class="choice"><input type="radio" name="recycling_pickup_day" value="Tuesday"><span>Tuesday</span></label>
-                    <label class="choice"><input type="radio" name="recycling_pickup_day" value="Wednesday"><span>Wednesday</span></label>
-                    <label class="choice"><input type="radio" name="recycling_pickup_day" value="Thursday"><span>Thursday</span></label>
-                    <label class="choice"><input type="radio" name="recycling_pickup_day" value="Friday"><span>Friday</span></label>
-                    <label class="choice"><input type="radio" name="recycling_pickup_day" value="Saturday"><span>Saturday</span></label>
-                    <label class="choice"><input type="radio" name="recycling_pickup_day" value="Sunday"><span>Sunday</span></label>
+              <div id="properties">
+                <fieldset class="property-block" data-suffix="">
+                  <div class="property-head">
+                    <span class="property-title">Property 1</span>
                   </div>
-                  <div class="field-error" id="err-recycling_pickup_day"></div>
-                </div>
-                <div id="recycling-week-wrap" class="field full">
-                  <span class="field-label">Bi-Weekly Recycling Week</span>
-                  <div class="choice-grid">
-                    <label class="choice"><input type="radio" name="recycling_week" value="Week A"><span>Week A</span></label>
-                    <label class="choice"><input type="radio" name="recycling_week" value="Week B"><span>Week B</span></label>
+                  <div class="field-grid">
+                    <div class="field full">
+                      <label for="address">Service Address *</label>
+                      <input id="address" name="address" autocomplete="street-address" required>
+                      <div class="field-error" id="err-address"></div>
+                    </div>
+                    <div class="field">
+                      <label for="number_of_bins">Number of Bins *</label>
+                      <input id="number_of_bins" name="number_of_bins" type="number" min="1" max="30" inputmode="numeric" required>
+                      <div class="field-error" id="err-number_of_bins"></div>
+                    </div>
+                    <div class="field">
+                      <label for="notes">Gate Code or Notes</label>
+                      <input id="notes" name="notes" autocomplete="off">
+                    </div>
                   </div>
-                  <div class="field-error" id="err-recycling_week"></div>
-                </div>
+                  <div class="field full">
+                    <span class="field-label">Trash Day *</span>
+                    <div class="choice-grid seven">
+                      <label class="choice"><input type="radio" name="trash_pickup_day" value="Monday"><span>Monday</span></label>
+                      <label class="choice"><input type="radio" name="trash_pickup_day" value="Tuesday"><span>Tuesday</span></label>
+                      <label class="choice"><input type="radio" name="trash_pickup_day" value="Wednesday"><span>Wednesday</span></label>
+                      <label class="choice"><input type="radio" name="trash_pickup_day" value="Thursday"><span>Thursday</span></label>
+                      <label class="choice"><input type="radio" name="trash_pickup_day" value="Friday"><span>Friday</span></label>
+                      <label class="choice"><input type="radio" name="trash_pickup_day" value="Saturday"><span>Saturday</span></label>
+                      <label class="choice"><input type="radio" name="trash_pickup_day" value="Sunday"><span>Sunday</span></label>
+                    </div>
+                    <div class="field-error" id="err-trash_pickup_day"></div>
+                  </div>
+                  <div class="field full">
+                    <span class="field-label">Recycling</span>
+                    <div class="choice-grid">
+                      <label class="choice"><input type="radio" name="recycling_frequency" value="No Recycling" checked><span>No Recycling</span></label>
+                      <label class="choice"><input type="radio" name="recycling_frequency" value="Weekly Recycling"><span>Weekly Recycling</span></label>
+                      <label class="choice"><input type="radio" name="recycling_frequency" value="Bi-Weekly Recycling"><span>Bi-Weekly Recycling</span></label>
+                    </div>
+                  </div>
+                  <div class="conditional" data-role="recycling-details">
+                    <div class="field full">
+                      <span class="field-label">Recycling Pickup Day</span>
+                      <div class="choice-grid seven">
+                        <label class="choice"><input type="radio" name="recycling_pickup_day" value="Monday"><span>Monday</span></label>
+                        <label class="choice"><input type="radio" name="recycling_pickup_day" value="Tuesday"><span>Tuesday</span></label>
+                        <label class="choice"><input type="radio" name="recycling_pickup_day" value="Wednesday"><span>Wednesday</span></label>
+                        <label class="choice"><input type="radio" name="recycling_pickup_day" value="Thursday"><span>Thursday</span></label>
+                        <label class="choice"><input type="radio" name="recycling_pickup_day" value="Friday"><span>Friday</span></label>
+                        <label class="choice"><input type="radio" name="recycling_pickup_day" value="Saturday"><span>Saturday</span></label>
+                        <label class="choice"><input type="radio" name="recycling_pickup_day" value="Sunday"><span>Sunday</span></label>
+                      </div>
+                      <div class="field-error" id="err-recycling_pickup_day"></div>
+                    </div>
+                    <div class="field full" data-role="recycling-week-wrap">
+                      <span class="field-label">Bi-Weekly Recycling Week</span>
+                      <div class="choice-grid">
+                        <label class="choice"><input type="radio" name="recycling_week" value="Week A"><span>Week A</span></label>
+                        <label class="choice"><input type="radio" name="recycling_week" value="Week B"><span>Week B</span></label>
+                      </div>
+                      <div class="field-error" id="err-recycling_week"></div>
+                    </div>
+                  </div>
+                </fieldset>
               </div>
+              <button type="button" id="add-property" class="add-property">+ Add Another Property</button>
             </div>
 
             <div class="form-section">
               <h3>Payment Authorization</h3>
               <div class="payment-summary">
-                <div class="summary-row"><span>Monthly plan</span><strong>$70/month</strong></div>
+                <div class="summary-row"><span>Monthly plan</span><strong>$70/month per property</strong></div>
+                <div class="summary-row"><span>Properties</span><strong id="summary-count">1</strong></div>
+                <div class="summary-row"><span>Monthly total</span><strong id="summary-total">$70/month</strong></div>
                 <div class="summary-row"><span>Includes</span><strong>Weekly valet plus monthly wash</strong></div>
                 <div class="summary-row"><span>Billing</span><strong>Auto-billed on the 1st</strong></div>
                 <div class="summary-row"><span>Today</span><strong>$0 pending approval</strong></div>
@@ -992,7 +1049,7 @@
 
               <label class="consent-box">
                 <input id="billing_consent" name="billing_consent" type="checkbox" required>
-                <span>I authorize Your Trash Day Team, The Bin Boy, and Trash Day Made Easy to securely store my credit card with Stripe and charge it $70 on the 1st of each month after my account is approved. I understand there is no service contract and service continues until I ask to pause or cancel.</span>
+                <span>I authorize Your Trash Day Team, The Bin Boy, and Trash Day Made Easy to securely store my credit card with Stripe and charge it <span id="consent-amount">$70</span> on the 1st of each month after my account is approved. I understand there is no service contract and service continues until I ask to pause or cancel.</span>
               </label>
               <div class="field-error" id="err-billing_consent"></div>
               <p class="fine-print">Stripe securely handles card details. This site stores only Stripe customer references and safe card display details like brand and last four digits.</p>
@@ -1018,8 +1075,14 @@
       var form = document.getElementById('signup-form');
       var submitBtn = document.getElementById('submit-btn');
       var statusEl = document.getElementById('form-status');
-      var recyclingDetails = document.getElementById('recycling-details');
-      var recyclingWeekWrap = document.getElementById('recycling-week-wrap');
+      var propertiesEl = document.getElementById('properties');
+      var addPropertyBtn = document.getElementById('add-property');
+      var summaryCount = document.getElementById('summary-count');
+      var summaryTotal = document.getElementById('summary-total');
+      var consentAmount = document.getElementById('consent-amount');
+      var BASE_PRICE = 70;
+      var propertyCounter = 1;
+      var DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
       var stripe;
       var cardNumber;
       var cardExpiry;
@@ -1089,37 +1152,92 @@
         statusEl.textContent = '';
       }
 
-      function toggleRecycling() {
-        var freq = checkedValue('recycling_frequency');
+      function blocks() {
+        return Array.prototype.slice.call(propertiesEl.querySelectorAll('.property-block'));
+      }
+
+      function blockSuffix(block) {
+        return block.getAttribute('data-suffix') || '';
+      }
+
+      function toggleRecycling(block) {
+        var sfx = blockSuffix(block);
+        var freq = checkedValue('recycling_frequency' + sfx);
+        var details = block.querySelector('[data-role="recycling-details"]');
+        var weekWrap = block.querySelector('[data-role="recycling-week-wrap"]');
         var needsDay = freq === 'Weekly Recycling' || freq === 'Bi-Weekly Recycling';
         var needsWeek = freq === 'Bi-Weekly Recycling';
-        recyclingDetails.classList.toggle('is-visible', needsDay);
-        recyclingWeekWrap.style.display = needsWeek ? '' : 'none';
+        details.classList.toggle('is-visible', needsDay);
+        weekWrap.style.display = needsWeek ? '' : 'none';
         if (!needsDay) {
-          form.querySelectorAll('[name="recycling_pickup_day"], [name="recycling_week"]').forEach(function (el) { el.checked = false; });
-          setChoiceError('recycling_pickup_day', '');
-          setChoiceError('recycling_week', '');
+          block.querySelectorAll('[name="recycling_pickup_day' + sfx + '"], [name="recycling_week' + sfx + '"]').forEach(function (el) { el.checked = false; });
+          setChoiceError('recycling_pickup_day' + sfx, '');
+          setChoiceError('recycling_week' + sfx, '');
         }
         if (!needsWeek) {
-          form.querySelectorAll('[name="recycling_week"]').forEach(function (el) { el.checked = false; });
-          setChoiceError('recycling_week', '');
+          block.querySelectorAll('[name="recycling_week' + sfx + '"]').forEach(function (el) { el.checked = false; });
+          setChoiceError('recycling_week' + sfx, '');
         }
+      }
+
+      function choiceHtml(name, val) {
+        return '<label class="choice"><input type="radio" name="' + name + '" value="' + val + '"><span>' + val + '</span></label>';
+      }
+
+      function dayChips(name) {
+        return DAYS.map(function (d) { return choiceHtml(name, d); }).join('');
+      }
+
+      function propertyBlockHtml(n) {
+        var sfx = '_' + n;
+        return '<fieldset class="property-block" data-suffix="' + sfx + '">'
+          + '<div class="property-head"><span class="property-title">Property ' + n + '</span>'
+          + '<button type="button" class="remove-property">Remove</button></div>'
+          + '<div class="field-grid">'
+          + '<div class="field full"><label for="address' + sfx + '">Service Address *</label><input id="address' + sfx + '" name="address' + sfx + '" autocomplete="off" required><div class="field-error" id="err-address' + sfx + '"></div></div>'
+          + '<div class="field"><label for="number_of_bins' + sfx + '">Number of Bins *</label><input id="number_of_bins' + sfx + '" name="number_of_bins' + sfx + '" type="number" min="1" max="30" inputmode="numeric" required><div class="field-error" id="err-number_of_bins' + sfx + '"></div></div>'
+          + '<div class="field"><label for="notes' + sfx + '">Gate Code or Notes</label><input id="notes' + sfx + '" name="notes' + sfx + '" autocomplete="off"></div>'
+          + '</div>'
+          + '<div class="field full"><span class="field-label">Trash Day *</span><div class="choice-grid seven">' + dayChips('trash_pickup_day' + sfx) + '</div><div class="field-error" id="err-trash_pickup_day' + sfx + '"></div></div>'
+          + '<div class="field full"><span class="field-label">Recycling</span><div class="choice-grid">'
+          + '<label class="choice"><input type="radio" name="recycling_frequency' + sfx + '" value="No Recycling" checked><span>No Recycling</span></label>'
+          + choiceHtml('recycling_frequency' + sfx, 'Weekly Recycling')
+          + choiceHtml('recycling_frequency' + sfx, 'Bi-Weekly Recycling')
+          + '</div></div>'
+          + '<div class="conditional" data-role="recycling-details">'
+          + '<div class="field full"><span class="field-label">Recycling Pickup Day</span><div class="choice-grid seven">' + dayChips('recycling_pickup_day' + sfx) + '</div><div class="field-error" id="err-recycling_pickup_day' + sfx + '"></div></div>'
+          + '<div class="field full" data-role="recycling-week-wrap"><span class="field-label">Bi-Weekly Recycling Week</span><div class="choice-grid">'
+          + choiceHtml('recycling_week' + sfx, 'Week A')
+          + choiceHtml('recycling_week' + sfx, 'Week B')
+          + '</div><div class="field-error" id="err-recycling_week' + sfx + '"></div></div>'
+          + '</div></fieldset>';
+      }
+
+      function renumber() {
+        blocks().forEach(function (block, i) {
+          block.querySelector('.property-title').textContent = 'Property ' + (i + 1);
+        });
+      }
+
+      function updateTotals() {
+        var count = blocks().length;
+        var total = BASE_PRICE * count;
+        summaryCount.textContent = String(count);
+        summaryTotal.textContent = '$' + total + '/month';
+        consentAmount.textContent = count > 1 ? '$' + total + ' total ($70 per property)' : '$70';
       }
 
       function validateForm() {
         var ok = true;
         clearStatus();
-        ['name', 'address', 'phone', 'email', 'number_of_bins', 'name_on_card', 'billing_zip', 'billing_consent'].forEach(function (name) {
+        ['name', 'phone', 'email', 'name_on_card', 'billing_zip', 'billing_consent'].forEach(function (name) {
           setError(name, '');
-        });
-        ['trash_pickup_day', 'recycling_pickup_day', 'recycling_week'].forEach(function (name) {
-          setChoiceError(name, '');
         });
         ['number', 'expiry', 'cvc'].forEach(function (key) {
           setCardError(key, '');
         });
 
-        ['name', 'address', 'phone', 'email', 'number_of_bins', 'name_on_card', 'billing_zip'].forEach(function (name) {
+        ['name', 'phone', 'email', 'name_on_card', 'billing_zip'].forEach(function (name) {
           if (!value(name)) {
             setError(name, 'Required.');
             ok = false;
@@ -1131,26 +1249,38 @@
           ok = false;
         }
 
-        var bins = Number(value('number_of_bins'));
-        if (!bins || bins < 1) {
-          setError('number_of_bins', 'Enter at least 1 bin.');
-          ok = false;
-        }
+        blocks().forEach(function (block) {
+          var sfx = blockSuffix(block);
+          ['address' + sfx, 'number_of_bins' + sfx].forEach(function (name) {
+            setError(name, '');
+          });
+          ['trash_pickup_day' + sfx, 'recycling_pickup_day' + sfx, 'recycling_week' + sfx].forEach(function (name) {
+            setChoiceError(name, '');
+          });
 
-        if (!checkedValue('trash_pickup_day')) {
-          setChoiceError('trash_pickup_day', 'Choose one trash day.');
-          ok = false;
-        }
-
-        var freq = checkedValue('recycling_frequency');
-        if ((freq === 'Weekly Recycling' || freq === 'Bi-Weekly Recycling') && !checkedValue('recycling_pickup_day')) {
-          setChoiceError('recycling_pickup_day', 'Choose a recycling pickup day.');
-          ok = false;
-        }
-        if (freq === 'Bi-Weekly Recycling' && !checkedValue('recycling_week')) {
-          setChoiceError('recycling_week', 'Choose Week A or Week B.');
-          ok = false;
-        }
+          if (!value('address' + sfx)) {
+            setError('address' + sfx, 'Required.');
+            ok = false;
+          }
+          var bins = Number(value('number_of_bins' + sfx));
+          if (!bins || bins < 1) {
+            setError('number_of_bins' + sfx, 'Enter at least 1 bin.');
+            ok = false;
+          }
+          if (!checkedValue('trash_pickup_day' + sfx)) {
+            setChoiceError('trash_pickup_day' + sfx, 'Choose one trash day.');
+            ok = false;
+          }
+          var freq = checkedValue('recycling_frequency' + sfx);
+          if ((freq === 'Weekly Recycling' || freq === 'Bi-Weekly Recycling') && !checkedValue('recycling_pickup_day' + sfx)) {
+            setChoiceError('recycling_pickup_day' + sfx, 'Choose a recycling pickup day.');
+            ok = false;
+          }
+          if (freq === 'Bi-Weekly Recycling' && !checkedValue('recycling_week' + sfx)) {
+            setChoiceError('recycling_week' + sfx, 'Choose Week A or Week B.');
+            ok = false;
+          }
+        });
 
         if (!byName('billing_consent').checked) {
           setError('billing_consent', 'You must authorize stored monthly billing to continue.');
@@ -1176,20 +1306,36 @@
         return ok;
       }
 
+      function propertyData(block) {
+        var sfx = blockSuffix(block);
+        return {
+          address: value('address' + sfx),
+          number_of_bins: value('number_of_bins' + sfx),
+          notes: value('notes' + sfx),
+          trash_pickup_day: checkedValue('trash_pickup_day' + sfx),
+          recycling_frequency: checkedValue('recycling_frequency' + sfx),
+          recycling_pickup_day: checkedValue('recycling_pickup_day' + sfx),
+          recycling_week: checkedValue('recycling_week' + sfx)
+        };
+      }
+
       function payload(paymentMethodId) {
+        var all = blocks();
+        var primary = propertyData(all[0]);
         return {
           customer_type: checkedValue('customer_type'),
           name: value('name'),
           company_name: value('company_name'),
-          address: value('address'),
+          address: primary.address,
           phone: value('phone'),
           email: value('email'),
-          number_of_bins: value('number_of_bins'),
-          notes: value('notes'),
-          trash_pickup_day: checkedValue('trash_pickup_day'),
-          recycling_frequency: checkedValue('recycling_frequency'),
-          recycling_pickup_day: checkedValue('recycling_pickup_day'),
-          recycling_week: checkedValue('recycling_week'),
+          number_of_bins: primary.number_of_bins,
+          notes: primary.notes,
+          trash_pickup_day: primary.trash_pickup_day,
+          recycling_frequency: primary.recycling_frequency,
+          recycling_pickup_day: primary.recycling_pickup_day,
+          recycling_week: primary.recycling_week,
+          additional_properties: all.slice(1).map(propertyData),
           name_on_card: value('name_on_card'),
           billing_zip: value('billing_zip'),
           billing_consent: byName('billing_consent').checked,
@@ -1257,10 +1403,34 @@
         }
       }
 
-      form.querySelectorAll('[name="recycling_frequency"]').forEach(function (el) {
-        el.addEventListener('change', toggleRecycling);
+      propertiesEl.addEventListener('change', function (event) {
+        if (event.target.name && event.target.name.lastIndexOf('recycling_frequency', 0) === 0) {
+          toggleRecycling(event.target.closest('.property-block'));
+        }
       });
-      toggleRecycling();
+
+      propertiesEl.addEventListener('click', function (event) {
+        var removeBtn = event.target.closest('.remove-property');
+        if (removeBtn) {
+          removeBtn.closest('.property-block').remove();
+          renumber();
+          updateTotals();
+        }
+      });
+
+      addPropertyBtn.addEventListener('click', function () {
+        propertyCounter += 1;
+        propertiesEl.insertAdjacentHTML('beforeend', propertyBlockHtml(propertyCounter));
+        var block = propertiesEl.lastElementChild;
+        toggleRecycling(block);
+        renumber();
+        updateTotals();
+        var firstInput = block.querySelector('input');
+        if (firstInput) firstInput.focus();
+      });
+
+      blocks().forEach(toggleRecycling);
+      updateTotals();
 
       form.addEventListener('submit', async function (event) {
         event.preventDefault();
@@ -1305,7 +1475,10 @@
           }
 
           form.reset();
-          toggleRecycling();
+          blocks().slice(1).forEach(function (block) { block.remove(); });
+          renumber();
+          updateTotals();
+          blocks().forEach(toggleRecycling);
           showStatus('success', 'Thanks. Your account was submitted for approval. We will review the address, confirm details, and contact you shortly.');
           submitBtn.textContent = 'Submitted';
         } catch (err) {

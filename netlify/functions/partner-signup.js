@@ -74,6 +74,28 @@ async function ensureTable(sql) {
   tableReady = true;
 }
 
+function extraProperties(body) {
+  return Array.isArray(body.additional_properties) ? body.additional_properties : [];
+}
+
+function validateProperty(property, label) {
+  if (!s(property.address)) return label + ': service address is required.';
+  const bins = Number(property.number_of_bins);
+  if (!Number.isInteger(bins) || bins < 1 || bins > 30) return label + ': number of bins must be between 1 and 30.';
+  if (!s(property.trash_pickup_day)) return label + ': trash day is required.';
+  const frequency = s(property.recycling_frequency) || 'No Recycling';
+  if (!['No Recycling', 'Weekly Recycling', 'Bi-Weekly Recycling'].includes(frequency)) {
+    return label + ': invalid recycling frequency.';
+  }
+  if ((frequency === 'Weekly Recycling' || frequency === 'Bi-Weekly Recycling') && !s(property.recycling_pickup_day)) {
+    return label + ': recycling pickup day is required.';
+  }
+  if (frequency === 'Bi-Weekly Recycling' && !['Week A', 'Week B'].includes(s(property.recycling_week))) {
+    return label + ': Week A or Week B is required for bi-weekly recycling.';
+  }
+  return '';
+}
+
 function validate(body) {
   const required = [
     'name',
@@ -103,6 +125,13 @@ function validate(body) {
   if (recyclingFrequency === 'Bi-Weekly Recycling' && !['Week A', 'Week B'].includes(s(body.recycling_week))) {
     return 'Week A or Week B is required for bi-weekly recycling.';
   }
+
+  const extras = extraProperties(body);
+  if (extras.length > 19) return 'Too many properties in one signup. Please call 843-955-3132.';
+  for (let i = 0; i < extras.length; i += 1) {
+    const propertyError = validateProperty(extras[i], 'Property ' + (i + 2));
+    if (propertyError) return propertyError;
+  }
   return '';
 }
 
@@ -130,38 +159,60 @@ function escapeHtml(value) {
     .replace(/'/g, '&#39;');
 }
 
-function emailHtml(record) {
-  const rows = [
-    ['Name', record.name],
-    ['Customer Type', record.customer_type],
-    ['Company or Property', record.company_name],
+function tableHtml(rows) {
+  const bodyRows = rows.map(([label, value]) => (
+    '<tr><td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;color:#475569;font-weight:700;">' + escapeHtml(label) + '</td><td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;color:#0f172a;">' + escapeHtml(value) + '</td></tr>'
+  )).join('');
+  return '<table cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:100%;max-width:680px;border:1px solid #e5e7eb;">'
+    + bodyRows
+    + '</table>';
+}
+
+function propertyRows(record) {
+  return [
     ['Address', record.address],
-    ['Phone', record.phone],
-    ['Email', record.email],
     ['Number of Bins', String(record.number_of_bins)],
     ['Trash Day', record.trash_pickup_day],
     ['Recycling', record.recycling_frequency],
     ['Recycling Day', record.recycling_pickup_day],
     ['Recycling Week', record.recycling_week],
-    ['Plan', '$70/month, pending approval'],
-    ['Card', (record.card_brand || 'card') + ' ending in ' + (record.card_last4 || '')],
     ['Notes', record.notes]
   ];
-  const bodyRows = rows.map(([label, value]) => (
-    '<tr><td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;color:#475569;font-weight:700;">' + escapeHtml(label) + '</td><td style="padding:8px 12px;border-bottom:1px solid #e5e7eb;color:#0f172a;">' + escapeHtml(value) + '</td></tr>'
+}
+
+function emailHtml(record, extraRecords) {
+  const extras = extraRecords || [];
+  const count = 1 + extras.length;
+  const planText = count > 1
+    ? '$70/month per property, ' + count + ' properties ($' + (count * 70) + '/month total), pending approval'
+    : '$70/month, pending approval';
+  const accountRows = [
+    ['Name', record.name],
+    ['Customer Type', record.customer_type],
+    ['Company or Property', record.company_name],
+    ['Phone', record.phone],
+    ['Email', record.email],
+    ['Plan', planText],
+    ['Card', (record.card_brand || 'card') + ' ending in ' + (record.card_last4 || '')]
+  ];
+  const propertyTables = [record].concat(extras).map((property, i) => (
+    '<h3 style="margin:18px 0 8px;color:#0e1f3d;">Property ' + (i + 1) + '</h3>'
+    + tableHtml(propertyRows(property))
   )).join('');
   return '<div style="font-family:Arial,Helvetica,sans-serif;line-height:1.5;color:#0f172a;">'
     + '<h2 style="margin:0 0 12px;color:#0e1f3d;">New Your Trash Day Team signup</h2>'
     + '<p style="margin:0 0 18px;color:#475569;">A new account was submitted and is pending approval.</p>'
-    + '<table cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:100%;max-width:680px;border:1px solid #e5e7eb;">'
-    + bodyRows
-    + '</table></div>';
+    + tableHtml(accountRows)
+    + propertyTables
+    + '</div>';
 }
 
-async function notify(record) {
+async function notify(record, extraRecords) {
   if (!process.env.RESEND_API_KEY || !process.env.RESEND_FROM) {
     return 'skipped';
   }
+  const count = 1 + (extraRecords || []).length;
+  const subjectSuffix = count > 1 ? ' (' + count + ' properties)' : '';
   const response = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
@@ -171,8 +222,8 @@ async function notify(record) {
     body: JSON.stringify({
       from: process.env.RESEND_FROM,
       to: notificationRecipients(),
-      subject: 'New Your Trash Day Team signup: ' + record.name,
-      html: emailHtml(record)
+      subject: 'New Your Trash Day Team signup: ' + record.name + subjectSuffix,
+      html: emailHtml(record, extraRecords)
     })
   });
   if (!response.ok) {
@@ -222,6 +273,8 @@ exports.handler = async function (event) {
   const recyclingFrequency = s(body.recycling_frequency) || 'No Recycling';
   const recyclingDay = recyclingFrequency === 'No Recycling' ? '' : s(body.recycling_pickup_day);
   const recyclingWeek = recyclingFrequency === 'Bi-Weekly Recycling' ? s(body.recycling_week) : '';
+  const extras = extraProperties(body);
+  const propertyCount = 1 + extras.length;
 
   let customer;
   let setupIntent;
@@ -255,6 +308,8 @@ exports.handler = async function (event) {
         recycling_week: recyclingWeek,
         service_plan: 'Your Trash Day Team',
         monthly_price: '70.00',
+        property_count: String(propertyCount),
+        monthly_price_total: (propertyCount * 70).toFixed(2),
         account_status: 'Pending Approval'
       }
     });
@@ -288,6 +343,7 @@ exports.handler = async function (event) {
   }
 
   let record;
+  const extraRecords = [];
   try {
     const rows = await sql`
       INSERT INTO partner_service_signups (
@@ -312,6 +368,35 @@ exports.handler = async function (event) {
       RETURNING *
     `;
     record = rows[0];
+
+    for (const property of extras) {
+      const propertyFrequency = s(property.recycling_frequency) || 'No Recycling';
+      const propertyDay = propertyFrequency === 'No Recycling' ? '' : s(property.recycling_pickup_day);
+      const propertyWeek = propertyFrequency === 'Bi-Weekly Recycling' ? s(property.recycling_week) : '';
+      const extraRows = await sql`
+        INSERT INTO partner_service_signups (
+          customer_type, name, company_name, address, phone, email,
+          number_of_bins, trash_pickup_day, recycling_frequency,
+          recycling_pickup_day, recycling_week, pickup_schedule, notes,
+          service_plan, monthly_price, billing_cadence,
+          account_status, service_status, billing_status, source,
+          billing_consent, name_on_card, billing_zip,
+          stripe_customer_id, stripe_payment_method_id, stripe_setup_intent_id,
+          card_brand, card_last4, notification_status
+        ) VALUES (
+          ${s(body.customer_type)}, ${cleanName}, ${s(body.company_name)}, ${s(property.address)}, ${s(body.phone)}, ${cleanEmail},
+          ${Number(property.number_of_bins)}, ${s(property.trash_pickup_day)}, ${propertyFrequency},
+          ${propertyDay}, ${propertyWeek}, ${scheduleText(property)}, ${s(property.notes)},
+          'Your Trash Day Team', ${70.00}, 'Monthly on the 1st',
+          'Pending Approval', 'Pending Approval', 'Pending Approval', ${s(body.source) || 'yourtrashdayteam-home'},
+          ${true}, ${s(body.name_on_card)}, ${s(body.billing_zip)},
+          ${customer.id}, ${s(body.payment_method_id)}, ${setupIntent.id},
+          ${s(paymentMethod.card && paymentMethod.card.brand)}, ${s(paymentMethod.card && paymentMethod.card.last4)}, 'skipped'
+        )
+        RETURNING *
+      `;
+      extraRecords.push(extraRows[0]);
+    }
   } catch (err) {
     console.error('DB insert error:', err.message);
     return respond(500, { error: 'Your card was authorized, but the account record did not save. Please call 843-955-3132.' });
@@ -319,7 +404,7 @@ exports.handler = async function (event) {
 
   let notificationStatus = 'skipped';
   try {
-    notificationStatus = await notify(record);
+    notificationStatus = await notify(record, extraRecords);
   } catch (err) {
     notificationStatus = 'failed';
     console.error('Notification error:', err.message);
@@ -338,6 +423,8 @@ exports.handler = async function (event) {
   return respond(200, {
     success: true,
     id: record.id,
+    property_count: propertyCount,
+    property_ids: [record.id].concat(extraRecords.map((row) => row.id)),
     account_status: 'Pending Approval',
     service_status: 'Pending Approval',
     billing_status: 'Pending Approval',
