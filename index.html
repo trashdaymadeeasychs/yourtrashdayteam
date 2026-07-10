@@ -529,8 +529,8 @@
     }
     .choice-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
     .choice-grid.three { grid-template-columns: repeat(3, 1fr); }
-    .choice-grid.seven { grid-template-columns: repeat(7, 1fr); }
-    .choice { position: relative; }
+    .choice-grid.seven { grid-template-columns: repeat(auto-fit, minmax(102px, 1fr)); }
+    .choice { position: relative; min-width: 0; }
     .choice input { position: absolute; opacity: 0; pointer-events: none; }
     .choice span {
       display: grid;
@@ -729,7 +729,6 @@
       }
       .signup-aside { position: static; }
       .included-grid { grid-template-columns: 1fr 1fr; }
-      .choice-grid.seven { grid-template-columns: repeat(4, 1fr); }
       .hero-card { max-width: 520px; }
       .price-stamp { right: 12px; bottom: -20px; }
     }
@@ -759,9 +758,10 @@
         border-radius: var(--radius);
         transform: none;
       }
-      .included-grid, .field-grid, .choice-grid, .choice-grid.three, .choice-grid.seven {
+      .included-grid, .field-grid, .choice-grid, .choice-grid.three {
         grid-template-columns: 1fr;
       }
+      .choice-grid.seven { grid-template-columns: repeat(auto-fit, minmax(102px, 1fr)); }
       .signup-card { padding: 20px; }
       .footer-inner { align-items: flex-start; flex-direction: column; }
     }
