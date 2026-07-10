@@ -68,6 +68,7 @@ async function ensureTable(sql) {
     )
   `;
   await sql`ALTER TABLE partner_service_signups ADD COLUMN IF NOT EXISTS customer_type TEXT NOT NULL DEFAULT ''`;
+  await sql`ALTER TABLE partner_service_signups ADD COLUMN IF NOT EXISTS recycling_next_pickup TEXT NOT NULL DEFAULT ''`;
   await sql`ALTER TABLE partner_service_signups ADD COLUMN IF NOT EXISTS pickup_schedule TEXT NOT NULL DEFAULT ''`;
   await sql`ALTER TABLE partner_service_signups ADD COLUMN IF NOT EXISTS billing_cadence TEXT NOT NULL DEFAULT 'Monthly on the 1st'`;
   await sql`ALTER TABLE partner_service_signups ADD COLUMN IF NOT EXISTS notification_status TEXT NOT NULL DEFAULT ''`;
@@ -76,6 +77,12 @@ async function ensureTable(sql) {
 
 function extraProperties(body) {
   return Array.isArray(body.additional_properties) ? body.additional_properties : [];
+}
+
+function isIsoDate(value) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const parsed = new Date(value + 'T00:00:00Z');
+  return !Number.isNaN(parsed.getTime());
 }
 
 function validateProperty(property, label) {
@@ -90,8 +97,8 @@ function validateProperty(property, label) {
   if ((frequency === 'Weekly Recycling' || frequency === 'Bi-Weekly Recycling') && !s(property.recycling_pickup_day)) {
     return label + ': recycling pickup day is required.';
   }
-  if (frequency === 'Bi-Weekly Recycling' && !['Week A', 'Week B'].includes(s(property.recycling_week))) {
-    return label + ': Week A or Week B is required for bi-weekly recycling.';
+  if (frequency === 'Bi-Weekly Recycling' && !isIsoDate(s(property.recycling_next_pickup))) {
+    return label + ': next recycling pickup date is required for bi-weekly recycling.';
   }
   return '';
 }
@@ -122,8 +129,8 @@ function validate(body) {
   if ((recyclingFrequency === 'Weekly Recycling' || recyclingFrequency === 'Bi-Weekly Recycling') && !s(body.recycling_pickup_day)) {
     return 'Recycling pickup day is required.';
   }
-  if (recyclingFrequency === 'Bi-Weekly Recycling' && !['Week A', 'Week B'].includes(s(body.recycling_week))) {
-    return 'Week A or Week B is required for bi-weekly recycling.';
+  if (recyclingFrequency === 'Bi-Weekly Recycling' && !isIsoDate(s(body.recycling_next_pickup))) {
+    return 'Next recycling pickup date is required for bi-weekly recycling.';
   }
 
   const extras = extraProperties(body);
@@ -138,9 +145,9 @@ function validate(body) {
 function scheduleText(body) {
   const recyclingFrequency = s(body.recycling_frequency) || 'No Recycling';
   const recyclingDay = recyclingFrequency === 'No Recycling' ? '' : s(body.recycling_pickup_day);
-  const recyclingWeek = recyclingFrequency === 'Bi-Weekly Recycling' ? s(body.recycling_week) : '';
+  const nextPickup = recyclingFrequency === 'Bi-Weekly Recycling' ? s(body.recycling_next_pickup) : '';
   return 'Trash: ' + s(body.trash_pickup_day) + (
-    recyclingDay ? ' | Recycling: ' + recyclingDay + (recyclingWeek ? ' - ' + recyclingWeek : '') : ''
+    recyclingDay ? ' | Recycling: ' + recyclingDay + (nextPickup ? ' - Next pickup ' + nextPickup : '') : ''
   );
 }
 
@@ -175,7 +182,7 @@ function propertyRows(record) {
     ['Trash Day', record.trash_pickup_day],
     ['Recycling', record.recycling_frequency],
     ['Recycling Day', record.recycling_pickup_day],
-    ['Recycling Week', record.recycling_week],
+    ['Next Recycling Pickup', record.recycling_next_pickup],
     ['Notes', record.notes]
   ];
 }
@@ -272,7 +279,7 @@ exports.handler = async function (event) {
   const bins = Number(body.number_of_bins);
   const recyclingFrequency = s(body.recycling_frequency) || 'No Recycling';
   const recyclingDay = recyclingFrequency === 'No Recycling' ? '' : s(body.recycling_pickup_day);
-  const recyclingWeek = recyclingFrequency === 'Bi-Weekly Recycling' ? s(body.recycling_week) : '';
+  const recyclingNextPickup = recyclingFrequency === 'Bi-Weekly Recycling' ? s(body.recycling_next_pickup) : '';
   const extras = extraProperties(body);
   const propertyCount = 1 + extras.length;
 
@@ -305,7 +312,7 @@ exports.handler = async function (event) {
         trash_pickup_day: s(body.trash_pickup_day),
         recycling_frequency: recyclingFrequency,
         recycling_pickup_day: recyclingDay,
-        recycling_week: recyclingWeek,
+        recycling_next_pickup: recyclingNextPickup,
         service_plan: 'Your Trash Day Team',
         monthly_price: '70.00',
         property_count: String(propertyCount),
@@ -349,7 +356,7 @@ exports.handler = async function (event) {
       INSERT INTO partner_service_signups (
         customer_type, name, company_name, address, phone, email,
         number_of_bins, trash_pickup_day, recycling_frequency,
-        recycling_pickup_day, recycling_week, pickup_schedule, notes,
+        recycling_pickup_day, recycling_next_pickup, pickup_schedule, notes,
         service_plan, monthly_price, billing_cadence,
         account_status, service_status, billing_status, source,
         billing_consent, name_on_card, billing_zip,
@@ -358,7 +365,7 @@ exports.handler = async function (event) {
       ) VALUES (
         ${s(body.customer_type)}, ${cleanName}, ${s(body.company_name)}, ${s(body.address)}, ${s(body.phone)}, ${cleanEmail},
         ${bins}, ${s(body.trash_pickup_day)}, ${recyclingFrequency},
-        ${recyclingDay}, ${recyclingWeek}, ${scheduleText(body)}, ${s(body.notes)},
+        ${recyclingDay}, ${recyclingNextPickup}, ${scheduleText(body)}, ${s(body.notes)},
         'Your Trash Day Team', ${70.00}, 'Monthly on the 1st',
         'Pending Approval', 'Pending Approval', 'Pending Approval', ${s(body.source) || 'yourtrashdayteam-home'},
         ${true}, ${s(body.name_on_card)}, ${s(body.billing_zip)},
@@ -372,12 +379,12 @@ exports.handler = async function (event) {
     for (const property of extras) {
       const propertyFrequency = s(property.recycling_frequency) || 'No Recycling';
       const propertyDay = propertyFrequency === 'No Recycling' ? '' : s(property.recycling_pickup_day);
-      const propertyWeek = propertyFrequency === 'Bi-Weekly Recycling' ? s(property.recycling_week) : '';
+      const propertyNextPickup = propertyFrequency === 'Bi-Weekly Recycling' ? s(property.recycling_next_pickup) : '';
       const extraRows = await sql`
         INSERT INTO partner_service_signups (
           customer_type, name, company_name, address, phone, email,
           number_of_bins, trash_pickup_day, recycling_frequency,
-          recycling_pickup_day, recycling_week, pickup_schedule, notes,
+          recycling_pickup_day, recycling_next_pickup, pickup_schedule, notes,
           service_plan, monthly_price, billing_cadence,
           account_status, service_status, billing_status, source,
           billing_consent, name_on_card, billing_zip,
@@ -386,7 +393,7 @@ exports.handler = async function (event) {
         ) VALUES (
           ${s(body.customer_type)}, ${cleanName}, ${s(body.company_name)}, ${s(property.address)}, ${s(body.phone)}, ${cleanEmail},
           ${Number(property.number_of_bins)}, ${s(property.trash_pickup_day)}, ${propertyFrequency},
-          ${propertyDay}, ${propertyWeek}, ${scheduleText(property)}, ${s(property.notes)},
+          ${propertyDay}, ${propertyNextPickup}, ${scheduleText(property)}, ${s(property.notes)},
           'Your Trash Day Team', ${70.00}, 'Monthly on the 1st',
           'Pending Approval', 'Pending Approval', 'Pending Approval', ${s(body.source) || 'yourtrashdayteam-home'},
           ${true}, ${s(body.name_on_card)}, ${s(body.billing_zip)},

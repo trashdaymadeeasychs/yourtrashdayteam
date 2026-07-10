@@ -527,6 +527,13 @@
       font-size: 0.8125rem;
       font-weight: 600;
     }
+    .field-hint {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 0.8125rem;
+      line-height: 1.45;
+    }
+    input[type="date"] { max-width: 260px; }
     .choice-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
     .choice-grid.three { grid-template-columns: repeat(3, 1fr); }
     .choice-grid.seven { grid-template-columns: repeat(auto-fit, minmax(102px, 1fr)); }
@@ -995,12 +1002,10 @@
                       <div class="field-error" id="err-recycling_pickup_day"></div>
                     </div>
                     <div class="field full" data-role="recycling-week-wrap">
-                      <span class="field-label">Bi-Weekly Recycling Week</span>
-                      <div class="choice-grid">
-                        <label class="choice"><input type="radio" name="recycling_week" value="Week A"><span>Week A</span></label>
-                        <label class="choice"><input type="radio" name="recycling_week" value="Week B"><span>Week B</span></label>
-                      </div>
-                      <div class="field-error" id="err-recycling_week"></div>
+                      <label for="recycling_next_pickup">Next Recycling Pickup Date *</label>
+                      <input id="recycling_next_pickup" name="recycling_next_pickup" type="date">
+                      <p class="field-hint">Pick the next date recycling gets collected at this address. We will match it to the county schedule.</p>
+                      <div class="field-error" id="err-recycling_next_pickup"></div>
                     </div>
                   </div>
                 </fieldset>
@@ -1083,6 +1088,7 @@
       var BASE_PRICE = 70;
       var propertyCounter = 1;
       var DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+      var todayISO = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
       var stripe;
       var cardNumber;
       var cardExpiry;
@@ -1169,14 +1175,14 @@
         var needsWeek = freq === 'Bi-Weekly Recycling';
         details.classList.toggle('is-visible', needsDay);
         weekWrap.style.display = needsWeek ? '' : 'none';
+        var dateInput = block.querySelector('[name="recycling_next_pickup' + sfx + '"]');
         if (!needsDay) {
-          block.querySelectorAll('[name="recycling_pickup_day' + sfx + '"], [name="recycling_week' + sfx + '"]').forEach(function (el) { el.checked = false; });
+          block.querySelectorAll('[name="recycling_pickup_day' + sfx + '"]').forEach(function (el) { el.checked = false; });
           setChoiceError('recycling_pickup_day' + sfx, '');
-          setChoiceError('recycling_week' + sfx, '');
         }
-        if (!needsWeek) {
-          block.querySelectorAll('[name="recycling_week' + sfx + '"]').forEach(function (el) { el.checked = false; });
-          setChoiceError('recycling_week' + sfx, '');
+        if (!needsWeek && dateInput) {
+          dateInput.value = '';
+          setError('recycling_next_pickup' + sfx, '');
         }
       }
 
@@ -1206,10 +1212,10 @@
           + '</div></div>'
           + '<div class="conditional" data-role="recycling-details">'
           + '<div class="field full"><span class="field-label">Recycling Pickup Day</span><div class="choice-grid seven">' + dayChips('recycling_pickup_day' + sfx) + '</div><div class="field-error" id="err-recycling_pickup_day' + sfx + '"></div></div>'
-          + '<div class="field full" data-role="recycling-week-wrap"><span class="field-label">Bi-Weekly Recycling Week</span><div class="choice-grid">'
-          + choiceHtml('recycling_week' + sfx, 'Week A')
-          + choiceHtml('recycling_week' + sfx, 'Week B')
-          + '</div><div class="field-error" id="err-recycling_week' + sfx + '"></div></div>'
+          + '<div class="field full" data-role="recycling-week-wrap"><label for="recycling_next_pickup' + sfx + '">Next Recycling Pickup Date *</label>'
+          + '<input id="recycling_next_pickup' + sfx + '" name="recycling_next_pickup' + sfx + '" type="date" min="' + todayISO + '">'
+          + '<p class="field-hint">Pick the next date recycling gets collected at this address. We will match it to the county schedule.</p>'
+          + '<div class="field-error" id="err-recycling_next_pickup' + sfx + '"></div></div>'
           + '</div></fieldset>';
       }
 
@@ -1251,10 +1257,10 @@
 
         blocks().forEach(function (block) {
           var sfx = blockSuffix(block);
-          ['address' + sfx, 'number_of_bins' + sfx].forEach(function (name) {
+          ['address' + sfx, 'number_of_bins' + sfx, 'recycling_next_pickup' + sfx].forEach(function (name) {
             setError(name, '');
           });
-          ['trash_pickup_day' + sfx, 'recycling_pickup_day' + sfx, 'recycling_week' + sfx].forEach(function (name) {
+          ['trash_pickup_day' + sfx, 'recycling_pickup_day' + sfx].forEach(function (name) {
             setChoiceError(name, '');
           });
 
@@ -1276,8 +1282,8 @@
             setChoiceError('recycling_pickup_day' + sfx, 'Choose a recycling pickup day.');
             ok = false;
           }
-          if (freq === 'Bi-Weekly Recycling' && !checkedValue('recycling_week' + sfx)) {
-            setChoiceError('recycling_week' + sfx, 'Choose Week A or Week B.');
+          if (freq === 'Bi-Weekly Recycling' && !value('recycling_next_pickup' + sfx)) {
+            setError('recycling_next_pickup' + sfx, 'Pick your next recycling pickup date.');
             ok = false;
           }
         });
@@ -1315,7 +1321,7 @@
           trash_pickup_day: checkedValue('trash_pickup_day' + sfx),
           recycling_frequency: checkedValue('recycling_frequency' + sfx),
           recycling_pickup_day: checkedValue('recycling_pickup_day' + sfx),
-          recycling_week: checkedValue('recycling_week' + sfx)
+          recycling_next_pickup: value('recycling_next_pickup' + sfx)
         };
       }
 
@@ -1334,7 +1340,7 @@
           trash_pickup_day: primary.trash_pickup_day,
           recycling_frequency: primary.recycling_frequency,
           recycling_pickup_day: primary.recycling_pickup_day,
-          recycling_week: primary.recycling_week,
+          recycling_next_pickup: primary.recycling_next_pickup,
           additional_properties: all.slice(1).map(propertyData),
           name_on_card: value('name_on_card'),
           billing_zip: value('billing_zip'),
@@ -1429,6 +1435,7 @@
         if (firstInput) firstInput.focus();
       });
 
+      form.querySelectorAll('input[type="date"]').forEach(function (el) { el.min = todayISO; });
       blocks().forEach(toggleRecycling);
       updateTotals();
 
