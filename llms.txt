@@ -1,0 +1,29 @@
+# Your Trash Day Team
+
+> Your Trash Day Team is a combined trash-bin service in the Charleston, South Carolina area, offered together by two established local companies: Trash Day Made Easy (weekly bin roll-out and roll-in valet) and The Bin Boy (monthly bin washing). One flat price covers both services.
+
+## What the service includes
+- Weekly bin roll-out and roll-in, handled by Trash Day Made Easy: bins are pulled to the curb before pickup and returned after collection.
+- Monthly bin washing, handled by The Bin Boy: bins are cleaned with high-pressure hot water (around 200°) using a biodegradable, non-toxic solution.
+- Available for residential homeowners and renters, businesses, and property management companies (multiple properties supported).
+
+## Pricing
+- $70 per month per property, covering both the weekly valet and the monthly wash.
+- No charge at signup; the card is stored securely with Stripe and billed on the 1st of each month after the account is approved.
+- No long-term contract; pause or cancel anytime.
+
+## Service area
+- Charleston, SC and surrounding Lowcountry communities, including North Charleston, West Ashley, Mount Pleasant, Summerville, James Island, and Daniel Island.
+
+## Key pages
+- Home and signup: https://yourtrashdayteam.com/
+- FAQ: https://yourtrashdayteam.com/faq/
+- Blog (trash-day tips and bin care): https://yourtrashdayteam.com/blog/
+- Reviews: https://yourtrashdayteam.com/reviews/
+
+## Contact
+- Phone: 843-955-3132
+
+## The two companies
+- Trash Day Made Easy — bin valet (roll-out/roll-in): https://www.trashdaymadeeasy.com/
+- The Bin Boy — bin washing: https://www.thebinboy.com/
