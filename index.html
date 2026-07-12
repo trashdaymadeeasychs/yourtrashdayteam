@@ -13,11 +13,70 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://yourtrashdayteam.com/">
   <meta property="og:image" content="https://yourtrashdayteam.com/og-social-preview.jpg">
+  <meta property="og:site_name" content="Your Trash Day Team">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Clean Bins. Easy Trash Days. One Simple Weekly Service.">
+  <meta name="twitter:description" content="Weekly bin roll-out and roll-in service with monthly bin washing from The Bin Boy and Trash Day Made Easy in Charleston, SC.">
+  <meta name="twitter:image" content="https://yourtrashdayteam.com/og-social-preview.jpg">
   <link rel="icon" href="/assets/images/favicon.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
   <script>document.documentElement.classList.replace('no-js', 'js');</script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://yourtrashdayteam.com/#website",
+        "url": "https://yourtrashdayteam.com/",
+        "name": "Your Trash Day Team",
+        "description": "Weekly bin roll-out and roll-in service plus monthly bin washing from The Bin Boy and Trash Day Made Easy in Charleston, SC.",
+        "publisher": { "@id": "https://yourtrashdayteam.com/#organization" }
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://yourtrashdayteam.com/#organization",
+        "name": "Your Trash Day Team",
+        "url": "https://yourtrashdayteam.com/",
+        "description": "A combined weekly bin valet and monthly bin washing service offered together by The Bin Boy and Trash Day Made Easy.",
+        "telephone": "+1-843-955-3132",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+1-843-955-3132",
+          "contactType": "customer service",
+          "areaServed": "US",
+          "availableLanguage": "English"
+        },
+        "areaServed": { "@type": "Place", "name": "Charleston, South Carolina" },
+        "brand": [
+          { "@type": "Organization", "name": "The Bin Boy", "url": "https://www.thebinboy.com/" },
+          { "@type": "Organization", "name": "Trash Day Made Easy", "url": "https://www.trashdaymadeeasy.com/" }
+        ]
+      },
+      {
+        "@type": "Service",
+        "@id": "https://yourtrashdayteam.com/#service",
+        "name": "Weekly Bin Valet + Monthly Bin Washing",
+        "serviceType": "Trash bin roll-out and roll-in valet with monthly bin washing",
+        "description": "Trash Day Made Easy rolls bins to the curb before pickup and brings them back after collection each week. The Bin Boy washes the bins once a month. One flat monthly price for homes, businesses, and properties in the Charleston, SC area.",
+        "areaServed": { "@type": "Place", "name": "Charleston, South Carolina" },
+        "provider": [
+          { "@type": "Organization", "name": "Trash Day Made Easy", "url": "https://www.trashdaymadeeasy.com/" },
+          { "@type": "Organization", "name": "The Bin Boy", "url": "https://www.thebinboy.com/" }
+        ],
+        "offers": {
+          "@type": "Offer",
+          "price": "70.00",
+          "priceCurrency": "USD",
+          "url": "https://yourtrashdayteam.com/#signup",
+          "description": "$70 per month per property, billed on the 1st after approval. No contract; pause or cancel anytime."
+        }
+      }
+    ]
+  }
+  </script>
   <script src="https://js.stripe.com/v3/"></script>
   <style>
     :root {
@@ -125,6 +184,63 @@
       white-space: nowrap;
     }
     .phone-link:hover { color: var(--gold); }
+
+    .site-nav { display: contents; }
+    .nav { position: relative; }
+    .brand-lockup { text-decoration: none; }
+    .nav-menu {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin: 0 auto 0 22px;
+      padding: 0;
+      list-style: none;
+    }
+    .nav-menu a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 40px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      color: var(--on-navy);
+      font-weight: 700;
+      font-size: 0.9375rem;
+      text-decoration: none;
+      transition: color .16s ease, background .16s ease;
+    }
+    .nav-menu a:hover { color: var(--gold); background: oklch(1 0 0 / .06); }
+    .nav-menu a[aria-current="page"] { color: var(--gold); background: oklch(1 0 0 / .08); }
+    .nav-toggle {
+      display: none;
+      appearance: none;
+      align-items: center;
+      justify-content: center;
+      width: 46px;
+      height: 46px;
+      padding: 0;
+      border: 1px solid oklch(1 0 0 / .25);
+      border-radius: 12px;
+      background: oklch(1 0 0 / .08);
+      color: var(--on-navy);
+      cursor: pointer;
+    }
+    .nav-toggle:hover { background: oklch(1 0 0 / .14); }
+    .nav-toggle svg { width: 22px; height: 22px; display: block; }
+    .nav-toggle .icon-close { display: none; }
+    .nav-toggle[aria-expanded="true"] .icon-open { display: none; }
+    .nav-toggle[aria-expanded="true"] .icon-close { display: block; }
+    .logo-tile-link {
+      display: block;
+      border-radius: 12px;
+      text-decoration: none;
+      transition: transform .18s var(--ease), box-shadow .18s var(--ease);
+    }
+    .logo-tile-link:hover,
+    .logo-tile-link:focus-visible {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 34px oklch(0.12 0.04 260 / .3);
+    }
+    .logo-tile-link:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
 
     .btn {
       appearance: none;
@@ -704,6 +820,9 @@
     }
     .footer strong { color: var(--heading-light); font-family: var(--display); }
     .footer a { color: var(--gold); font-weight: 700; text-decoration: none; }
+    .footer-links { display: flex; flex-wrap: wrap; gap: 8px 18px; }
+    .footer-links a { color: var(--on-navy-muted); font-weight: 600; }
+    .footer-links a:hover { color: var(--gold); }
 
     @keyframes rise-in {
       from { opacity: 0; transform: translateY(22px); }
@@ -772,6 +891,41 @@
       .signup-card { padding: 20px; }
       .footer-inner { align-items: flex-start; flex-direction: column; }
     }
+
+    @media (max-width: 820px) {
+      .nav {
+        min-height: 76px;
+        align-items: center;
+        padding: 10px 0;
+      }
+      .nav-actions { flex-direction: row; align-items: center; gap: 10px; }
+      .nav-toggle { display: inline-flex; }
+      .nav-menu {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 2px;
+        margin: 0;
+        padding: 10px 18px 18px;
+        background: oklch(0.22 0.05 258 / .99);
+        border-bottom: 1px solid oklch(1 0 0 / .1);
+        box-shadow: 0 24px 40px oklch(0.12 0.04 260 / .4);
+        transform: translateY(-8px);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .2s var(--ease), transform .2s var(--ease);
+      }
+      .nav-menu.is-open { transform: none; opacity: 1; pointer-events: auto; }
+      .nav-menu a { min-height: 48px; padding: 12px 14px; font-size: 1rem; }
+    }
+
+    @media (max-width: 560px) {
+      .phone-link { display: none; }
+      .nav-actions .btn { min-height: 44px; padding: 10px 16px; font-size: 0.9375rem; }
+    }
   </style>
 </head>
 <body>
@@ -779,14 +933,26 @@
   <div class="site-shell">
     <header class="topbar">
       <div class="container nav">
-        <div class="brand-lockup" aria-label="The Bin Boy and Trash Day Made Easy">
-          <img class="brand-logo bin-boy" src="/assets/images/the-bin-boy-logo.webp" alt="The Bin Boy">
+        <a class="brand-lockup" href="/" aria-label="Your Trash Day Team home — The Bin Boy and Trash Day Made Easy">
+          <img class="brand-logo bin-boy" src="/assets/images/the-bin-boy-logo.webp" alt="The Bin Boy" width="120" height="52">
           <span class="brand-plus" aria-hidden="true">+</span>
-          <img class="brand-logo tdme" src="/logo-nav.jpg" alt="Trash Day Made Easy">
-        </div>
+          <img class="brand-logo tdme" src="/logo-nav.jpg" alt="Trash Day Made Easy" width="120" height="44">
+        </a>
+        <nav class="site-nav" aria-label="Primary">
+          <ul class="nav-menu" id="nav-menu">
+            <li><a href="/" aria-current="page">Home</a></li>
+            <li><a href="/faq/">FAQ</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/reviews/">Reviews</a></li>
+          </ul>
+        </nav>
         <div class="nav-actions">
           <a class="phone-link" href="tel:8439553132">843-955-3132</a>
           <a class="btn" href="#signup">Start Service</a>
+          <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu" aria-label="Open navigation menu">
+            <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+            <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+          </button>
         </div>
       </div>
     </header>
@@ -810,12 +976,16 @@
           </div>
           <div class="hero-card rise rise-3" aria-label="Partner logos and offer price">
             <div class="logo-pair">
-              <div class="logo-tile">
-                <img src="/assets/images/the-bin-boy-logo.webp" alt="The Bin Boy logo">
-              </div>
-              <div class="logo-tile">
-                <img src="/logo-nav.jpg" alt="Trash Day Made Easy logo">
-              </div>
+              <a class="logo-tile-link" href="https://www.thebinboy.com/" target="_blank" rel="noopener noreferrer" aria-label="Visit The Bin Boy website (opens in a new tab)">
+                <span class="logo-tile">
+                  <img src="/assets/images/the-bin-boy-logo.webp" alt="The Bin Boy logo">
+                </span>
+              </a>
+              <a class="logo-tile-link" href="https://www.trashdaymadeeasy.com/" target="_blank" rel="noopener noreferrer" aria-label="Visit Trash Day Made Easy website (opens in a new tab)">
+                <span class="logo-tile">
+                  <img src="/logo-nav.jpg" alt="Trash Day Made Easy logo">
+                </span>
+              </a>
             </div>
             <div class="price-stamp" aria-label="$70 per month">
               <div>
@@ -1069,13 +1239,50 @@
 
     <footer class="footer">
       <div class="container footer-inner">
-        <div><strong>Your Trash Day Team</strong><br>The Bin Boy + Trash Day Made Easy</div>
+        <div><strong>Your Trash Day Team</strong><br>The Bin Boy + Trash Day Made Easy<br>Serving the Charleston, SC area</div>
+        <nav class="footer-links" aria-label="Footer">
+          <a href="/">Home</a>
+          <a href="/faq/">FAQ</a>
+          <a href="/blog/">Blog</a>
+          <a href="/reviews/">Reviews</a>
+        </nav>
         <div><a href="tel:8439553132">843-955-3132</a></div>
       </div>
     </footer>
   </div>
 
   <script>
+    (function () {
+      var toggle = document.querySelector('.nav-toggle');
+      var menu = document.getElementById('nav-menu');
+      if (!toggle || !menu) return;
+      function closeMenu() {
+        menu.classList.remove('is-open');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+      toggle.addEventListener('click', function () {
+        if (toggle.getAttribute('aria-expanded') === 'true') {
+          closeMenu();
+        } else {
+          menu.classList.add('is-open');
+          toggle.setAttribute('aria-expanded', 'true');
+        }
+      });
+      menu.addEventListener('click', function (event) {
+        if (event.target.closest('a')) { closeMenu(); }
+      });
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+          closeMenu();
+          toggle.focus();
+        }
+      });
+      var desktopQuery = window.matchMedia('(min-width: 821px)');
+      var onChange = function (e) { if (e.matches) { closeMenu(); } };
+      if (desktopQuery.addEventListener) { desktopQuery.addEventListener('change', onChange); }
+      else if (desktopQuery.addListener) { desktopQuery.addListener(onChange); }
+    })();
+
     (function () {
       var form = document.getElementById('signup-form');
       var submitBtn = document.getElementById('submit-btn');
