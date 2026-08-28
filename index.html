@@ -1300,6 +1300,8 @@
       var cardNumber;
       var cardExpiry;
       var cardCvc;
+      var submissionId = createSubmissionId();
+      var pendingPaymentMethodId = '';
       var cardState = {
         number: {complete: false},
         expiry: {complete: false},
@@ -1333,6 +1335,17 @@
       function value(name) {
         var el = byName(name);
         return el ? el.value.trim() : '';
+      }
+
+      function createSubmissionId() {
+        if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+          return window.crypto.randomUUID();
+        }
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (char) {
+          var random = Math.floor(Math.random() * 16);
+          var value = char === 'x' ? random : (random & 0x3) | 0x8;
+          return value.toString(16);
+        });
       }
 
       function setError(name, message) {
@@ -1553,6 +1566,7 @@
           billing_zip: value('billing_zip'),
           billing_consent: byName('billing_consent').checked,
           payment_method_id: paymentMethodId,
+          submission_id: submissionId,
           company_website: value('company_website'),
           source: 'yourtrashdayteam-home'
         };
@@ -1659,32 +1673,36 @@
         clearStatus();
 
         try {
-          var result = await stripe.createPaymentMethod({
-            type: 'card',
-            card: cardNumber,
-            billing_details: {
-              name: value('name_on_card'),
-              email: value('email'),
-              phone: value('phone'),
-              address: {postal_code: value('billing_zip')}
-            }
-          });
+          if (!pendingPaymentMethodId) {
+            var result = await stripe.createPaymentMethod({
+              type: 'card',
+              card: cardNumber,
+              billing_details: {
+                name: value('name_on_card'),
+                email: value('email'),
+                phone: value('phone'),
+                address: {postal_code: value('billing_zip')}
+              }
+            });
 
-          if (result.error) {
-            setCardError('number', result.error.message || 'Card could not be saved.');
-            showStatus('error', result.error.message || 'Card could not be saved.');
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Submit For Approval';
-            return;
+            if (result.error) {
+              setCardError('number', result.error.message || 'Card could not be saved.');
+              showStatus('error', result.error.message || 'Card could not be saved.');
+              submitBtn.disabled = false;
+              submitBtn.textContent = 'Submit For Approval';
+              return;
+            }
+            pendingPaymentMethodId = result.paymentMethod.id;
           }
 
           var response = await fetch('/.netlify/functions/partner-signup', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(payload(result.paymentMethod.id))
+            body: JSON.stringify(payload(pendingPaymentMethodId))
           });
           var data = await response.json();
           if (!response.ok || !data.success) {
+            if (response.status === 402) pendingPaymentMethodId = '';
             throw new Error(data.error || 'Submission failed. Please call 843-955-3132.');
           }
 
@@ -1693,6 +1711,8 @@
           renumber();
           updateTotals();
           blocks().forEach(toggleRecycling);
+          submissionId = createSubmissionId();
+          pendingPaymentMethodId = '';
           showStatus('success', 'Thanks. Your account was submitted for approval. We will review the address, confirm details, and contact you shortly.');
           submitBtn.textContent = 'Submitted';
         } catch (err) {

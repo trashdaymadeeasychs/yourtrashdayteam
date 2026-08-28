@@ -4,7 +4,7 @@ This site uses a static homepage plus Netlify Functions:
 
 - `index.html` renders the landing page and Stripe card fields.
 - `/.netlify/functions/partner-config` returns the Stripe publishable key to the browser.
-- `/.netlify/functions/partner-signup` stores the card with Stripe, saves the Pending Approval account record in Neon, and optionally sends a Resend notification.
+- `/.netlify/functions/partner-signup` stores the card with Stripe, saves the Pending Approval account record in Neon, and sends the required Resend notification before reporting success.
 
 ## Required Environment Variables
 
@@ -15,8 +15,8 @@ Set these in **Netlify -> Site -> Environment variables** before launch.
 | `DATABASE_URL` | Yes | Neon pooled PostgreSQL connection string. Do not commit the real value. |
 | `STRIPE_PUBLISHABLE_KEY` | Yes | Dedicated Stripe publishable key for this site. Returned by `partner-config`. |
 | `STRIPE_SECRET_KEY` | Yes | Dedicated Stripe secret key used by `partner-signup`. |
-| `RESEND_API_KEY` | Later | Enables signup notification emails through Resend. |
-| `RESEND_FROM` | Later | Verified Resend sender, for example `Your Trash Day Team <hello@yourtrashdayteam.com>`. |
+| `RESEND_API_KEY` | Yes | Active Resend key with permission to send email. Used only by the server-side function. |
+| `RESEND_FROM` | Yes | Verified production-domain sender, for example `Your Trash Day Team <hello@yourtrashdayteam.com>`. `resend.dev` senders are rejected. |
 | `SIGNUP_NOTIFICATION_EMAILS` | Optional | Comma-separated recipients. Defaults to `info@trashdaymadeeasy.com,bryan@thebinboy.com`. |
 
 `.env.example` is included with empty placeholders.
@@ -41,7 +41,9 @@ After the build is live:
 4. Add `RESEND_FROM`, for example `Your Trash Day Team <hello@yourtrashdayteam.com>`.
 5. Leave `SIGNUP_NOTIFICATION_EMAILS` blank to use the default recipients, or set it to a comma-separated list.
 
-If Resend variables are not set, signups still save to Neon and the notification status is recorded as `skipped`.
+If Resend configuration is missing or invalid, the function returns an error before storing the card or signup. After the account is saved, a Resend rejection is recorded as `failed` and returned as an HTTP 502; the browser does not display success. A successful response requires a Resend message ID, which is stored with `notification_status = accepted`.
+
+The visitor's email is sent as `reply_to`, never as `from`. Requests use a stable submission ID and Resend idempotency key so a retry after a lost/error response does not create another account record or duplicate email.
 
 ## Database
 
@@ -59,6 +61,8 @@ Primary fields include:
 - Pending Approval status fields
 - Stripe customer, payment method, and SetupIntent references
 - Safe card display fields, brand and last four digits only
+- Stable `submission_id` for safe retries
+- Resend acceptance status and `resend_message_id`
 
 Raw card number, expiration, and CVC are never stored in Neon.
 
@@ -83,6 +87,8 @@ Default notification recipients:
 - `bryan@thebinboy.com`
 
 Override them with `SIGNUP_NOTIFICATION_EMAILS` if needed.
+
+The synchronous function response proves only that Resend accepted the message. Use the Resend email record to distinguish provider acceptance, receiving-server delivery, and inbox receipt.
 
 ## Local Testing Notes
 

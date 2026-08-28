@@ -1,6 +1,11 @@
 'use strict';
 
 const { neon } = require('@neondatabase/serverless');
+const {
+  NotificationError,
+  notificationConfig,
+  sendSignupNotification
+} = require('./_shared/signup-notification');
 
 let stripeClient;
 let tableReady = false;
@@ -62,7 +67,9 @@ async function ensureTable(sql) {
       stripe_setup_intent_id TEXT NOT NULL DEFAULT '',
       card_brand TEXT NOT NULL DEFAULT '',
       card_last4 TEXT NOT NULL DEFAULT '',
+      submission_id TEXT,
       notification_status TEXT NOT NULL DEFAULT '',
+      resend_message_id TEXT NOT NULL DEFAULT '',
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
@@ -71,7 +78,14 @@ async function ensureTable(sql) {
   await sql`ALTER TABLE partner_service_signups ADD COLUMN IF NOT EXISTS recycling_next_pickup TEXT NOT NULL DEFAULT ''`;
   await sql`ALTER TABLE partner_service_signups ADD COLUMN IF NOT EXISTS pickup_schedule TEXT NOT NULL DEFAULT ''`;
   await sql`ALTER TABLE partner_service_signups ADD COLUMN IF NOT EXISTS billing_cadence TEXT NOT NULL DEFAULT 'Monthly on the 1st'`;
+  await sql`ALTER TABLE partner_service_signups ADD COLUMN IF NOT EXISTS submission_id TEXT`;
   await sql`ALTER TABLE partner_service_signups ADD COLUMN IF NOT EXISTS notification_status TEXT NOT NULL DEFAULT ''`;
+  await sql`ALTER TABLE partner_service_signups ADD COLUMN IF NOT EXISTS resend_message_id TEXT NOT NULL DEFAULT ''`;
+  await sql`
+    CREATE UNIQUE INDEX IF NOT EXISTS partner_service_signups_submission_id_unique
+    ON partner_service_signups (submission_id)
+    WHERE submission_id IS NOT NULL
+  `;
   tableReady = true;
 }
 
@@ -113,10 +127,14 @@ function validate(body) {
     'trash_pickup_day',
     'name_on_card',
     'billing_zip',
-    'payment_method_id'
+    'payment_method_id',
+    'submission_id'
   ];
   const missing = required.filter((key) => !s(body[key]));
   if (missing.length) return 'Missing required fields: ' + missing.join(', ');
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(s(body.submission_id))) {
+    return 'Invalid submission identifier.';
+  }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s(body.email))) return 'Invalid email address.';
   const bins = Number(body.number_of_bins);
   if (!Number.isInteger(bins) || bins < 1 || bins > 30) return 'Number of bins must be between 1 and 30.';
@@ -149,12 +167,6 @@ function scheduleText(body) {
   return 'Trash: ' + s(body.trash_pickup_day) + (
     recyclingDay ? ' | Recycling: ' + recyclingDay + (nextPickup ? ' - Next pickup ' + nextPickup : '') : ''
   );
-}
-
-function notificationRecipients() {
-  const configured = s(process.env.SIGNUP_NOTIFICATION_EMAILS);
-  const list = configured || 'info@trashdaymadeeasy.com,bryan@thebinboy.com';
-  return list.split(',').map((item) => item.trim()).filter(Boolean);
 }
 
 function escapeHtml(value) {
@@ -214,35 +226,120 @@ function emailHtml(record, extraRecords) {
     + '</div>';
 }
 
-async function notify(record, extraRecords) {
-  if (!process.env.RESEND_API_KEY || !process.env.RESEND_FROM) {
-    return 'skipped';
-  }
+async function notify(record, extraRecords, config) {
   const count = 1 + (extraRecords || []).length;
   const subjectSuffix = count > 1 ? ' (' + count + ' properties)' : '';
-  const response = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      'Authorization': 'Bearer ' + process.env.RESEND_API_KEY,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      from: process.env.RESEND_FROM,
-      to: notificationRecipients(),
-      subject: 'New Your Trash Day Team signup: ' + record.name + subjectSuffix,
-      html: emailHtml(record, extraRecords)
-    })
+  return sendSignupNotification({
+    config,
+    replyTo: record.email,
+    idempotencyKey: 'ytt-signup/' + record.submission_id,
+    subject: 'New Your Trash Day Team signup: ' + record.name + subjectSuffix,
+    html: emailHtml(record, extraRecords)
   });
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error('Resend notification failed: ' + text);
+}
+
+function successResponse(record, extraRecords, messageId) {
+  const extras = extraRecords || [];
+  return respond(200, {
+    success: true,
+    id: record.id,
+    property_count: 1 + extras.length,
+    property_ids: [record.id].concat(extras.map((row) => row.id)),
+    account_status: 'Pending Approval',
+    service_status: 'Pending Approval',
+    billing_status: 'Pending Approval',
+    notification_status: 'accepted',
+    resend_message_id: messageId
+  });
+}
+
+async function existingSignup(sql, submissionId) {
+  const rows = await sql`
+    SELECT *
+    FROM partner_service_signups
+    WHERE submission_id = ${submissionId}
+    LIMIT 1
+  `;
+  if (!rows.length) return null;
+
+  const record = rows[0];
+  const extraRecords = await sql`
+    SELECT *
+    FROM partner_service_signups
+    WHERE stripe_setup_intent_id = ${record.stripe_setup_intent_id}
+      AND id <> ${record.id}
+    ORDER BY id ASC
+  `;
+  return { record, extraRecords };
+}
+
+async function updateNotification(sql, recordId, status, messageId) {
+  await sql`
+    UPDATE partner_service_signups
+    SET
+      notification_status = ${status},
+      resend_message_id = ${messageId || ''},
+      updated_at = NOW()
+    WHERE id = ${recordId}
+  `;
+}
+
+async function deliverNotification(sql, record, extraRecords, config) {
+  let delivery;
+  try {
+    delivery = await notify(record, extraRecords, config);
+  } catch (error) {
+    const diagnostic = {
+      code: error instanceof NotificationError ? error.code : 'notification_error',
+      provider_status: error instanceof NotificationError ? error.providerStatus : null,
+      provider_message: error instanceof NotificationError ? error.providerMessage : ''
+    };
+    console.error('Signup notification was not accepted by Resend.', diagnostic);
+    try {
+      await updateNotification(sql, record.id, 'failed', '');
+    } catch (updateError) {
+      console.error('Notification failure status could not be persisted.', {
+        error_name: updateError && updateError.name || 'Error'
+      });
+    }
+    return {
+      response: respond(502, {
+        error: 'Your account was saved, but the notification email could not be sent. Please call 843-955-3132 so we can confirm your signup.',
+        submission_received: true,
+        id: record.id,
+        notification_status: 'failed'
+      })
+    };
   }
-  return 'sent';
+
+  try {
+    await updateNotification(sql, record.id, 'accepted', delivery.messageId);
+  } catch (error) {
+    console.error('Accepted Resend message ID could not be persisted.', {
+      resend_message_id: delivery.messageId,
+      error_name: error && error.name || 'Error'
+    });
+    return {
+      response: respond(500, {
+        error: 'Your notification was accepted, but the signup status could not be finalized. Please retry or call 843-955-3132.',
+        submission_received: true,
+        notification_status: 'accepted'
+      })
+    };
+  }
+
+  return { messageId: delivery.messageId };
 }
 
 exports.handler = async function (event) {
   if (event.httpMethod === 'OPTIONS') return respond(200, {});
   if (event.httpMethod !== 'POST') return respond(405, { error: 'Method Not Allowed' });
+
+  const headers = event.headers || {};
+  const contentType = s(headers['content-type'] || headers['Content-Type']).toLowerCase();
+  if (!contentType.includes('application/json')) {
+    return respond(415, { error: 'Content-Type must be application/json.' });
+  }
 
   let body;
   try {
@@ -252,11 +349,21 @@ exports.handler = async function (event) {
   }
 
   if (s(body.company_website)) {
-    return respond(200, { success: true, spam: true });
+    console.warn('Signup rejected by spam protection.');
+    return respond(422, { error: 'Submission could not be accepted. Please refresh and try again.' });
   }
 
   const validationError = validate(body);
   if (validationError) return respond(400, { error: validationError });
+
+  let resendConfig;
+  try {
+    resendConfig = notificationConfig(process.env);
+  } catch (error) {
+    const code = error instanceof NotificationError ? error.code : 'notification_configuration_error';
+    console.error('Signup notification configuration error.', { code });
+    return respond(500, { error: 'Email notifications are unavailable. Please call 843-955-3132.' });
+  }
 
   if (!process.env.DATABASE_URL) {
     return respond(500, { error: 'DATABASE_URL is not configured.' });
@@ -271,6 +378,27 @@ exports.handler = async function (event) {
   } catch (err) {
     console.error('DB init error:', err.message);
     return respond(500, { error: 'Database setup failed. Please call 843-955-3132.' });
+  }
+
+  const submissionId = s(body.submission_id).toLowerCase();
+  try {
+    const existing = await existingSignup(sql, submissionId);
+    if (existing) {
+      if (existing.record.notification_status === 'accepted' && s(existing.record.resend_message_id)) {
+        return successResponse(existing.record, existing.extraRecords, existing.record.resend_message_id);
+      }
+      const retry = await deliverNotification(
+        sql,
+        existing.record,
+        existing.extraRecords,
+        resendConfig
+      );
+      if (retry.response) return retry.response;
+      return successResponse(existing.record, existing.extraRecords, retry.messageId);
+    }
+  } catch (err) {
+    console.error('Existing signup lookup failed.', { error_name: err && err.name || 'Error' });
+    return respond(500, { error: 'Signup status could not be checked. Please try again.' });
   }
 
   const stripeApi = stripe();
@@ -321,20 +449,23 @@ exports.handler = async function (event) {
       }
     });
 
-    setupIntent = await stripeApi.setupIntents.create({
-      customer: customer.id,
-      payment_method: s(body.payment_method_id),
-      confirm: true,
-      usage: 'off_session',
-      description: 'Card authorization - Your Trash Day Team pending approval',
-      metadata: {
-        service_plan: 'Your Trash Day Team',
-        monthly_price: '70.00',
-        billing_cadence: 'Monthly on the 1st',
-        account_status: 'Pending Approval'
+    setupIntent = await stripeApi.setupIntents.create(
+      {
+        customer: customer.id,
+        payment_method: s(body.payment_method_id),
+        confirm: true,
+        usage: 'off_session',
+        description: 'Card authorization - Your Trash Day Team pending approval',
+        metadata: {
+          service_plan: 'Your Trash Day Team',
+          monthly_price: '70.00',
+          billing_cadence: 'Monthly on the 1st',
+          account_status: 'Pending Approval'
+        },
+        automatic_payment_methods: { enabled: true, allow_redirects: 'never' }
       },
-      automatic_payment_methods: { enabled: true, allow_redirects: 'never' }
-    });
+      { idempotencyKey: 'ytt-signup/' + submissionId }
+    );
 
     if (setupIntent.status !== 'succeeded') {
       return respond(402, { error: 'Card authorization did not complete. Please use another card or call 843-955-3132.' });
@@ -361,7 +492,7 @@ exports.handler = async function (event) {
         account_status, service_status, billing_status, source,
         billing_consent, name_on_card, billing_zip,
         stripe_customer_id, stripe_payment_method_id, stripe_setup_intent_id,
-        card_brand, card_last4, notification_status
+        card_brand, card_last4, submission_id, notification_status
       ) VALUES (
         ${s(body.customer_type)}, ${cleanName}, ${s(body.company_name)}, ${s(body.address)}, ${s(body.phone)}, ${cleanEmail},
         ${bins}, ${s(body.trash_pickup_day)}, ${recyclingFrequency},
@@ -370,7 +501,7 @@ exports.handler = async function (event) {
         'Pending Approval', 'Pending Approval', 'Pending Approval', ${s(body.source) || 'yourtrashdayteam-home'},
         ${true}, ${s(body.name_on_card)}, ${s(body.billing_zip)},
         ${customer.id}, ${s(body.payment_method_id)}, ${setupIntent.id},
-        ${s(paymentMethod.card && paymentMethod.card.brand)}, ${s(paymentMethod.card && paymentMethod.card.last4)}, 'pending'
+        ${s(paymentMethod.card && paymentMethod.card.brand)}, ${s(paymentMethod.card && paymentMethod.card.last4)}, ${submissionId}, 'pending'
       )
       RETURNING *
     `;
@@ -409,34 +540,9 @@ exports.handler = async function (event) {
     return respond(500, { error: 'Your card was authorized, but the account record did not save. Please call 843-955-3132.' });
   }
 
-  let notificationStatus = 'skipped';
-  try {
-    notificationStatus = await notify(record, extraRecords);
-  } catch (err) {
-    notificationStatus = 'failed';
-    console.error('Notification error:', err.message);
-  }
-
-  try {
-    await sql`
-      UPDATE partner_service_signups
-      SET notification_status = ${notificationStatus}, updated_at = NOW()
-      WHERE id = ${record.id}
-    `;
-  } catch (err) {
-    console.error('Notification status update failed:', err.message);
-  }
-
-  return respond(200, {
-    success: true,
-    id: record.id,
-    property_count: propertyCount,
-    property_ids: [record.id].concat(extraRecords.map((row) => row.id)),
-    account_status: 'Pending Approval',
-    service_status: 'Pending Approval',
-    billing_status: 'Pending Approval',
-    notification_status: notificationStatus,
-    stripe_customer_id: customer.id,
-    stripe_setup_intent_id: setupIntent.id
-  });
+  const notification = await deliverNotification(sql, record, extraRecords, resendConfig);
+  if (notification.response) return notification.response;
+  return successResponse(record, extraRecords, notification.messageId);
 };
+
+exports._test = { emailHtml, escapeHtml, validate };
