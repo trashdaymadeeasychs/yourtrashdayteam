@@ -793,13 +793,6 @@
       background: oklch(0.97 0.02 152);
       border: 1px solid oklch(0.5 0.14 152 / .25);
     }
-    .hp-field {
-      position: absolute;
-      left: -9999px;
-      width: 1px;
-      height: 1px;
-      overflow: hidden;
-    }
     .fine-print {
       margin: 14px 0 0;
       color: var(--muted);
@@ -1078,11 +1071,6 @@
           </aside>
 
           <form id="signup-form" class="signup-card" novalidate>
-            <div class="hp-field" aria-hidden="true">
-              <label for="company_website">Company Website</label>
-              <input id="company_website" name="company_website" type="text" tabindex="-1" autocomplete="off">
-            </div>
-
             <div class="form-section">
               <h3>Account Details</h3>
               <div class="field-grid">
@@ -1567,7 +1555,6 @@
           billing_consent: byName('billing_consent').checked,
           payment_method_id: paymentMethodId,
           submission_id: submissionId,
-          company_website: value('company_website'),
           source: 'yourtrashdayteam-home'
         };
       }

@@ -169,14 +169,15 @@ test('partner-signup validation accepts the browser payload field names', () => 
   );
 });
 
-test('partner-signup never reports honeypot submissions as successful', async () => {
+test('legacy autofilled honeypot does not bypass normal validation', async () => {
   const result = await handler({
     httpMethod: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ company_website: 'filled-by-autofill.example' })
   });
   const body = JSON.parse(result.body);
-  assert.equal(result.statusCode, 422);
+  assert.equal(result.statusCode, 400);
+  assert.match(body.error, /^Missing required fields:/);
   assert.equal(body.success, undefined);
 });
 
