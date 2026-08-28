@@ -348,11 +348,6 @@ exports.handler = async function (event) {
     return respond(400, { error: 'Invalid request body.' });
   }
 
-  if (s(body.company_website)) {
-    console.warn('Signup rejected by spam protection.');
-    return respond(422, { error: 'Submission could not be accepted. Please refresh and try again.' });
-  }
-
   const validationError = validate(body);
   if (validationError) return respond(400, { error: validationError });
 
