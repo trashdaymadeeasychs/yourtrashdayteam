@@ -2,6 +2,9 @@
   "name": "yourtrashdayteam",
   "version": "1.0.0",
   "private": true,
+  "scripts": {
+    "test": "node --test"
+  },
   "dependencies": {
     "@neondatabase/serverless": "^0.10.4",
     "stripe": "^16.0.0"
