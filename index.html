@@ -21,7 +21,8 @@
   <link rel="icon" href="/assets/images/favicon.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet"></noscript>
   <script>document.documentElement.classList.replace('no-js', 'js');</script>
   <script type="application/ld+json">
   {
@@ -77,7 +78,6 @@
     ]
   }
   </script>
-  <script src="https://js.stripe.com/v3/"></script>
   <style>
     :root {
       --navy: oklch(0.24 0.05 258);
@@ -927,9 +927,9 @@
     <header class="topbar">
       <div class="container nav">
         <a class="brand-lockup" href="/" aria-label="Your Trash Day Team home — The Bin Boy and Trash Day Made Easy">
-          <img class="brand-logo bin-boy" src="/assets/images/the-bin-boy-logo.webp" alt="The Bin Boy" width="120" height="52">
+          <img class="brand-logo bin-boy" src="/assets/images/the-bin-boy-logo.webp" alt="The Bin Boy" width="298" height="320">
           <span class="brand-plus" aria-hidden="true">+</span>
-          <img class="brand-logo tdme" src="/logo-nav.jpg" alt="Trash Day Made Easy" width="120" height="44">
+          <img class="brand-logo tdme" src="/logo-nav.jpg" alt="Trash Day Made Easy" width="482" height="97">
         </a>
         <nav class="site-nav" aria-label="Primary">
           <ul class="nav-menu" id="nav-menu">
@@ -971,12 +971,12 @@
             <div class="logo-pair">
               <a class="logo-tile-link" href="https://www.thebinboy.com/" target="_blank" rel="noopener noreferrer" aria-label="Visit The Bin Boy website (opens in a new tab)">
                 <span class="logo-tile">
-                  <img src="/assets/images/the-bin-boy-logo.webp" alt="The Bin Boy logo">
+                  <img src="/assets/images/the-bin-boy-logo.webp" alt="The Bin Boy logo" width="298" height="320" loading="lazy">
                 </span>
               </a>
               <a class="logo-tile-link" href="https://www.trashdaymadeeasy.com/" target="_blank" rel="noopener noreferrer" aria-label="Visit Trash Day Made Easy website (opens in a new tab)">
                 <span class="logo-tile">
-                  <img src="/logo-nav.jpg" alt="Trash Day Made Easy logo">
+                  <img src="/logo-nav.jpg" alt="Trash Day Made Easy logo" width="482" height="97" loading="lazy">
                 </span>
               </a>
             </div>
@@ -1573,8 +1573,24 @@
         });
       }
 
+      var stripeJsPromise;
+      function loadStripeJs() {
+        if (stripeJsPromise) return stripeJsPromise;
+        stripeJsPromise = new Promise(function (resolve, reject) {
+          if (window.Stripe) { resolve(); return; }
+          var s = document.createElement('script');
+          s.src = 'https://js.stripe.com/v3/';
+          s.async = true;
+          s.onload = resolve;
+          s.onerror = reject;
+          document.head.appendChild(s);
+        });
+        return stripeJsPromise;
+      }
+
       async function initStripe() {
         try {
+          await loadStripeJs();
           var res = await fetch('/.netlify/functions/partner-config');
           var cfg = await res.json();
           if (!cfg.stripe_publishable_key) {
@@ -1709,7 +1725,25 @@
         }
       });
 
-      initStripe();
+      // Defer Stripe.js: load only when the user nears or focuses the signup form.
+      var stripeInitStarted = false;
+      function ensureStripe() {
+        if (stripeInitStarted) return;
+        stripeInitStarted = true;
+        initStripe();
+      }
+      var signupSection = document.getElementById('signup') || form;
+      if ('IntersectionObserver' in window && signupSection) {
+        var stripeIo = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) { ensureStripe(); stripeIo.disconnect(); }
+          });
+        }, {rootMargin: '400px 0px'});
+        stripeIo.observe(signupSection);
+      } else {
+        ensureStripe();
+      }
+      form.addEventListener('focusin', ensureStripe, {once: true});
     })();
   </script>
 </body>
