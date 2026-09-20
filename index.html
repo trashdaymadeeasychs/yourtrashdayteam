@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <title>Your Trash Day Team | The Bin Boy + Trash Day Made Easy</title>
-  <meta name="description" content="The Bin Boy and Trash Day Made Easy have teamed up for weekly bin roll-out and roll-in service plus monthly bin washing for homes, businesses, and properties.">
+  <title>Charleston Bin Cleaning &amp; Trash Can Valet | Your Trash Day Team</title>
+  <meta name="description" content="Charleston bin cleaning plus weekly trash can valet in one flat-rate service. The Bin Boy washes your bins monthly while Trash Day Made Easy rolls them out and back each week. Serving Charleston, Mount Pleasant &amp; Summerville.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://yourtrashdayteam.com/">
   <meta property="og:title" content="Clean Bins. Easy Trash Days. One Simple Weekly Service.">
@@ -37,12 +37,15 @@
         "publisher": { "@id": "https://yourtrashdayteam.com/#organization" }
       },
       {
-        "@type": "Organization",
+        "@type": ["Organization", "HomeAndConstructionBusiness"],
         "@id": "https://yourtrashdayteam.com/#organization",
         "name": "Your Trash Day Team",
         "url": "https://yourtrashdayteam.com/",
         "description": "A combined weekly bin valet and monthly bin washing service offered together by The Bin Boy and Trash Day Made Easy.",
         "telephone": "+1-843-955-3132",
+        "priceRange": "$70/month",
+        "image": "https://yourtrashdayteam.com/og-social-preview.jpg",
+        "geo": { "@type": "GeoCoordinates", "latitude": 32.77650, "longitude": -79.93090 },
         "contactPoint": {
           "@type": "ContactPoint",
           "telephone": "+1-843-955-3132",
@@ -50,7 +53,23 @@
           "areaServed": "US",
           "availableLanguage": "English"
         },
-        "areaServed": { "@type": "Place", "name": "Charleston, South Carolina" },
+        "areaServed": [
+          { "@type": "City", "name": "Charleston, SC" },
+          { "@type": "City", "name": "North Charleston, SC" },
+          { "@type": "City", "name": "Mount Pleasant, SC" },
+          { "@type": "City", "name": "Summerville, SC" },
+          { "@type": "City", "name": "West Ashley, SC" },
+          { "@type": "City", "name": "James Island, SC" },
+          { "@type": "City", "name": "Daniel Island, SC" }
+        ],
+        "openingHoursSpecification": [
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+            "opens": "08:00",
+            "closes": "17:00"
+          }
+        ],
         "brand": [
           { "@type": "Organization", "name": "The Bin Boy", "url": "https://www.thebinboy.com/" },
           { "@type": "Organization", "name": "Trash Day Made Easy", "url": "https://www.trashdaymadeeasy.com/" }
@@ -62,7 +81,15 @@
         "name": "Weekly Bin Valet + Monthly Bin Washing",
         "serviceType": "Trash bin roll-out and roll-in valet with monthly bin washing",
         "description": "Trash Day Made Easy rolls bins to the curb before pickup and brings them back after collection each week. The Bin Boy washes the bins once a month. One flat monthly price for homes, businesses, and properties in the Charleston, SC area.",
-        "areaServed": { "@type": "Place", "name": "Charleston, South Carolina" },
+        "areaServed": [
+          { "@type": "City", "name": "Charleston, SC" },
+          { "@type": "City", "name": "North Charleston, SC" },
+          { "@type": "City", "name": "Mount Pleasant, SC" },
+          { "@type": "City", "name": "Summerville, SC" },
+          { "@type": "City", "name": "West Ashley, SC" },
+          { "@type": "City", "name": "James Island, SC" },
+          { "@type": "City", "name": "Daniel Island, SC" }
+        ],
         "provider": [
           { "@type": "Organization", "name": "Trash Day Made Easy", "url": "https://www.trashdaymadeeasy.com/" },
           { "@type": "Organization", "name": "The Bin Boy", "url": "https://www.thebinboy.com/" }
@@ -955,7 +982,7 @@
         <div class="container hero-grid">
           <div>
             <p class="eyebrow rise">A Charleston service team</p>
-            <h1 id="hero-title" class="rise rise-2">Clean bins. Easy trash days. One simple weekly service.</h1>
+            <h1 id="hero-title" class="rise rise-2">Charleston bin cleaning and trash can valet in one weekly service.</h1>
             <p class="hero-copy rise rise-3">The Bin Boy and Trash Day Made Easy have teamed up to help homes, businesses, and properties keep trash areas cleaner, easier, and more reliable every week.</p>
             <div class="hero-actions rise rise-4">
               <a class="btn" href="#signup">Sign Up For $70/Month</a>
@@ -1012,7 +1039,7 @@
             <div class="section-head reveal" style="margin-bottom: 0;">
               <p class="eyebrow">How it works</p>
               <h2 id="service-title">Two local crews. One cleaner weekly routine.</h2>
-              <p>Your Trash Day Team combines reliable weekly bin roll-out and roll-in service from Trash Day Made Easy with monthly bin washing from The Bin Boy. Built for people who want a dependable recurring service, clear communication, and a cleaner-looking property without adding another chore.</p>
+              <p>Your Trash Day Team combines reliable <a href="/trash-can-valet-charleston/">weekly bin roll-out and roll-in service</a> from Trash Day Made Easy with <a href="/bin-cleaning-charleston/">monthly bin washing</a> from The Bin Boy. Built for people who want a dependable recurring service, clear communication, and a cleaner-looking property without adding another chore.</p>
             </div>
             <ol class="service-steps reveal">
               <li><span class="step-num">1</span>We roll bins out before pickup.</li>
@@ -1230,6 +1257,8 @@
         <div><strong>Your Trash Day Team</strong><br>The Bin Boy + Trash Day Made Easy<br>Serving the Charleston, SC area</div>
         <nav class="footer-links" aria-label="Footer">
           <a href="/">Home</a>
+          <a href="/bin-cleaning-charleston/">Bin Cleaning</a>
+          <a href="/trash-can-valet-charleston/">Trash Valet</a>
           <a href="/faq/">FAQ</a>
           <a href="/blog/">Blog</a>
           <a href="/reviews/">Reviews</a>
