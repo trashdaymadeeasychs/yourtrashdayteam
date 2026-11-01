@@ -582,35 +582,205 @@
     }
     .service-band h2 { color: var(--heading-light); }
     .service-band .section-head p { color: var(--on-navy-muted); }
-    .service-grid {
+    /* ---------- Trash week: illustrated, playable "how it works" ---------- */
+    .trash-week {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: clamp(2rem, 5vw, 4.5rem);
+      grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+      grid-template-areas:
+        "head head"
+        "scene steps"
+        "scene cta";
+      column-gap: clamp(1.75rem, 4vw, 3.5rem);
+      row-gap: 1.25rem;
       align-items: start;
     }
-    .service-steps { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
-    .service-steps li {
-      display: flex;
-      gap: 16px;
-      align-items: center;
-      padding: 18px 0;
-      border-top: 1px solid oklch(1 0 0 / .14);
-      font-family: var(--display);
-      font-weight: 700;
-      font-size: 1.125rem;
-      line-height: 1.35;
+    .tw-head { grid-area: head; margin-bottom: clamp(0.25rem, 1.5vw, 1rem); }
+    .tw-head p:last-child { max-width: 65ch; }
+    .tw-scene {
+      grid-area: scene;
+      position: relative;
+      margin: 0;
+      overflow: hidden;
+      border-radius: 18px;
+      background: #18223f;
+      box-shadow: 0 30px 70px oklch(0.12 0.04 260 / .55), 0 0 0 1px oklch(1 0 0 / .08);
     }
-    .service-steps li:last-child { border-bottom: 1px solid oklch(1 0 0 / .14); }
-    .step-num {
-      width: 34px;
-      height: 34px;
+    .tw-scene svg { display: block; width: 100%; height: auto; }
+
+    .tw-sky { opacity: 0; transition: opacity 1.2s var(--ease); }
+    .tw-sky-0 { opacity: 1; }
+    .tw-scene[data-step="2"] .tw-sky-2,
+    .tw-scene[data-step="3"] .tw-sky-3,
+    .tw-scene[data-step="4"] .tw-sky-4 { opacity: 1; }
+    .tw-stars, .tw-moon { transition: opacity 1s var(--ease); }
+    .tw-scene[data-step="2"] :is(.tw-stars, .tw-moon),
+    .tw-scene[data-step="3"] :is(.tw-stars, .tw-moon),
+    .tw-scene[data-step="4"] :is(.tw-stars, .tw-moon) { opacity: 0; }
+    .tw-sun { opacity: 0; transform: translate(560px, 400px); transition: transform 1.5s var(--ease), opacity 1s var(--ease); }
+    .tw-scene[data-step="2"] .tw-sun { opacity: 1; transform: translate(410px, 168px); }
+    .tw-scene[data-step="3"] .tw-sun { opacity: 1; transform: translate(420px, 66px); }
+    .tw-scene[data-step="4"] .tw-sun { opacity: 1; transform: translate(300px, 58px); }
+    .tw-oaks { fill: #2d4a3e; transition: fill 1.2s var(--ease); }
+    .tw-scene:is([data-step="0"], [data-step="1"]) .tw-oaks { fill: #1f2f33; }
+    .tw-win { fill: #33435c; transition: fill .8s var(--ease); }
+    .tw-scene:is([data-step="0"], [data-step="1"]) .tw-win { fill: #f4c76a; }
+
+    /* Bins travel between the side of the house and the curb */
+    .tw-bins { transform: translate(470px, 345px) scale(1.06); transition: transform 1.5s cubic-bezier(.65, 0, .35, 1); }
+    .tw-scene:is([data-step="0"], [data-step="3"], [data-step="4"]) .tw-bins { transform: translate(378px, 300px); }
+    .tw-bag { transition: opacity .3s var(--ease); }
+    .tw-scene:is([data-step="3"], [data-step="4"]) .tw-bag { opacity: 0; }
+    .tw-scene[data-step="2"] .tw-bag { opacity: 0; transition-delay: 1.35s; }
+    .tw-grime, .tw-stink, .tw-flies { transition: opacity .6s var(--ease); }
+    .tw-scene[data-step="4"] :is(.tw-grime, .tw-stink, .tw-flies) { opacity: 0; }
+    .tw-clean { opacity: 0; transition: opacity .5s var(--ease) .2s; }
+    .tw-scene[data-step="4"] .tw-clean { opacity: 1; }
+    .tw-fly { animation: tw-buzz 1.1s ease-in-out infinite alternate; }
+    .tw-fly-2 { animation-duration: .8s; animation-delay: -.4s; }
+    .tw-spray { animation: tw-spray .6s linear infinite; }
+    .tw-spark { transform-box: fill-box; transform-origin: center; animation: tw-twinkle 1.4s ease-in-out infinite; }
+    .tw-spark-2 { animation-delay: -.5s; }
+    .tw-spark-3 { animation-delay: -.9s; }
+
+    /* Truck: arrives on pickup, leaves after, never drives backwards on a loop */
+    .tw-truck { opacity: 0; transform: translateX(-520px); transition: none; }
+    .tw-scene[data-step="2"] .tw-truck { opacity: 1; transform: translateX(-40px); transition: transform 1.4s var(--ease), opacity .2s; }
+    .tw-scene[data-step="3"] .tw-truck { opacity: 1; transform: translateX(420px); transition: transform 1.3s cubic-bezier(.5, 0, .75, 0); }
+
+    @keyframes tw-buzz { to { transform: translate(6px, -5px); } }
+    @keyframes tw-spray { to { stroke-dashoffset: -24; } }
+    @keyframes tw-twinkle { 0%, 100% { transform: scale(.5); opacity: .4; } 50% { transform: scale(1.15); opacity: 1; } }
+
+    .tw-tally {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0;
+      padding: 6px 8px 6px 14px;
+      border-radius: 999px;
+      background: oklch(0.19 0.045 260 / .78);
+      color: var(--on-navy);
+      font-size: 0.8125rem;
+      font-weight: 700;
+    }
+    .tw-tally strong {
       display: grid;
       place-items: center;
+      min-width: 28px;
+      height: 28px;
       border-radius: 999px;
-      color: var(--navy);
       background: var(--gold);
-      font-size: 0.8125rem;
-      flex: 0 0 auto;
+      color: var(--navy);
+      font-family: var(--display);
+      font-size: 1rem;
+    }
+    .tw-caption { display: none; }
+
+    .tw-steps { grid-area: steps; display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+    .tw-step {
+      position: relative;
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
+      width: 100%;
+      min-height: 44px;
+      padding: 14px 16px;
+      overflow: hidden;
+      border: 1px solid oklch(1 0 0 / .12);
+      border-radius: 12px;
+      background: transparent;
+      color: var(--on-navy);
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+      transition: background .25s var(--ease), border-color .25s var(--ease);
+    }
+    .tw-step:hover { border-color: oklch(1 0 0 / .28); }
+    .tw-step:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+    .tw-step[aria-pressed="true"] { background: oklch(1 0 0 / .07); border-color: oklch(0.78 0.14 85 / .55); }
+    .tw-num {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border: 2px solid var(--gold);
+      border-radius: 999px;
+      color: var(--gold);
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: 0.875rem;
+      transition: background .25s var(--ease), color .25s var(--ease);
+    }
+    .tw-step[aria-pressed="true"] .tw-num { background: var(--gold); color: var(--navy); }
+    .tw-short { display: none; }
+    .tw-detail { display: grid; gap: 2px; }
+    .tw-time, .tw-cap-time {
+      color: var(--gold);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .tw-detail strong, .tw-caption strong {
+      color: var(--heading-light);
+      font-family: var(--display);
+      font-size: 1.0625rem;
+      line-height: 1.3;
+    }
+    .tw-who, .tw-cap-who { color: var(--on-navy-muted); font-size: 0.875rem; }
+    .tw-bar {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transform-origin: left;
+    }
+    .is-playing .tw-step[aria-pressed="true"] .tw-bar { animation: tw-bar var(--tw-dur, 3800ms) linear forwards; }
+    .is-paused .tw-step[aria-pressed="true"] .tw-bar { animation-play-state: paused; }
+    @keyframes tw-bar { to { transform: scaleX(1); } }
+
+    .tw-cta { grid-area: cta; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin-top: 8px; }
+    .tw-cta p { margin: 0; color: var(--on-navy-muted); font-size: 0.875rem; font-weight: 600; }
+
+    @media (max-width: 980px) {
+      .trash-week {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas: "head" "scene" "steps" "cta";
+      }
+      .tw-caption {
+        display: grid;
+        gap: 2px;
+        min-height: 104px;
+        padding: 14px 16px 16px;
+        background: var(--navy-deep);
+        border-top: 1px solid oklch(1 0 0 / .08);
+      }
+      .tw-caption strong { font-size: 1.125rem; }
+      .tw-steps { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+      .tw-step { grid-template-columns: 1fr; justify-items: center; gap: 4px; padding: 10px 4px 12px; text-align: center; }
+      .tw-num { width: 30px; height: 30px; }
+      .tw-short { display: block; font-size: 0.8125rem; font-weight: 700; }
+      .tw-detail {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+      }
+      .tw-cta .btn { flex: 1 1 100%; }
+      .tw-cta p { flex: 1 1 100%; text-align: center; }
+    }
+    @media (max-width: 420px) {
+      .tw-tally { top: 10px; left: 10px; font-size: 0.75rem; padding: 4px 6px 4px 12px; }
+      .tw-tally strong { min-width: 24px; height: 24px; font-size: 0.875rem; }
     }
     .included { margin-top: clamp(2.5rem, 5vw, 4rem); }
     .included h3 {
@@ -1193,7 +1363,7 @@
     }
 
     @media (max-width: 980px) {
-      .hero-grid, .pain-grid, .service-grid, .price-layout, .signup-layout {
+      .hero-grid, .pain-grid, .price-layout, .signup-layout {
         grid-template-columns: 1fr;
       }
       .signup-aside { position: static; order: 2; }
@@ -1416,18 +1586,165 @@
 
       <section id="offer" class="service-band" aria-labelledby="service-title">
         <div class="container">
-          <div class="service-grid">
-            <div class="section-head reveal" style="margin-bottom: 0;">
+          <div class="trash-week" data-role="trash-week">
+            <div class="section-head tw-head reveal">
               <p class="eyebrow">How it works</p>
               <h2 id="service-title">Two local crews. One cleaner weekly routine.</h2>
               <p>Your Trash Day Team combines reliable <a href="/trash-can-valet-charleston/">weekly bin roll-out and roll-in service</a> from Trash Day Made Easy with <a href="/bin-cleaning-charleston/">monthly bin washing</a> from The Bin Boy. Built for people who want a dependable recurring service, clear communication, and a cleaner-looking property without adding another chore.</p>
             </div>
-            <ol class="service-steps reveal">
-              <li><span class="step-num">1</span>We roll bins out before pickup.</li>
-              <li><span class="step-num">2</span>We bring bins back after collection.</li>
-              <li><span class="step-num">3</span>The Bin Boy washes bins once each month.</li>
-              <li><span class="step-num">4</span>You get a simpler, cleaner trash day.</li>
+
+            <figure class="tw-scene reveal" data-step="1">
+              <svg viewBox="0 0 640 400" role="presentation" aria-hidden="true" focusable="false">
+                <defs>
+                  <linearGradient id="tw-sky-0" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#18223f"/><stop offset=".62" stop-color="#3a3f6b"/><stop offset="1" stop-color="#d98b5f"/></linearGradient>
+                  <linearGradient id="tw-sky-2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6fa4d6"/><stop offset=".7" stop-color="#bcd6ea"/><stop offset="1" stop-color="#f3dcae"/></linearGradient>
+                  <linearGradient id="tw-sky-3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4f93d2"/><stop offset="1" stop-color="#bfe0f4"/></linearGradient>
+                  <linearGradient id="tw-sky-4" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5aa6dc"/><stop offset="1" stop-color="#e3f1f6"/></linearGradient>
+                </defs>
+
+                <!-- Sky: one layer per moment, cross-faded -->
+                <rect class="tw-sky tw-sky-0" width="640" height="336" fill="url(#tw-sky-0)"/>
+                <rect class="tw-sky tw-sky-2" width="640" height="336" fill="url(#tw-sky-2)"/>
+                <rect class="tw-sky tw-sky-3" width="640" height="336" fill="url(#tw-sky-3)"/>
+                <rect class="tw-sky tw-sky-4" width="640" height="336" fill="url(#tw-sky-4)"/>
+                <g class="tw-stars" fill="#f4ecd2">
+                  <circle cx="44" cy="40" r="1.6"/><circle cx="120" cy="22" r="1.2"/><circle cx="262" cy="34" r="1.5"/><circle cx="330" cy="70" r="1.1"/>
+                  <circle cx="402" cy="26" r="1.4"/><circle cx="470" cy="58" r="1.1"/><circle cx="612" cy="30" r="1.5"/><circle cx="196" cy="62" r="1"/>
+                </g>
+                <circle class="tw-moon" cx="560" cy="66" r="18" fill="#f4ecd2"/>
+                <g class="tw-sun"><circle r="40" fill="#f8d77a" opacity=".28"/><circle r="22" fill="#f8d77a"/></g>
+
+                <!-- Distant live oaks -->
+                <path class="tw-oaks" d="M0 300V250c18-20 44-24 62-10 14-22 46-26 64-8 20-16 50-12 62 8 10-4 22-4 30 2V300zM300 300v-46c20-26 56-28 74-8 22-18 58-14 72 8 18-14 46-12 60 4 16-18 52-20 70-2 20-14 46-10 64 6V300z"/>
+
+                <!-- Ground, sidewalk, curb, street -->
+                <rect y="298" width="640" height="38" fill="#6d9a4d"/>
+                <rect y="298" width="640" height="5" fill="#5d8a40"/>
+                <path d="M262 302h34l14 32h-62z" fill="#d6cfbd"/>
+                <rect y="334" width="640" height="13" fill="#ddd7c8"/>
+                <rect y="347" width="640" height="4" fill="#b5ae9f"/>
+                <rect y="351" width="640" height="49" fill="#3a4251"/>
+                <path d="M0 377h640" stroke="#e2bf58" stroke-width="3" stroke-dasharray="20 16"/>
+
+                <!-- Charleston single house with side piazza -->
+                <g class="tw-house">
+                  <rect x="226" y="110" width="104" height="192" fill="#c9ad79"/>
+                  <rect x="226" y="104" width="108" height="9" fill="#efe6d3"/>
+                  <rect x="226" y="203" width="104" height="7" fill="#efe6d3"/>
+                  <rect x="252" y="232" width="24" height="70" fill="#24332c"/>
+                  <rect x="252" y="134" width="24" height="52" fill="#24332c"/>
+                  <g stroke="#efe6d3" stroke-width="2">
+                    <path d="M228 186h104M228 284h104"/>
+                    <path d="M240 186v17M250 186v17M260 186v17M270 186v17M280 186v17M290 186v17M300 186v17M310 186v17M320 186v17M240 284v18M290 284v18M300 284v18M310 284v18M320 284v18"/>
+                  </g>
+                  <g fill="#f4efe3"><rect x="229" y="113" width="7" height="189"/><rect x="278" y="113" width="7" height="189"/><rect x="324" y="113" width="7" height="189"/></g>
+
+                  <rect x="60" y="110" width="170" height="192" fill="#ead39c"/>
+                  <path d="M52 113 145 54l93 59z" fill="#8a4a3b"/>
+                  <path d="M52 113 145 54l93 59" fill="none" stroke="#6f3a2e" stroke-width="3"/>
+                  <circle cx="145" cy="92" r="9" fill="#efe6d3"/>
+                  <rect x="56" y="113" width="178" height="6" fill="#efe6d3"/>
+                  <g class="tw-windows">
+                    <rect class="tw-win" x="88" y="140" width="28" height="44"/><rect class="tw-win" x="174" y="140" width="28" height="44"/>
+                    <rect class="tw-win" x="88" y="222" width="28" height="44"/><rect class="tw-win" x="174" y="222" width="28" height="44"/>
+                  </g>
+                  <g fill="#24332c">
+                    <rect x="78" y="140" width="9" height="44"/><rect x="117" y="140" width="9" height="44"/><rect x="164" y="140" width="9" height="44"/><rect x="203" y="140" width="9" height="44"/>
+                    <rect x="78" y="222" width="9" height="44"/><rect x="117" y="222" width="9" height="44"/><rect x="164" y="222" width="9" height="44"/><rect x="203" y="222" width="9" height="44"/>
+                  </g>
+                  <g fill="#efe6d3"><rect x="85" y="184" width="34" height="5"/><rect x="171" y="184" width="34" height="5"/><rect x="85" y="266" width="34" height="5"/><rect x="171" y="266" width="34" height="5"/></g>
+                  <rect x="56" y="296" width="178" height="6" fill="#bda57a"/>
+                </g>
+
+                <!-- Palmetto -->
+                <g class="tw-palm">
+                  <path d="M560 300c4-40 2-82-10-122" fill="none" stroke="#8c7457" stroke-width="11" stroke-linecap="round"/>
+                  <path d="M558 290l-9-4M559 270l-9-4M559 250l-10-4M558 230l-10-4M556 210l-10-4M553 192l-9-4" stroke="#6f5a43" stroke-width="2.5"/>
+                  <g fill="none" stroke="#3f6e3c" stroke-width="7" stroke-linecap="round">
+                    <path d="M550 178c-20-14-44-14-64-4"/><path d="M550 178c-14-24-34-34-58-34"/><path d="M550 178c-2-26-12-42-30-54"/>
+                    <path d="M550 178c10-22 26-34 46-38"/><path d="M550 178c22-12 44-10 62 2"/><path d="M550 178c18 2 34 12 44 28"/><path d="M550 178c-18 4-34 16-42 32"/>
+                  </g>
+                  <g fill="none" stroke="#5c8f4f" stroke-width="3" stroke-linecap="round">
+                    <path d="M550 178c-14-22-30-30-50-30"/><path d="M550 178c14-18 28-26 44-30"/><path d="M550 178c-4-22-12-36-26-46"/>
+                  </g>
+                </g>
+
+                <!-- The bins: home spot is beside the piazza; curb spot is on the sidewalk -->
+                <g class="tw-bins">
+                  <g class="tw-bin">
+                    <path d="M-17-58h34l-3 56h-28z" fill="#1d8048"/>
+                    <path d="M-17-58h34l-1 8h-32z" fill="#17673a"/>
+                    <g class="tw-bag"><path d="M-12-60c2-12 22-12 24 0z" fill="#3b414e"/><path d="M-2-71l2-4 2 4" fill="none" stroke="#3b414e" stroke-width="2"/></g>
+                    <rect class="tw-lid" x="-21" y="-64" width="42" height="7" rx="2" fill="#15603a"/>
+                    <circle cx="-11" cy="-2" r="5" fill="#1a1f29"/>
+                    <g class="tw-grime" fill="#6b5a3a"><ellipse cx="-6" cy="-30" rx="6" ry="4"/><ellipse cx="7" cy="-16" rx="4" ry="3"/><ellipse cx="-9" cy="-12" rx="3" ry="2"/></g>
+                  </g>
+                  <g class="tw-bin" transform="translate(44 0)">
+                    <path d="M-17-58h34l-3 56h-28z" fill="#2f5e8c"/>
+                    <path d="M-17-58h34l-1 8h-32z" fill="#254c73"/>
+                    <g class="tw-bag"><path d="M-12-60c2-12 22-12 24 0z" fill="#4b5262"/></g>
+                    <rect class="tw-lid" x="-21" y="-64" width="42" height="7" rx="2" fill="#203f60"/>
+                    <circle cx="-11" cy="-2" r="5" fill="#1a1f29"/>
+                    <g class="tw-grime" fill="#6b5a3a"><ellipse cx="5" cy="-34" rx="5" ry="3.5"/><ellipse cx="-7" cy="-18" rx="4" ry="3"/></g>
+                  </g>
+                  <g class="tw-stink" fill="none" stroke="#a7ad8c" stroke-width="2.4" stroke-linecap="round">
+                    <path d="M-6-74c-5-6 5-10 0-16s5-10 0-16"/><path d="M40-74c-5-6 5-10 0-16s5-10 0-16"/>
+                  </g>
+                  <g class="tw-flies" fill="#1a1f29"><circle class="tw-fly" cx="14" cy="-84" r="2.2"/><circle class="tw-fly tw-fly-2" cx="30" cy="-96" r="2"/></g>
+                  <g class="tw-clean">
+                    <path class="tw-spray" d="M118-92c-26-22-50-14-56 18" fill="none" stroke="#a9dcf5" stroke-width="4" stroke-linecap="round" stroke-dasharray="3 9"/>
+                    <g fill="none" stroke="#eaf6fb" stroke-width="2"><circle cx="-14" cy="-20" r="5"/><circle cx="20" cy="-8" r="4"/><circle cx="54" cy="-26" r="5"/><circle cx="-4" cy="-44" r="3"/></g>
+                    <g fill="#f8e39a"><path class="tw-spark" d="M30-82l3 9 9 3-9 3-3 9-3-9-9-3 9-3z"/><path class="tw-spark tw-spark-2" d="M-24-50l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/><path class="tw-spark tw-spark-3" d="M66-58l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></g>
+                  </g>
+                </g>
+
+                <!-- Collection truck (generic hauler, not either brand) -->
+                <g class="tw-truck">
+                  <rect x="296" y="326" width="30" height="54" rx="3" fill="#24324a"/>
+                  <rect x="322" y="314" width="98" height="66" rx="4" fill="#2c3b57"/>
+                  <rect x="322" y="350" width="98" height="6" fill="#e0b44c"/>
+                  <path d="M420 332h26l14 18v30h-40z" fill="#d9dee6"/>
+                  <path d="M428 338h16l10 13h-26z" fill="#8fb5d6"/>
+                  <rect x="292" y="376" width="172" height="6" rx="2" fill="#1f2635"/>
+                  <circle cx="346" cy="384" r="11" fill="#1a1f29"/><circle cx="346" cy="384" r="4" fill="#9aa3b2"/>
+                  <circle cx="438" cy="384" r="11" fill="#1a1f29"/><circle cx="438" cy="384" r="4" fill="#9aa3b2"/>
+                </g>
+              </svg>
+              <p class="tw-tally"><span>Your trips to the curb</span> <strong>0</strong></p>
+              <figcaption class="tw-caption" aria-hidden="true">
+                <span class="tw-cap-time" data-role="tw-cap-time">Before pickup</span>
+                <strong data-role="tw-cap-title">We roll your bins to the curb.</strong>
+                <span class="tw-cap-who" data-role="tw-cap-who">Trash Day Made Easy</span>
+              </figcaption>
+            </figure>
+
+            <ol class="tw-steps reveal" aria-label="Your trash week, step by step">
+              <li><button type="button" class="tw-step" data-step="1" aria-pressed="true">
+                <span class="tw-num">1</span><span class="tw-short" aria-hidden="true">Out</span>
+                <span class="tw-detail"><span class="tw-time" data-tw-time="1">Before pickup</span><strong>We roll your bins to the curb.</strong><span class="tw-who">Trash Day Made Easy</span></span>
+                <span class="tw-bar" aria-hidden="true"></span>
+              </button></li>
+              <li><button type="button" class="tw-step" data-step="2" aria-pressed="false">
+                <span class="tw-num">2</span><span class="tw-short" aria-hidden="true">Pickup</span>
+                <span class="tw-detail"><span class="tw-time" data-tw-time="2">Pickup day</span><strong>The truck empties them. You&rsquo;re not out there.</strong><span class="tw-who">Your regular trash pickup</span></span>
+                <span class="tw-bar" aria-hidden="true"></span>
+              </button></li>
+              <li><button type="button" class="tw-step" data-step="3" aria-pressed="false">
+                <span class="tw-num">3</span><span class="tw-short" aria-hidden="true">Back</span>
+                <span class="tw-detail"><span class="tw-time" data-tw-time="3">After collection</span><strong>We bring your bins back in.</strong><span class="tw-who">Trash Day Made Easy</span></span>
+                <span class="tw-bar" aria-hidden="true"></span>
+              </button></li>
+              <li><button type="button" class="tw-step" data-step="4" aria-pressed="false">
+                <span class="tw-num">4</span><span class="tw-short" aria-hidden="true">Wash</span>
+                <span class="tw-detail"><span class="tw-time" data-tw-time="4">Once a month</span><strong>The Bin Boy washes them clean.</strong><span class="tw-who">The Bin Boy</span></span>
+                <span class="tw-bar" aria-hidden="true"></span>
+              </button></li>
             </ol>
+
+            <div class="tw-cta reveal">
+              <a class="btn" href="#signup">Put My Bins On The Route</a>
+              <p>$70/month &middot; $0 today &middot; no contract</p>
+            </div>
           </div>
 
           <div class="included reveal">
@@ -2519,6 +2836,134 @@
         // Land on the first still-empty field of step 1 (address and day may be prefilled).
         var nextIn = !typed ? document.getElementById('address') : document.getElementById('number_of_bins');
         if (nextIn) setTimeout(function () { nextIn.focus({preventScroll: true}); }, reduce ? 0 : 600);
+      });
+    })();
+  </script>
+  <script>
+    // Trash week: an illustrated, playable version of "how it works".
+    // Autoplays once scrolled into view, pauses on hover/focus, stops for good
+    // when the visitor picks a step, and names the visitor's own trash day once
+    // they choose one in the hero planner or the signup form.
+    (function () {
+      var root = document.querySelector('[data-role="trash-week"]');
+      if (!root) return;
+      var scene = root.querySelector('.tw-scene');
+      var buttons = Array.prototype.slice.call(root.querySelectorAll('.tw-step'));
+      var capTime = root.querySelector('[data-role="tw-cap-time"]');
+      var capTitle = root.querySelector('[data-role="tw-cap-title"]');
+      var capWho = root.querySelector('[data-role="tw-cap-who"]');
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var DUR = 3800;
+      var current = 0;
+      var timer = null;
+      var startedAt = 0;
+      var remaining = DUR;
+      var stopped = reduce;
+      var inView = false;
+      var held = false;
+      var started = false;
+
+      root.style.setProperty('--tw-dur', DUR + 'ms');
+
+      function setStep(n) {
+        current = n;
+        scene.setAttribute('data-step', String(n));
+        buttons.forEach(function (btn) {
+          btn.setAttribute('aria-pressed', String(Number(btn.getAttribute('data-step')) === n));
+        });
+        var active = buttons[n - 1];
+        if (!active) return;
+        capTime.textContent = active.querySelector('.tw-time').textContent;
+        capTitle.textContent = active.querySelector('strong').textContent;
+        capWho.textContent = active.querySelector('.tw-who').textContent;
+        // Restart the progress bar on the newly active step.
+        var bar = active.querySelector('.tw-bar');
+        bar.style.animation = 'none';
+        void bar.offsetWidth;
+        bar.style.animation = '';
+      }
+
+      function stopTimer() {
+        clearTimeout(timer);
+        timer = null;
+      }
+
+      function run(ms) {
+        stopTimer();
+        startedAt = Date.now();
+        remaining = ms;
+        timer = setTimeout(function () {
+          setStep(current % 4 + 1);
+          run(DUR);
+        }, ms);
+      }
+
+      function sync() {
+        var playing = !stopped && inView;
+        root.classList.toggle('is-playing', playing);
+        root.classList.toggle('is-paused', playing && held);
+        if (!playing || held) {
+          if (timer) remaining = Math.max(0, remaining - (Date.now() - startedAt));
+          stopTimer();
+          return;
+        }
+        if (!timer) run(remaining || DUR);
+      }
+
+      buttons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          stopped = true;
+          stopTimer();
+          setStep(Number(btn.getAttribute('data-step')));
+          sync();
+        });
+      });
+      root.addEventListener('pointerenter', function () { held = true; sync(); });
+      root.addEventListener('pointerleave', function () { held = false; sync(); });
+      root.addEventListener('focusin', function () { held = true; sync(); });
+      root.addEventListener('focusout', function (event) {
+        if (!root.contains(event.relatedTarget)) { held = false; sync(); }
+      });
+
+      if (reduce || !('IntersectionObserver' in window)) {
+        setStep(1);
+      } else {
+        // Open on the house with bins still beside it, then roll them out on arrival.
+        scene.setAttribute('data-step', '0');
+        buttons.forEach(function (btn) { btn.setAttribute('aria-pressed', 'false'); });
+        new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            inView = entry.isIntersecting;
+            if (inView && !started) {
+              started = true;
+              setTimeout(function () {
+                if (current === 0) setStep(1);
+                remaining = DUR;
+                sync();
+              }, 450);
+              return;
+            }
+            if (started) sync();
+          });
+        }, {threshold: 0.45}).observe(scene);
+      }
+
+      // Personalise with the visitor's own trash day.
+      var dayLabels = {
+        1: function (d) { return d ? 'Before ' + d + '’s pickup' : 'Before pickup'; },
+        2: function (d) { return d ? d + ' · pickup' : 'Pickup day'; },
+        3: function (d) { return d ? 'After ' + d + '’s collection' : 'After collection'; }
+      };
+      function applyDay(day) {
+        Object.keys(dayLabels).forEach(function (k) {
+          var el = root.querySelector('[data-tw-time="' + k + '"]');
+          if (el) el.textContent = dayLabels[k](day);
+        });
+        if (current > 0) setStep(current);
+      }
+      document.addEventListener('change', function (event) {
+        var name = event.target && event.target.name;
+        if ((name === 'planner_day' || name === 'trash_pickup_day') && event.target.checked) applyDay(event.target.value);
       });
     })();
   </script>
