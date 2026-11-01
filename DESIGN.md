@@ -50,4 +50,5 @@ Strategy: **Committed.** Deep navy carries the hero, the service panel, and the 
 ## Motion
 
 - One orchestrated entrance on the hero (staggered fade-rise, 500–700ms, ease-out-quint), scroll-triggered single-fire reveals on section heads via IntersectionObserver.
+- Small responsive touches, each answering something the visitor does or a one-time landing: the hero price stamp lands like a rubber stamp (~0.8s in, overshoot, then tilts on hover; a soft scale-in for the flat band on phones); sign-up links carry an arrow that leans 4px toward the form on hover/focus (nav button excluded); buttons press to 98% on tap; day and option chips pop when chosen; the stepper rail fills green between steps; pricing checkmarks tick in one by one; "What you get" rules draw left to right, staggered.
 - Transform/opacity only, never layout properties. Everything collapses under `prefers-reduced-motion`.
