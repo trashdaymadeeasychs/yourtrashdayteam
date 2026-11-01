@@ -1,6 +1,11 @@
 [build]
   functions = "netlify/functions"
 
+# Emails the team a digest of unfinished signups (contact step done, card step
+# never submitted). Netlify runs scheduled functions on the published deploy only.
+[functions."lead-followup"]
+  schedule = "*/15 * * * *"
+
 [build.processing.html]
   pretty_urls = false
 

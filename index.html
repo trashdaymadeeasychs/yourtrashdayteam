@@ -682,37 +682,7 @@
       gap: clamp(2rem, 4vw, 3rem);
       align-items: start;
     }
-    .signup-aside { position: sticky; top: 102px; }
-    .aside-card {
-      padding: 28px;
-      border-radius: var(--radius);
-      background: var(--card);
-      box-shadow: 0 16px 40px oklch(0.19 0.045 260 / .08);
-    }
-    .aside-card h2 {
-      font-size: clamp(1.5rem, 2.5vw, 1.875rem);
-      line-height: 1.1;
-      margin-bottom: 14px;
-    }
-    .aside-card p { color: var(--muted); line-height: 1.55; }
-    .aside-list { display: grid; gap: 12px; margin: 20px 0 0; padding: 0; list-style: none; }
-    .aside-list li {
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-      color: var(--ink);
-      line-height: 1.45;
-      font-size: 0.9375rem;
-    }
-    .aside-list li::before {
-      content: "";
-      width: 9px;
-      height: 9px;
-      margin-top: 7px;
-      border-radius: 999px;
-      background: var(--green);
-      flex: 0 0 auto;
-    }
+    .signup-aside { position: sticky; top: 102px; display: grid; gap: 18px; }
     .signup-card {
       padding: 28px;
       background: var(--card);
@@ -919,6 +889,265 @@
       font-size: 0.75rem;
       line-height: 1.55;
     }
+
+    /* ---------- Work-order ticket (live signup summary) ---------- */
+    .ticket {
+      position: relative;
+      padding: 26px 26px 22px;
+      border-radius: var(--radius);
+      background: var(--navy);
+      color: var(--on-navy);
+      box-shadow: 0 24px 60px oklch(0.19 0.045 260 / .28);
+      overflow: hidden;
+    }
+    .ticket-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid oklch(1 0 0 / .14);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    .ticket-kicker { color: var(--gold); }
+    .ticket-no { color: var(--on-navy-muted); font-variant-numeric: tabular-nums; letter-spacing: .08em; }
+    .ticket-title {
+      margin: 16px 0 14px;
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: 1.625rem;
+      line-height: 1.05;
+      color: var(--heading-light);
+    }
+    .ticket-rows { display: grid; gap: 0; margin: 0; }
+    .ticket-rows > div, .ticket-total > div {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      padding: 9px 0;
+      border-bottom: 1px dashed oklch(1 0 0 / .16);
+    }
+    .ticket-rows > div[hidden] { display: none; }
+    .ticket-rows dt, .ticket-total dt {
+      flex: 0 0 auto;
+      color: var(--on-navy-muted);
+      font-size: 0.875rem;
+    }
+    .ticket-rows dd, .ticket-total dd {
+      flex: 1 1 auto;
+      min-width: 0;
+      margin: 0;
+      text-align: right;
+      color: var(--heading-light);
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+    .ticket-rows dd.is-empty { color: oklch(0.78 0.02 240 / .7); font-weight: 600; font-style: italic; }
+    .ticket-rows dd.is-fresh { animation: ticket-ink .9s var(--ease); }
+    @keyframes ticket-ink {
+      from { color: var(--gold); transform: translateX(-4px); }
+      to { color: var(--heading-light); transform: none; }
+    }
+    .ticket-route { margin-top: 16px; }
+    .ticket-label {
+      margin: 0 0 8px;
+      color: var(--gold);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .ticket-days { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 0; padding: 0; list-style: none; }
+    .ticket-days li {
+      padding: 8px 4px;
+      border-radius: 10px;
+      background: oklch(1 0 0 / .07);
+      border: 1px solid oklch(1 0 0 / .12);
+      text-align: center;
+      font-size: 0.8125rem;
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--heading-light);
+    }
+    .ticket-days li small { display: block; color: var(--on-navy-muted); font-weight: 600; font-size: 0.6875rem; text-transform: uppercase; letter-spacing: .06em; }
+    .ticket-note { margin: 8px 0 0; color: var(--on-navy-muted); font-size: 0.75rem; }
+    .ticket-includes { display: grid; gap: 6px; margin: 18px 0 0; padding: 0; list-style: none; font-size: 0.875rem; }
+    .ticket-includes li { display: flex; gap: 8px; align-items: baseline; }
+    .ticket-includes li::before { content: "\2713"; color: var(--green); font-weight: 800; }
+    .ticket-perf {
+      position: relative;
+      height: 26px;
+      margin: 16px -26px 6px;
+    }
+    .ticket-perf::before {
+      content: "";
+      position: absolute;
+      left: 22px; right: 22px; top: 50%;
+      border-top: 2px dashed oklch(1 0 0 / .22);
+    }
+    .ticket-perf::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 0 50%, oklch(0.955 0.01 210) 12px, transparent 12.5px),
+        radial-gradient(circle at 100% 50%, oklch(0.955 0.01 210) 12px, transparent 12.5px);
+    }
+    .ticket-total { margin: 0; }
+    .ticket-total > div { border-bottom: 0; padding: 4px 0; }
+    .ticket-total dd { font-family: var(--display); font-size: 1.5rem; font-weight: 800; color: var(--gold); }
+    .ticket-total .due-today dd { color: var(--green); }
+    .ticket-fine { margin: 8px 0 0; color: var(--on-navy-muted); font-size: 0.75rem; line-height: 1.5; }
+    .ticket-stamp {
+      position: absolute;
+      right: 22px;
+      bottom: 150px;
+      display: grid;
+      place-items: center;
+      width: 132px;
+      height: 132px;
+      border: 4px solid var(--gold);
+      border-radius: 50%;
+      color: var(--gold);
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: 1.125rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      opacity: 0;
+      transform: rotate(-14deg) scale(1.6);
+      pointer-events: none;
+    }
+    .ticket-stamp span { padding: 6px 4px; border-top: 2px solid; border-bottom: 2px solid; }
+    .ticket.is-done .ticket-stamp {
+      opacity: .92;
+      transform: rotate(-14deg) scale(1);
+      transition: opacity .3s ease, transform .45s cubic-bezier(.34, 1.56, .64, 1);
+    }
+    .ticket-quote {
+      margin: 0;
+      padding: 18px 20px;
+      border-radius: var(--radius);
+      background: var(--card);
+      border: 1px solid var(--line);
+    }
+    .ticket-quote blockquote { margin: 0 0 8px; color: var(--ink); font-weight: 600; line-height: 1.45; }
+    .ticket-quote figcaption { color: var(--muted); font-size: 0.8125rem; }
+    .ticket-quote a { color: var(--green-press); font-weight: 700; }
+
+    /* ---------- Stepped signup ---------- */
+    .wizard-head { margin-bottom: 22px; }
+    .wizard-head h2 { font-size: clamp(1.625rem, 3vw, 2.125rem); line-height: 1.05; margin-bottom: 8px; }
+    .wizard-sub { margin: 0 0 20px; color: var(--muted); }
+    .stepper {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      counter-reset: none;
+    }
+    .stepper li {
+      position: relative;
+      display: grid;
+      justify-items: center;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 0.8125rem;
+      font-weight: 700;
+      text-align: center;
+    }
+    .stepper li + li::before {
+      content: "";
+      position: absolute;
+      top: 17px;
+      right: 50%;
+      width: 100%;
+      height: 3px;
+      margin-right: 20px;
+      background: var(--line);
+      border-radius: 3px;
+      transform-origin: left;
+    }
+    .stepper li.is-done + li::before, .stepper li + li.is-done::before, .stepper li + li.is-current::before { background: var(--green-press); }
+    .stepper .dot {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid var(--line);
+      background: var(--card);
+      color: var(--muted);
+      font-family: var(--display);
+      font-weight: 800;
+      transition: background .25s var(--ease), border-color .25s var(--ease), color .25s var(--ease);
+    }
+    .stepper li.is-current { color: var(--navy); }
+    .stepper li.is-current .dot { border-color: var(--green-press); color: var(--green-press); box-shadow: 0 0 0 5px oklch(0.62 0.17 150 / .14); }
+    .stepper li.is-done .dot { border-color: var(--green-press); background: var(--green-press); color: oklch(0.99 0.005 150); font-size: 0; }
+    .stepper li.is-done .dot::after { content: "\2713"; font-size: 1rem; }
+    .ticket-strip { display: none; }
+    .step-nav {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 12px;
+      margin-top: 22px;
+    }
+    .step-nav .btn { min-width: 200px; }
+    .step-back {
+      appearance: none;
+      margin-right: auto;
+      min-height: 48px;
+      padding: 10px 18px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--navy);
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .step-back:hover { background: var(--paper); }
+    .step-reassure { margin: 4px 0 0; color: var(--muted); font-size: 0.875rem; }
+    .no-js .step-nav .step-next, .no-js .step-back, .no-js .stepper { display: none; }
+    .js .wizard .step { display: none; border-bottom: 0; margin-bottom: 0; padding-bottom: 0; }
+    .js .wizard .step.is-active { display: block; animation: step-in .45s var(--ease) both; }
+    .js .wizard .step.is-active.from-right { animation-name: step-in-back; }
+    @keyframes step-in { from { opacity: 0; transform: translateX(18px); } to { opacity: 1; transform: none; } }
+    @keyframes step-in-back { from { opacity: 0; transform: translateX(-18px); } to { opacity: 1; transform: none; } }
+    .wizard .step h3:focus { outline: none; }
+    .wizard.is-done .step, .wizard.is-done .wizard-head { display: none !important; }
+    .wizard-done h3 { font-size: 1.75rem; }
+    .wizard-done h3:focus { outline: none; }
+    .done-steps { display: grid; gap: 14px; margin: 0 0 18px; padding: 0; list-style: none; counter-reset: done; }
+    .done-steps li {
+      counter-increment: done;
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .done-steps li::before {
+      content: counter(done);
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--navy);
+      color: var(--gold);
+      font-family: var(--display);
+      font-weight: 800;
+    }
+    .done-steps strong { display: block; color: var(--navy); }
+    .done-help a { color: var(--green-press); font-weight: 700; }
     .footer {
       padding: 40px 0;
       color: var(--on-navy-muted);
@@ -960,13 +1189,25 @@
         transition-duration: .01ms !important;
       }
       .js .reveal { opacity: 1; transform: none; }
+      .ticket-rows dd.is-fresh { animation: none; }
     }
 
     @media (max-width: 980px) {
       .hero-grid, .pain-grid, .service-grid, .price-layout, .signup-layout {
         grid-template-columns: 1fr;
       }
-      .signup-aside { position: static; }
+      .signup-aside { position: static; order: 2; }
+      .js .ticket-strip {
+        display: block;
+        margin: 16px 0 0;
+        padding: 10px 14px;
+        border-radius: 12px;
+        background: var(--navy);
+        color: var(--heading-light);
+        font-size: 0.875rem;
+        font-weight: 700;
+        text-align: center;
+      }
       .included-grid { grid-template-columns: 1fr 1fr; }
       .hero-card { max-width: 520px; margin-top: 40px; }
       .price-stamp { right: -12px; top: -48px; }
@@ -1003,6 +1244,13 @@
       }
       .choice-grid.seven { grid-template-columns: repeat(auto-fit, minmax(102px, 1fr)); }
       .signup-card { padding: 20px; }
+      .step-nav { flex-wrap: wrap-reverse; }
+      .step-nav .btn { flex: 1 1 100%; min-width: 0; }
+      .step-back { flex: 1 1 100%; margin-right: 0; }
+      .stepper .dot-label { font-size: 0.75rem; }
+      .ticket { padding: 22px 20px 20px; }
+      .ticket-perf { margin: 16px -20px 6px; }
+      .ticket-stamp { width: 112px; height: 112px; font-size: 1rem; right: 12px; }
       .footer-inner { align-items: flex-start; flex-direction: column; }
     }
 
@@ -1217,52 +1465,59 @@
 
       <section id="signup" class="signup-section on-light" aria-labelledby="signup-title">
         <div class="container signup-layout">
-          <aside class="signup-aside">
-            <div class="aside-card">
-              <p class="eyebrow">Start service</p>
-              <h2 id="signup-title">Tell us where to help and store your payment securely.</h2>
-              <p>Your account will be saved as Pending Approval. We will review the service address, confirm details, and then bill the stored card on the 1st of each month once service is approved.</p>
-              <ul class="aside-list">
-                <li>Card details are handled by Stripe and are never stored on this website.</li>
-                <li>Your card will be stored for recurring monthly billing.</li>
-                <li>You can ask us to pause or cancel service anytime.</li>
+          <aside class="signup-aside" aria-label="Your service summary">
+            <div class="ticket" data-role="ticket">
+              <div class="ticket-head">
+                <span class="ticket-kicker">Work order</span>
+                <span class="ticket-no" data-role="ticket-no"></span>
+              </div>
+              <p class="ticket-title">Your Trash Day Plan</p>
+              <dl class="ticket-rows">
+                <div><dt>Service address</dt><dd data-t="address" class="is-empty">Add in step 1</dd></div>
+                <div><dt>Bins</dt><dd data-t="bins" class="is-empty">&mdash;</dd></div>
+                <div><dt>Trash day</dt><dd data-t="day" class="is-empty">&mdash;</dd></div>
+                <div><dt>Recycling</dt><dd data-t="recycling">None</dd></div>
+                <div data-t-row="props" hidden><dt>Properties</dt><dd data-t="props">1</dd></div>
+              </dl>
+              <div class="ticket-route" data-role="ticket-route" hidden>
+                <p class="ticket-label">Every week on your route</p>
+                <ol class="ticket-days" data-role="ticket-days"></ol>
+                <p class="ticket-note">Start date is confirmed when your account is approved.</p>
+              </div>
+              <ul class="ticket-includes">
+                <li>Bins rolled out before pickup</li>
+                <li>Bins brought back after collection</li>
+                <li>Full bin wash once a month by The Bin Boy</li>
               </ul>
+              <div class="ticket-perf" aria-hidden="true"></div>
+              <dl class="ticket-total">
+                <div><dt>Monthly</dt><dd data-t="total">$70</dd></div>
+                <div class="due-today"><dt>Due today</dt><dd>$0</dd></div>
+              </dl>
+              <p class="ticket-fine">Billed on the 1st after approval. No contract. Pause or cancel anytime.</p>
+              <div class="ticket-stamp" aria-hidden="true"><span>Submitted</span></div>
             </div>
+            <figure class="ticket-quote">
+              <blockquote>&ldquo;Great experience! Polite, clean, professional and a job well done!&rdquo;</blockquote>
+              <figcaption>The Bin Boy customer, Google review &middot; <a href="/reviews/">More reviews</a></figcaption>
+            </figure>
           </aside>
 
-          <form id="signup-form" class="signup-card" novalidate>
-            <div class="form-section">
-              <h3>Account Details</h3>
-              <div class="field-grid">
-                <div class="field full">
-                  <span class="field-label">Customer Type</span>
-                  <div class="choice-grid three">
-                    <label class="choice"><input type="radio" name="customer_type" value="Residential Homeowner/Renter" checked><span>Residential Homeowner/Renter</span></label>
-                    <label class="choice"><input type="radio" name="customer_type" value="Business"><span>Business</span></label>
-                    <label class="choice"><input type="radio" name="customer_type" value="Property Management Company"><span>Property Management Company</span></label>
-                  </div>
-                </div>
-                <div class="field">
-                  <label for="name">Name *</label>
-                  <input id="name" name="name" autocomplete="name" required>
-                  <div class="field-error" id="err-name"></div>
-                </div>
-                <div class="field">
-                  <label for="company_name">Company or Property Name</label>
-                  <input id="company_name" name="company_name" autocomplete="organization">
-                </div>
-                <div class="field">
-                  <label for="phone">Phone *</label>
-                  <input id="phone" name="phone" type="tel" autocomplete="tel" required>
-                  <div class="field-error" id="err-phone"></div>
-                </div>
-                <div class="field">
-                  <label for="email">Email *</label>
-                  <input id="email" name="email" type="email" autocomplete="email" required>
-                  <div class="field-error" id="err-email"></div>
-                </div>
-              </div>
+          <form id="signup-form" class="signup-card wizard" novalidate>
+            <div class="wizard-head">
+              <p class="eyebrow">Start service</p>
+              <h2 id="signup-title">Get on the route in three quick steps.</h2>
+              <p class="wizard-sub">Takes about two minutes. Nothing is charged today.</p>
+              <ol class="stepper" aria-label="Signup steps">
+                <li data-dot="1"><span class="dot">1</span><span class="dot-label">Your bins</span></li>
+                <li data-dot="2"><span class="dot">2</span><span class="dot-label">Your info</span></li>
+                <li data-dot="3"><span class="dot">3</span><span class="dot-label">Secure card</span></li>
+              </ol>
+              <p class="ticket-strip" data-role="ticket-strip" aria-hidden="true">$70/month &middot; $0 today</p>
+            </div>
 
+            <div class="form-section step" data-step="1">
+              <h3 tabindex="-1">Where are the bins?</h3>
               <div id="properties">
                 <fieldset class="property-block" data-suffix="">
                   <div class="property-head">
@@ -1329,10 +1584,51 @@
                 </fieldset>
               </div>
               <button type="button" id="add-property" class="add-property">+ Add Another Property</button>
+              <div class="step-nav">
+                <button type="button" class="btn step-next" data-go="2">Continue</button>
+              </div>
             </div>
 
-            <div class="form-section">
-              <h3>Payment Authorization</h3>
+            <div class="form-section step" data-step="2">
+              <h3 tabindex="-1">Who should we contact?</h3>
+              <div class="field-grid">
+                <div class="field full">
+                  <span class="field-label">Customer Type</span>
+                  <div class="choice-grid three">
+                    <label class="choice"><input type="radio" name="customer_type" value="Residential Homeowner/Renter" checked><span>Residential Homeowner/Renter</span></label>
+                    <label class="choice"><input type="radio" name="customer_type" value="Business"><span>Business</span></label>
+                    <label class="choice"><input type="radio" name="customer_type" value="Property Management Company"><span>Property Management Company</span></label>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="name">Name *</label>
+                  <input id="name" name="name" autocomplete="name" required>
+                  <div class="field-error" id="err-name"></div>
+                </div>
+                <div class="field">
+                  <label for="company_name">Company or Property Name</label>
+                  <input id="company_name" name="company_name" autocomplete="organization">
+                </div>
+                <div class="field">
+                  <label for="phone">Phone *</label>
+                  <input id="phone" name="phone" type="tel" autocomplete="tel" required>
+                  <div class="field-error" id="err-phone"></div>
+                </div>
+                <div class="field">
+                  <label for="email">Email *</label>
+                  <input id="email" name="email" type="email" autocomplete="email" required>
+                  <div class="field-error" id="err-email"></div>
+                </div>
+              </div>
+              <p class="step-reassure">We use this to confirm your route and send service updates. If you get interrupted before finishing, we may call or email to help you finish signing up.</p>
+              <div class="step-nav">
+                <button type="button" class="step-back" data-go="1">Back</button>
+                <button type="button" class="btn step-next" data-go="3">Continue to secure card</button>
+              </div>
+            </div>
+
+            <div class="form-section step" data-step="3">
+              <h3 tabindex="-1">Secure your spot. $0 today.</h3>
               <div class="payment-summary">
                 <div class="summary-row"><span>Monthly plan</span><strong>$70/month per property</strong></div>
                 <div class="summary-row"><span>Properties</span><strong id="summary-count">1</strong></div>
@@ -1376,9 +1672,22 @@
               </label>
               <div class="field-error" id="err-billing_consent"></div>
               <p class="fine-print">Stripe securely handles card details. This site stores only Stripe customer references and safe card display details like brand and last four digits.</p>
+              <div class="step-nav">
+                <button type="button" class="step-back" data-go="2">Back</button>
+                <button id="submit-btn" class="btn" type="submit">Submit For Approval</button>
+              </div>
             </div>
 
-            <button id="submit-btn" class="btn full" type="submit">Submit For Approval</button>
+            <div class="wizard-done" data-role="done" hidden>
+              <h3 tabindex="-1">You&rsquo;re on the list.</h3>
+              <ol class="done-steps">
+                <li><span><strong>We review your address.</strong> We confirm it is in our service area.</span></li>
+                <li><span><strong>We contact you to confirm details.</strong> Bin location, gate codes, and your start date.</span></li>
+                <li><span><strong>Service starts.</strong> Your card is billed on the 1st only after approval.</span></li>
+              </ol>
+              <p class="done-help">Questions? Call <a href="tel:8439553132">843-955-3132</a>.</p>
+            </div>
+
             <div id="form-status" class="form-status" role="status" aria-live="polite"></div>
           </form>
         </div>
@@ -1603,28 +1912,8 @@
         consentAmount.textContent = count > 1 ? '$' + total + ' total ($70 per property)' : '$70';
       }
 
-      function validateForm() {
+      function validateProperties() {
         var ok = true;
-        clearStatus();
-        ['name', 'phone', 'email', 'name_on_card', 'billing_zip', 'billing_consent'].forEach(function (name) {
-          setError(name, '');
-        });
-        ['number', 'expiry', 'cvc'].forEach(function (key) {
-          setCardError(key, '');
-        });
-
-        ['name', 'phone', 'email', 'name_on_card', 'billing_zip'].forEach(function (name) {
-          if (!value(name)) {
-            setError(name, 'Required.');
-            ok = false;
-          }
-        });
-
-        if (value('email') && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value('email'))) {
-          setError('email', 'Enter a valid email address.');
-          ok = false;
-        }
-
         blocks().forEach(function (block) {
           var sfx = blockSuffix(block);
           ['address' + sfx, 'number_of_bins' + sfx, 'recycling_next_pickup' + sfx].forEach(function (name) {
@@ -1657,12 +1946,43 @@
             ok = false;
           }
         });
+        return ok;
+      }
 
+      function validateContact() {
+        var ok = true;
+        ['name', 'phone', 'email'].forEach(function (name) {
+          setError(name, '');
+          if (!value(name)) {
+            setError(name, 'Required.');
+            ok = false;
+          }
+        });
+        if (value('email') && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value('email'))) {
+          setError('email', 'Enter a valid email address.');
+          ok = false;
+        }
+        return ok;
+      }
+
+      function validatePayment() {
+        var ok = true;
+        ['name_on_card', 'billing_zip', 'billing_consent'].forEach(function (name) {
+          setError(name, '');
+        });
+        ['number', 'expiry', 'cvc'].forEach(function (key) {
+          setCardError(key, '');
+        });
+        ['name_on_card', 'billing_zip'].forEach(function (name) {
+          if (!value(name)) {
+            setError(name, 'Required.');
+            ok = false;
+          }
+        });
         if (!byName('billing_consent').checked) {
           setError('billing_consent', 'You must authorize stored monthly billing to continue.');
           ok = false;
         }
-
         if (!cardState.number.complete) {
           setCardError('number', 'Enter your card number.');
           ok = false;
@@ -1675,11 +1995,25 @@
           setCardError('cvc', 'Enter the CVC.');
           ok = false;
         }
-
-        if (!ok) {
-          showStatus('error', 'Please fix the highlighted fields.');
-        }
         return ok;
+      }
+
+      var STEP_VALIDATORS = {1: validateProperties, 2: validateContact, 3: validatePayment};
+
+      // Validates every step; if an earlier step fails, sends the visitor back to it.
+      function validateForm() {
+        clearStatus();
+        var firstBad = 0;
+        [1, 2, 3].forEach(function (n) {
+          if (!STEP_VALIDATORS[n]() && !firstBad) firstBad = n;
+        });
+        if (firstBad) {
+          if (firstBad !== currentStep) goToStep(firstBad);
+          focusFirstError(firstBad);
+          showStatus('error', 'Please fix the highlighted fields.');
+          return false;
+        }
+        return true;
       }
 
       function propertyData(block) {
@@ -1786,14 +2120,201 @@
           cardNumber = elements.create('cardNumber', {showIcon: true, style: elementStyle});
           cardExpiry = elements.create('cardExpiry', {style: elementStyle});
           cardCvc = elements.create('cardCvc', {style: elementStyle});
-          mountCardElement(cardNumber, '#card-number-element', 'number');
-          mountCardElement(cardExpiry, '#card-expiry-element', 'expiry');
-          mountCardElement(cardCvc, '#card-cvc-element', 'cvc');
+          mountCardsIfVisible();
         } catch (err) {
           showStatus('error', 'Payment setup is unavailable. Please call 843-955-3132 to start service.');
           submitBtn.disabled = true;
         }
       }
+
+      // Stripe Elements mount only once the card step is on screen so their
+      // iframes size correctly (they are created early, mounted on step 3).
+      var cardsMounted = false;
+      function mountCardsIfVisible() {
+        if (cardsMounted || !cardNumber || currentStep !== 3) return;
+        cardsMounted = true;
+        mountCardElement(cardNumber, '#card-number-element', 'number');
+        mountCardElement(cardExpiry, '#card-expiry-element', 'expiry');
+        mountCardElement(cardCvc, '#card-cvc-element', 'cvc');
+      }
+
+      // ---------- Stepped signup ----------
+      var steps = Array.prototype.slice.call(form.querySelectorAll('.step'));
+      var dots = Array.prototype.slice.call(form.querySelectorAll('.stepper li'));
+      var doneEl = form.querySelector('[data-role="done"]');
+      var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var currentStep = 1;
+      form.classList.add('is-wizard');
+
+      function focusFirstError(n) {
+        var step = steps[n - 1];
+        var bad = step.querySelector('.input-error, .stripe-error');
+        if (!bad) {
+          var err = Array.prototype.find.call(step.querySelectorAll('.field-error'), function (e) { return e.textContent; });
+          if (err) bad = err.closest('.field') && err.closest('.field').querySelector('input');
+        }
+        if (bad && bad.focus) bad.focus();
+      }
+
+      function goToStep(n, opts) {
+        var back = n < currentStep;
+        currentStep = n;
+        steps.forEach(function (step, i) {
+          var active = i + 1 === n;
+          step.classList.toggle('is-active', active);
+          step.classList.toggle('from-right', active && back);
+        });
+        dots.forEach(function (dot, i) {
+          dot.classList.toggle('is-current', i + 1 === n);
+          dot.classList.toggle('is-done', i + 1 < n);
+          if (i + 1 === n) dot.setAttribute('aria-current', 'step'); else dot.removeAttribute('aria-current');
+        });
+        if (n === 3) { ensureStripe(); mountCardsIfVisible(); }
+        if (opts && opts.silent) return;
+        var top = form.getBoundingClientRect().top;
+        if (top < 0 || top > window.innerHeight * 0.5) {
+          form.scrollIntoView({behavior: reduceMotion ? 'auto' : 'smooth', block: 'start'});
+        }
+        var heading = steps[n - 1].querySelector('h3');
+        if (heading) heading.focus({preventScroll: true});
+      }
+
+      form.addEventListener('click', function (event) {
+        var nav = event.target.closest('[data-go]');
+        if (!nav) return;
+        var target = Number(nav.getAttribute('data-go'));
+        if (target > currentStep) {
+          clearStatus();
+          if (!STEP_VALIDATORS[currentStep]()) { focusFirstError(currentStep); return; }
+          if (currentStep === 2) captureLead();
+        }
+        goToStep(target);
+      });
+
+      // Save contact + property details in the background once step 2 is done,
+      // so the team can follow up if the card step is never submitted. Uses the
+      // same submission_id as the final signup, which marks the lead converted.
+      // Never blocks the visitor; failures are ignored.
+      var lastLeadSent = '';
+      function captureLead() {
+        var all = blocks();
+        var primary = propertyData(all[0]);
+        var lead = {
+          lead_id: submissionId,
+          customer_type: checkedValue('customer_type'),
+          name: value('name'),
+          company_name: value('company_name'),
+          phone: value('phone'),
+          email: value('email'),
+          address: primary.address,
+          number_of_bins: primary.number_of_bins,
+          trash_pickup_day: primary.trash_pickup_day,
+          recycling_frequency: primary.recycling_frequency,
+          recycling_pickup_day: primary.recycling_pickup_day,
+          property_count: all.length,
+          source: 'yourtrashdayteam-home'
+        };
+        var body = JSON.stringify(lead);
+        if (body === lastLeadSent) return;
+        lastLeadSent = body;
+        try {
+          fetch('/.netlify/functions/partner-lead', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: body,
+            keepalive: true
+          }).catch(function () {});
+        } catch (err) { /* lead capture is best effort */ }
+      }
+
+      // ---------- Live work-order ticket ----------
+      var ticket = document.querySelector('[data-role="ticket"]');
+      var ticketStrip = form.querySelector('[data-role="ticket-strip"]');
+      var ticketFrozen = false;
+      var SHORT = {Monday: 'Mon', Tuesday: 'Tue', Wednesday: 'Wed', Thursday: 'Thu', Friday: 'Fri', Saturday: 'Sat', Sunday: 'Sun'};
+      var JS_DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      var monthFmt = new Intl.DateTimeFormat('en-US', {month: 'short'});
+
+      function setTicket(key, text, empty) {
+        var el = ticket && ticket.querySelector('[data-t="' + key + '"]');
+        if (!el) return;
+        var changed = el.textContent !== text;
+        el.textContent = text;
+        el.classList.toggle('is-empty', !!empty);
+        if (changed && !empty && !reduceMotion) {
+          el.classList.remove('is-fresh');
+          void el.offsetWidth;
+          el.classList.add('is-fresh');
+        }
+      }
+
+      function upcoming(dayName) {
+        var d = new Date();
+        d.setHours(12, 0, 0, 0);
+        d.setDate(d.getDate() + 1);
+        while (JS_DAYS[d.getDay()] !== dayName) d.setDate(d.getDate() + 1);
+        var out = [];
+        for (var i = 0; i < 4; i += 1) { out.push(new Date(d)); d.setDate(d.getDate() + 7); }
+        return out;
+      }
+
+      function renderTicket() {
+        if (!ticket || ticketFrozen) return;
+        var all = blocks();
+        var first = propertyData(all[0]);
+        var addr = first.address;
+        setTicket('address', addr || 'Add in step 1', !addr);
+        var bins = Number(first.number_of_bins);
+        setTicket('bins', bins > 0 ? bins + (bins === 1 ? ' bin' : ' bins') : '\u2014', !(bins > 0));
+        var day = first.trash_pickup_day;
+        setTicket('day', day ? 'Every ' + day : '\u2014', !day);
+        var rec = 'None';
+        if (first.recycling_frequency === 'Weekly Recycling') rec = first.recycling_pickup_day ? 'Weekly, ' + first.recycling_pickup_day + 's' : 'Weekly';
+        if (first.recycling_frequency === 'Bi-Weekly Recycling') rec = first.recycling_pickup_day ? 'Every other ' + first.recycling_pickup_day : 'Every other week';
+        setTicket('recycling', rec, false);
+        var count = all.length;
+        ticket.querySelector('[data-t-row="props"]').hidden = count < 2;
+        setTicket('props', String(count), false);
+        setTicket('total', '$' + (BASE_PRICE * count), false);
+
+        var route = ticket.querySelector('[data-role="ticket-route"]');
+        var list = ticket.querySelector('[data-role="ticket-days"]');
+        if (day) {
+          var key = day + '|' + new Date().toDateString();
+          if (list.getAttribute('data-key') !== key) {
+            list.setAttribute('data-key', key);
+            list.innerHTML = upcoming(day).map(function (dt) {
+              return '<li><small>' + SHORT[day] + '</small>' + monthFmt.format(dt) + ' ' + dt.getDate() + '</li>';
+            }).join('');
+          }
+          route.hidden = false;
+        } else {
+          route.hidden = true;
+        }
+
+        if (ticketStrip) {
+          var bits = [];
+          if (day) bits.push('Every ' + SHORT[day]);
+          if (bins > 0) bits.push(bins + (bins === 1 ? ' bin' : ' bins'));
+          bits.push('$' + (BASE_PRICE * count) + '/month');
+          bits.push('$0 today');
+          ticketStrip.textContent = bits.join(' \u00b7 ');
+        }
+      }
+
+      var ticketNo = ticket && ticket.querySelector('[data-role="ticket-no"]');
+      if (ticketNo) ticketNo.textContent = 'Opened ' + new Intl.DateTimeFormat('en-US', {month: 'short', day: 'numeric'}).format(new Date());
+
+      function clearFixedError(event) {
+        var t = event.target;
+        if (!t.name) return;
+        if (t.type === 'radio') { setChoiceError(t.name, ''); return; }
+        if (t.type === 'checkbox' ? t.checked : t.value.trim()) setError(t.name, '');
+      }
+      form.addEventListener('input', clearFixedError);
+      form.addEventListener('change', clearFixedError);
+      form.addEventListener('input', renderTicket);
+      form.addEventListener('change', renderTicket);
 
       propertiesEl.addEventListener('change', function (event) {
         if (event.target.name && event.target.name.lastIndexOf('recycling_frequency', 0) === 0) {
@@ -1807,6 +2328,7 @@
           removeBtn.closest('.property-block').remove();
           renumber();
           updateTotals();
+          renderTicket();
         }
       });
 
@@ -1817,6 +2339,7 @@
         toggleRecycling(block);
         renumber();
         updateTotals();
+        renderTicket();
         var firstInput = block.querySelector('input');
         if (firstInput) firstInput.focus();
       });
@@ -1824,9 +2347,17 @@
       form.querySelectorAll('input[type="date"]').forEach(function (el) { el.min = todayISO; });
       blocks().forEach(toggleRecycling);
       updateTotals();
+      goToStep(1, {silent: true});
+      renderTicket();
 
       form.addEventListener('submit', async function (event) {
         event.preventDefault();
+        // Enter on steps 1-2 advances instead of submitting.
+        if (currentStep < 3) {
+          var next = form.querySelector('.step.is-active .step-next');
+          if (next) next.click();
+          return;
+        }
         if (!stripe || !cardNumber) {
           showStatus('error', 'Payment setup is still loading. Please try again in a moment.');
           return;
@@ -1871,6 +2402,8 @@
             throw new Error(data.error || 'Submission failed. Please call 843-955-3132.');
           }
 
+          ticketFrozen = true;
+          if (ticket) ticket.classList.add('is-done');
           form.reset();
           blocks().slice(1).forEach(function (block) { block.remove(); });
           renumber();
@@ -1880,6 +2413,13 @@
           pendingPaymentMethodId = '';
           showStatus('success', 'Thanks. Your account was submitted for approval. We will review the address, confirm details, and contact you shortly.');
           submitBtn.textContent = 'Submitted';
+          form.classList.add('is-done');
+          if (doneEl) {
+            doneEl.hidden = false;
+            var doneHeading = doneEl.querySelector('h3');
+            form.scrollIntoView({behavior: reduceMotion ? 'auto' : 'smooth', block: 'start'});
+            if (doneHeading) doneHeading.focus({preventScroll: true});
+          }
         } catch (err) {
           showStatus('error', err.message || 'Something went wrong. Please call 843-955-3132.');
           submitBtn.disabled = false;
@@ -1976,8 +2516,9 @@
         }
         var signup = document.getElementById('signup');
         if (signup) signup.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'start'});
-        var nameIn = document.getElementById('name');
-        if (nameIn) setTimeout(function () { nameIn.focus({preventScroll: true}); }, reduce ? 0 : 600);
+        // Land on the first still-empty field of step 1 (address and day may be prefilled).
+        var nextIn = !typed ? document.getElementById('address') : document.getElementById('number_of_bins');
+        if (nextIn) setTimeout(function () { nextIn.focus({preventScroll: true}); }, reduce ? 0 : 600);
       });
     })();
   </script>
