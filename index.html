@@ -582,35 +582,182 @@
     }
     .service-band h2 { color: var(--heading-light); }
     .service-band .section-head p { color: var(--on-navy-muted); }
-    .service-grid {
+    /* ---------- Trash week: illustrated, playable "how it works" ---------- */
+    .trash-week {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: clamp(2rem, 5vw, 4.5rem);
+      grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+      grid-template-areas:
+        "head head"
+        "scene steps"
+        "scene cta";
+      column-gap: clamp(1.75rem, 4vw, 3.5rem);
+      row-gap: 1.25rem;
       align-items: start;
     }
-    .service-steps { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
-    .service-steps li {
-      display: flex;
-      gap: 16px;
-      align-items: center;
-      padding: 18px 0;
-      border-top: 1px solid oklch(1 0 0 / .14);
-      font-family: var(--display);
-      font-weight: 700;
-      font-size: 1.125rem;
-      line-height: 1.35;
+    .tw-head { grid-area: head; margin-bottom: clamp(0.25rem, 1.5vw, 1rem); }
+    .tw-head p:last-child { max-width: 65ch; }
+    .tw-scene {
+      grid-area: scene;
+      position: relative;
+      margin: 0;
+      overflow: hidden;
+      border-radius: 18px;
+      background: var(--navy-deep);
+      box-shadow: 0 30px 70px oklch(0.12 0.04 260 / .55), 0 0 0 1px oklch(1 0 0 / .08);
     }
-    .service-steps li:last-child { border-bottom: 1px solid oklch(1 0 0 / .14); }
-    .step-num {
-      width: 34px;
-      height: 34px;
+    .tw-frames { position: relative; aspect-ratio: 16 / 9; }
+    .tw-frame {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 62% 60%;
+      opacity: 0;
+      transform: scale(1.06);
+      transition: opacity 1.1s var(--ease), transform 1.1s var(--ease);
+    }
+    .tw-scene[data-step="1"] .tw-frame[data-frame="1"],
+    .tw-scene[data-step="2"] .tw-frame[data-frame="2"],
+    .tw-scene[data-step="3"] .tw-frame[data-frame="3"],
+    .tw-scene[data-step="4"] .tw-frame[data-frame="4"] {
+      opacity: 1;
+      transform: scale(1);
+      transition: opacity 1.1s var(--ease), transform 7s cubic-bezier(.2, .6, .35, 1);
+    }
+
+    .tw-tally {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0;
+      padding: 6px 8px 6px 14px;
+      border-radius: 999px;
+      background: oklch(0.19 0.045 260 / .78);
+      color: var(--on-navy);
+      font-size: 0.8125rem;
+      font-weight: 700;
+    }
+    .tw-tally strong {
       display: grid;
       place-items: center;
+      min-width: 28px;
+      height: 28px;
       border-radius: 999px;
-      color: var(--navy);
       background: var(--gold);
-      font-size: 0.8125rem;
-      flex: 0 0 auto;
+      color: var(--navy);
+      font-family: var(--display);
+      font-size: 1rem;
+    }
+    .tw-caption { display: none; }
+
+    .tw-steps { grid-area: steps; display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+    .tw-step {
+      position: relative;
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
+      width: 100%;
+      min-height: 44px;
+      padding: 14px 16px;
+      overflow: hidden;
+      border: 1px solid oklch(1 0 0 / .12);
+      border-radius: 12px;
+      background: transparent;
+      color: var(--on-navy);
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+      transition: background .25s var(--ease), border-color .25s var(--ease);
+    }
+    .tw-step:hover { border-color: oklch(1 0 0 / .28); }
+    .tw-step:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+    .tw-step[aria-pressed="true"] { background: oklch(1 0 0 / .07); border-color: oklch(0.78 0.14 85 / .55); }
+    .tw-num {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border: 2px solid var(--gold);
+      border-radius: 999px;
+      color: var(--gold);
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: 0.875rem;
+      transition: background .25s var(--ease), color .25s var(--ease);
+    }
+    .tw-step[aria-pressed="true"] .tw-num { background: var(--gold); color: var(--navy); }
+    .tw-short { display: none; }
+    .tw-detail { display: grid; gap: 2px; }
+    .tw-time, .tw-cap-time {
+      color: var(--gold);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .tw-detail strong, .tw-caption strong {
+      color: var(--heading-light);
+      font-family: var(--display);
+      font-size: 1.0625rem;
+      line-height: 1.3;
+    }
+    .tw-who, .tw-cap-who { color: var(--on-navy-muted); font-size: 0.875rem; }
+    .tw-bar {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transform-origin: left;
+    }
+    .is-playing .tw-step[aria-pressed="true"] .tw-bar { animation: tw-bar var(--tw-dur, 4200ms) linear forwards; }
+    .is-paused .tw-step[aria-pressed="true"] .tw-bar { animation-play-state: paused; }
+    @keyframes tw-bar { to { transform: scaleX(1); } }
+
+    .tw-cta { grid-area: cta; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin-top: 8px; }
+    .tw-cta p { margin: 0; color: var(--on-navy-muted); font-size: 0.875rem; font-weight: 600; }
+
+    @media (max-width: 980px) {
+      .trash-week {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas: "head" "scene" "steps" "cta";
+      }
+      .tw-frames { aspect-ratio: 4 / 3; }
+      .tw-frame { object-position: 84% 50%; }
+      .tw-caption {
+        display: grid;
+        gap: 2px;
+        min-height: 104px;
+        padding: 14px 16px 16px;
+        background: var(--navy-deep);
+        border-top: 1px solid oklch(1 0 0 / .08);
+      }
+      .tw-caption strong { font-size: 1.125rem; }
+      .tw-steps { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+      .tw-step { grid-template-columns: 1fr; justify-items: center; gap: 4px; padding: 10px 4px 12px; text-align: center; }
+      .tw-num { width: 30px; height: 30px; }
+      .tw-short { display: block; font-size: 0.8125rem; font-weight: 700; }
+      .tw-detail {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+      }
+      .tw-cta .btn { flex: 1 1 100%; }
+      .tw-cta p { flex: 1 1 100%; text-align: center; }
+    }
+    @media (max-width: 420px) {
+      .tw-tally { top: 10px; left: 10px; font-size: 0.75rem; padding: 4px 6px 4px 12px; }
+      .tw-tally strong { min-width: 24px; height: 24px; font-size: 0.875rem; }
     }
     .included { margin-top: clamp(2.5rem, 5vw, 4rem); }
     .included h3 {
@@ -1193,7 +1340,7 @@
     }
 
     @media (max-width: 980px) {
-      .hero-grid, .pain-grid, .service-grid, .price-layout, .signup-layout {
+      .hero-grid, .pain-grid, .price-layout, .signup-layout {
         grid-template-columns: 1fr;
       }
       .signup-aside { position: static; order: 2; }
@@ -1416,18 +1563,55 @@
 
       <section id="offer" class="service-band" aria-labelledby="service-title">
         <div class="container">
-          <div class="service-grid">
-            <div class="section-head reveal" style="margin-bottom: 0;">
+          <div class="trash-week" data-role="trash-week">
+            <div class="section-head tw-head reveal">
               <p class="eyebrow">How it works</p>
               <h2 id="service-title">Two local crews. One cleaner weekly routine.</h2>
               <p>Your Trash Day Team combines reliable <a href="/trash-can-valet-charleston/">weekly bin roll-out and roll-in service</a> from Trash Day Made Easy with <a href="/bin-cleaning-charleston/">monthly bin washing</a> from The Bin Boy. Built for people who want a dependable recurring service, clear communication, and a cleaner-looking property without adding another chore.</p>
             </div>
-            <ol class="service-steps reveal">
-              <li><span class="step-num">1</span>We roll bins out before pickup.</li>
-              <li><span class="step-num">2</span>We bring bins back after collection.</li>
-              <li><span class="step-num">3</span>The Bin Boy washes bins once each month.</li>
-              <li><span class="step-num">4</span>You get a simpler, cleaner trash day.</li>
+
+            <figure class="tw-scene reveal" data-step="1">
+              <div class="tw-frames">
+                <img class="tw-frame" data-frame="1" src="/assets/images/trash-week/step-1-1600.webp" srcset="/assets/images/trash-week/step-1-960.webp 960w, /assets/images/trash-week/step-1-1600.webp 1600w" sizes="(max-width: 980px) 100vw, 690px" width="1600" height="900" alt="" loading="lazy" decoding="async">
+                <img class="tw-frame" data-frame="2" data-src="/assets/images/trash-week/step-2-1600.webp" data-srcset="/assets/images/trash-week/step-2-960.webp 960w, /assets/images/trash-week/step-2-1600.webp 1600w" sizes="(max-width: 980px) 100vw, 690px" width="1600" height="900" alt="" loading="lazy" decoding="async">
+                <img class="tw-frame" data-frame="3" data-src="/assets/images/trash-week/step-3-1600.webp" data-srcset="/assets/images/trash-week/step-3-960.webp 960w, /assets/images/trash-week/step-3-1600.webp 1600w" sizes="(max-width: 980px) 100vw, 690px" width="1600" height="900" alt="" loading="lazy" decoding="async">
+                <img class="tw-frame" data-frame="4" data-src="/assets/images/trash-week/step-4-1600.webp" data-srcset="/assets/images/trash-week/step-4-960.webp 960w, /assets/images/trash-week/step-4-1600.webp 1600w" sizes="(max-width: 980px) 100vw, 690px" width="1600" height="900" alt="" loading="lazy" decoding="async">
+              </div>
+              <p class="tw-tally"><span>Your trips to the curb</span> <strong>0</strong></p>
+              <figcaption class="tw-caption" aria-hidden="true">
+                <span class="tw-cap-time" data-role="tw-cap-time">Before pickup</span>
+                <strong data-role="tw-cap-title">We roll your bins to the curb.</strong>
+                <span class="tw-cap-who" data-role="tw-cap-who">Trash Day Made Easy</span>
+              </figcaption>
+            </figure>
+
+            <ol class="tw-steps reveal" aria-label="Your trash week, step by step">
+              <li><button type="button" class="tw-step" data-step="1" aria-pressed="true">
+                <span class="tw-num">1</span><span class="tw-short" aria-hidden="true">Out</span>
+                <span class="tw-detail"><span class="tw-time" data-tw-time="1">Before pickup</span><strong>We roll your bins to the curb.</strong><span class="tw-who">Trash Day Made Easy</span></span>
+                <span class="tw-bar" aria-hidden="true"></span>
+              </button></li>
+              <li><button type="button" class="tw-step" data-step="2" aria-pressed="false">
+                <span class="tw-num">2</span><span class="tw-short" aria-hidden="true">Pickup</span>
+                <span class="tw-detail"><span class="tw-time" data-tw-time="2">Pickup day</span><strong>The truck empties them. You&rsquo;re not out there.</strong><span class="tw-who">Your regular trash pickup</span></span>
+                <span class="tw-bar" aria-hidden="true"></span>
+              </button></li>
+              <li><button type="button" class="tw-step" data-step="3" aria-pressed="false">
+                <span class="tw-num">3</span><span class="tw-short" aria-hidden="true">Back</span>
+                <span class="tw-detail"><span class="tw-time" data-tw-time="3">After collection</span><strong>We bring your bins back in.</strong><span class="tw-who">Trash Day Made Easy</span></span>
+                <span class="tw-bar" aria-hidden="true"></span>
+              </button></li>
+              <li><button type="button" class="tw-step" data-step="4" aria-pressed="false">
+                <span class="tw-num">4</span><span class="tw-short" aria-hidden="true">Wash</span>
+                <span class="tw-detail"><span class="tw-time" data-tw-time="4">Once a month</span><strong>The Bin Boy washes them clean.</strong><span class="tw-who">The Bin Boy</span></span>
+                <span class="tw-bar" aria-hidden="true"></span>
+              </button></li>
             </ol>
+
+            <div class="tw-cta reveal">
+              <a class="btn" href="#signup">Put My Bins On The Route</a>
+              <p>$70/month &middot; $0 today &middot; no contract</p>
+            </div>
           </div>
 
           <div class="included reveal">
@@ -2519,6 +2703,140 @@
         // Land on the first still-empty field of step 1 (address and day may be prefilled).
         var nextIn = !typed ? document.getElementById('address') : document.getElementById('number_of_bins');
         if (nextIn) setTimeout(function () { nextIn.focus({preventScroll: true}); }, reduce ? 0 : 600);
+      });
+    })();
+  </script>
+  <script>
+    // Trash week: an illustrated, playable version of "how it works".
+    // Autoplays once scrolled into view, pauses on hover/focus, stops for good
+    // when the visitor picks a step, and names the visitor's own trash day once
+    // they choose one in the hero planner or the signup form.
+    (function () {
+      var root = document.querySelector('[data-role="trash-week"]');
+      if (!root) return;
+      var scene = root.querySelector('.tw-scene');
+      var buttons = Array.prototype.slice.call(root.querySelectorAll('.tw-step'));
+      var capTime = root.querySelector('[data-role="tw-cap-time"]');
+      var capTitle = root.querySelector('[data-role="tw-cap-title"]');
+      var capWho = root.querySelector('[data-role="tw-cap-who"]');
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var DUR = 4200;
+      var current = 0;
+      var timer = null;
+      var startedAt = 0;
+      var remaining = DUR;
+      var stopped = reduce;
+      var inView = false;
+      var held = false;
+      var started = false;
+
+      root.style.setProperty('--tw-dur', DUR + 'ms');
+
+      // Frames 2-4 are only fetched once the section is near, so they never
+      // compete with the hero on a phone's first load.
+      var framesLoaded = false;
+      function loadFrames() {
+        if (framesLoaded) return;
+        framesLoaded = true;
+        Array.prototype.forEach.call(scene.querySelectorAll('img[data-src]'), function (img) {
+          img.srcset = img.getAttribute('data-srcset');
+          img.src = img.getAttribute('data-src');
+        });
+      }
+
+      function setStep(n) {
+        current = n;
+        scene.setAttribute('data-step', String(n));
+        buttons.forEach(function (btn) {
+          btn.setAttribute('aria-pressed', String(Number(btn.getAttribute('data-step')) === n));
+        });
+        var active = buttons[n - 1];
+        if (!active) return;
+        capTime.textContent = active.querySelector('.tw-time').textContent;
+        capTitle.textContent = active.querySelector('strong').textContent;
+        capWho.textContent = active.querySelector('.tw-who').textContent;
+        // Restart the progress bar on the newly active step.
+        var bar = active.querySelector('.tw-bar');
+        bar.style.animation = 'none';
+        void bar.offsetWidth;
+        bar.style.animation = '';
+      }
+
+      function stopTimer() {
+        clearTimeout(timer);
+        timer = null;
+      }
+
+      function run(ms) {
+        stopTimer();
+        startedAt = Date.now();
+        remaining = ms;
+        timer = setTimeout(function () {
+          setStep(current % 4 + 1);
+          run(DUR);
+        }, ms);
+      }
+
+      function sync() {
+        var playing = !stopped && inView;
+        root.classList.toggle('is-playing', playing);
+        root.classList.toggle('is-paused', playing && held);
+        if (!playing || held) {
+          if (timer) remaining = Math.max(0, remaining - (Date.now() - startedAt));
+          stopTimer();
+          return;
+        }
+        if (!timer) run(remaining || DUR);
+      }
+
+      buttons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          stopped = true;
+          stopTimer();
+          setStep(Number(btn.getAttribute('data-step')));
+          sync();
+        });
+      });
+      root.addEventListener('pointerenter', function () { held = true; sync(); });
+      root.addEventListener('pointerleave', function () { held = false; sync(); });
+      root.addEventListener('focusin', function () { held = true; sync(); });
+      root.addEventListener('focusout', function (event) {
+        if (!root.contains(event.relatedTarget)) { held = false; sync(); }
+      });
+
+      if (reduce || !('IntersectionObserver' in window)) {
+        loadFrames();
+        setStep(1);
+      } else {
+        setStep(1);
+        new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            inView = entry.isIntersecting;
+            if (inView && !started) { started = true; remaining = DUR; }
+            if (started) sync();
+          });
+        }, {threshold: 0.45}).observe(scene);
+        new IntersectionObserver(function (entries, obs) {
+          if (entries.some(function (e) { return e.isIntersecting; })) { loadFrames(); obs.disconnect(); }
+        }, {rootMargin: '600px 0px'}).observe(scene);
+      }
+
+      // Personalise with the visitor's own trash day.
+      var dayLabels = {
+        1: function (d) { return d ? 'Before ' + d + '’s pickup' : 'Before pickup'; },
+        2: function (d) { return d ? d + ' · pickup' : 'Pickup day'; },
+        3: function (d) { return d ? 'After ' + d + '’s collection' : 'After collection'; }
+      };
+      function applyDay(day) {
+        Object.keys(dayLabels).forEach(function (k) {
+          var el = root.querySelector('[data-tw-time="' + k + '"]');
+          if (el) el.textContent = dayLabels[k](day);
+        });
+        if (current > 0) setStep(current);
+      }
+      document.addEventListener('change', function (event) {
+        var name = event.target && event.target.name;
+        if ((name === 'planner_day' || name === 'trash_pickup_day') && event.target.checked) applyDay(event.target.value);
       });
     })();
   </script>
