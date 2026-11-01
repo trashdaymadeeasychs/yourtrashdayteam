@@ -256,18 +256,6 @@
     .nav-toggle .icon-close { display: none; }
     .nav-toggle[aria-expanded="true"] .icon-open { display: none; }
     .nav-toggle[aria-expanded="true"] .icon-close { display: block; }
-    .logo-tile-link {
-      display: block;
-      border-radius: 12px;
-      text-decoration: none;
-      transition: transform .18s var(--ease), box-shadow .18s var(--ease);
-    }
-    .logo-tile-link:hover,
-    .logo-tile-link:focus-visible {
-      transform: translateY(-3px);
-      box-shadow: 0 16px 34px oklch(0.12 0.04 260 / .3);
-    }
-    .logo-tile-link:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
 
     .btn {
       appearance: none;
@@ -390,23 +378,127 @@
       border-radius: 18px;
       box-shadow: 0 30px 80px oklch(0.12 0.04 260 / .45);
     }
-    .logo-pair { display: grid; gap: 14px; }
-    .logo-tile {
+    .planner { padding: clamp(20px, 3vw, 28px); padding-bottom: 40px; }
+    .planner-logos {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 16px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-weight: 700;
+    }
+    .planner-logos a { display: block; border-radius: 8px; }
+    .planner-logos a:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+    .planner-logos img.bin-boy { height: 46px; width: auto; }
+    .planner-logos img.tdme { height: 30px; width: auto; }
+    .planner-days { margin: 0; padding: 0; border: 0; min-width: 0; }
+    .planner-title {
+      padding: 0;
+      margin-bottom: 14px;
+      color: var(--navy);
+      font-family: var(--display);
+      font-size: clamp(1.375rem, 2.2vw, 1.625rem);
+      font-weight: 800;
+      line-height: 1.1;
+    }
+    .planner-day-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+    .planner-day-grid label { position: relative; }
+    .planner-day-grid input { position: absolute; opacity: 0; pointer-events: none; }
+    .planner-day-grid span {
       display: grid;
       place-items: center;
-      min-height: 180px;
-      padding: 20px;
-      background: oklch(0.965 0.008 210);
+      min-height: 48px;
+      border: 1px solid oklch(0.78 0.02 250);
       border-radius: 12px;
+      color: var(--navy);
+      background: var(--paper);
+      font-size: 0.875rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .18s var(--ease), border-color .18s var(--ease), transform .18s var(--ease);
     }
-    .logo-tile img { max-height: 140px; object-fit: contain; }
+    .planner-day-grid span:hover { border-color: var(--green-press); }
+    .planner-day-grid input:checked + span {
+      color: oklch(0.99 0.005 150);
+      border-color: var(--green-press);
+      background: var(--green-press);
+    }
+    .planner-day-grid input:focus-visible + span { outline: 3px solid var(--gold); outline-offset: 2px; }
+    .planner-day-grid span:active { transform: translateY(1px); }
+    .planner-hint {
+      margin: 16px 0 0;
+      color: var(--muted);
+      font-size: 0.9375rem;
+    }
+    .planner-kicker {
+      margin: 20px 0 4px;
+      color: var(--green-press);
+      font-size: 0.8125rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .planner-sub { margin: 0 0 12px; color: var(--muted); font-size: 0.9375rem; }
+    .planner-weeks {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+    .planner-weeks li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      min-height: 48px;
+      padding: 8px 10px 8px 14px;
+      background: var(--paper);
+      border-radius: 10px;
+      font-size: 0.9375rem;
+    }
+    .planner-weeks time { color: var(--navy); font-weight: 700; }
+    .planner-weeks .tick {
+      display: grid;
+      place-items: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      background: var(--green-press);
+      color: oklch(0.99 0.005 150);
+      font-size: 0.875rem;
+      font-weight: 800;
+    }
+    .js .planner-weeks li { opacity: 0; transform: translateY(8px); }
+    .js .planner-weeks li.is-in {
+      opacity: 1;
+      transform: none;
+      transition: opacity .45s var(--ease), transform .45s var(--ease);
+    }
+    .js .planner-weeks li .tick { transform: scale(0); }
+    .js .planner-weeks li.is-in .tick { transform: scale(1); transition: transform .35s var(--ease) .18s; }
+    .planner-wash {
+      margin: 10px 0 0;
+      color: var(--navy);
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+    .planner-wash span { color: var(--green-press); font-weight: 800; margin-right: 4px; }
+    .planner-go { margin-top: 18px; }
+    .planner-go label { display: block; margin-bottom: 8px; color: var(--navy); font-weight: 700; }
+    .planner-go-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .planner-go-row input { flex: 1 1 200px; min-width: 0; }
+    .planner-go-row .btn { flex: 1 0 auto; white-space: nowrap; }
     .price-stamp {
       position: absolute;
-      right: -20px;
-      bottom: -24px;
+      right: -26px;
+      top: -58px;
       z-index: 2;
-      width: 172px;
-      min-height: 172px;
+      width: 148px;
+      min-height: 148px;
       display: grid;
       place-items: center;
       text-align: center;
@@ -421,7 +513,7 @@
     .price-stamp strong {
       display: block;
       font-family: var(--display);
-      font-size: 2.75rem;
+      font-size: 2.375rem;
       line-height: .96;
     }
     .price-stamp span {
@@ -875,8 +967,8 @@
       }
       .signup-aside { position: static; }
       .included-grid { grid-template-columns: 1fr 1fr; }
-      .hero-card { max-width: 520px; }
-      .price-stamp { right: 12px; bottom: -20px; }
+      .hero-card { max-width: 520px; margin-top: 40px; }
+      .price-stamp { right: -12px; top: -48px; }
     }
 
     @media (max-width: 720px) {
@@ -894,8 +986,9 @@
       .phone-link { font-size: 0.8125rem; }
       .nav-actions .btn { min-height: 44px; padding: 9px 14px; font-size: 0.875rem; }
       .hero-actions .btn { width: 100%; }
-      .logo-tile { min-height: 148px; }
-      .logo-tile img { max-height: 112px; }
+      .planner-day-grid { grid-template-columns: repeat(4, 1fr); }
+      .planner-go-row { grid-template-columns: 1fr; }
+      .planner { padding-bottom: 22px; }
       .price-stamp {
         position: static;
         width: auto;
@@ -994,18 +1087,43 @@
               <span>No service contract</span>
             </div>
           </div>
-          <div class="hero-card rise rise-3" aria-label="Partner logos and offer price">
-            <div class="logo-pair">
-              <a class="logo-tile-link" href="https://www.thebinboy.com/" target="_blank" rel="noopener noreferrer" aria-label="Visit The Bin Boy website (opens in a new tab)">
-                <span class="logo-tile">
-                  <img src="/assets/images/the-bin-boy-logo.webp" alt="The Bin Boy logo" width="298" height="320" loading="lazy">
-                </span>
+          <div class="hero-card planner rise rise-3">
+            <div class="planner-logos" aria-label="Your Trash Day Team partners">
+              <a href="https://www.thebinboy.com/" target="_blank" rel="noopener noreferrer" aria-label="Visit The Bin Boy website (opens in a new tab)">
+                <img src="/assets/images/the-bin-boy-logo.webp" alt="The Bin Boy logo" width="298" height="320" loading="lazy" class="bin-boy">
               </a>
-              <a class="logo-tile-link" href="https://www.trashdaymadeeasy.com/" target="_blank" rel="noopener noreferrer" aria-label="Visit Trash Day Made Easy website (opens in a new tab)">
-                <span class="logo-tile">
-                  <img src="/logo-nav.jpg" alt="Trash Day Made Easy logo" width="482" height="97" loading="lazy">
-                </span>
+              <span aria-hidden="true">+</span>
+              <a href="https://www.trashdaymadeeasy.com/" target="_blank" rel="noopener noreferrer" aria-label="Visit Trash Day Made Easy website (opens in a new tab)">
+                <img src="/logo-nav.jpg" alt="Trash Day Made Easy logo" width="482" height="97" loading="lazy" class="tdme">
               </a>
+            </div>
+            <fieldset class="planner-days">
+              <legend class="planner-title">What day does your trash get picked up?</legend>
+              <div class="planner-day-grid">
+                <label><input type="radio" name="planner_day" value="Monday"><span>Mon</span></label>
+                <label><input type="radio" name="planner_day" value="Tuesday"><span>Tue</span></label>
+                <label><input type="radio" name="planner_day" value="Wednesday"><span>Wed</span></label>
+                <label><input type="radio" name="planner_day" value="Thursday"><span>Thu</span></label>
+                <label><input type="radio" name="planner_day" value="Friday"><span>Fri</span></label>
+                <label><input type="radio" name="planner_day" value="Saturday"><span>Sat</span></label>
+                <label><input type="radio" name="planner_day" value="Sunday"><span>Sun</span></label>
+              </div>
+            </fieldset>
+            <div class="planner-result" aria-live="polite">
+              <p class="planner-hint" data-role="hint">Tap your day to see your next month with us.</p>
+              <div class="planner-plan" data-role="plan" hidden>
+                <p class="planner-kicker">Your next four trash days, handled</p>
+                <p class="planner-sub">Bins out before pickup, back after collection. You don&rsquo;t touch a lid.</p>
+                <ol class="planner-weeks" data-role="weeks"></ol>
+                <p class="planner-wash"><span aria-hidden="true">+</span> One full wash each month by The Bin Boy</p>
+                <form class="planner-go" data-role="go">
+                  <label for="planner-address">Where should we start?</label>
+                  <div class="planner-go-row">
+                    <input id="planner-address" autocomplete="street-address" placeholder="Service address">
+                    <button class="btn" type="submit">Reserve My Route</button>
+                  </div>
+                </form>
+              </div>
             </div>
             <div class="price-stamp" aria-label="$70 per month">
               <div>
@@ -1773,6 +1891,79 @@
         ensureStripe();
       }
       form.addEventListener('focusin', ensureStripe, {once: true});
+    })();
+  </script>
+  <script>
+    // Trash-day planner: preview the next four trash days for the chosen weekday,
+    // then carry the day + address into the signup form (property 1 fields).
+    (function () {
+      var planner = document.querySelector('.planner');
+      if (!planner) return;
+      var hint = planner.querySelector('[data-role="hint"]');
+      var plan = planner.querySelector('[data-role="plan"]');
+      var weeks = planner.querySelector('[data-role="weeks"]');
+      var go = planner.querySelector('[data-role="go"]');
+      var addressIn = document.getElementById('planner-address');
+      var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      var fmt = new Intl.DateTimeFormat('en-US', {weekday: 'short', month: 'short', day: 'numeric'});
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var chosen = null;
+
+      function nextDates(dayName) {
+        var d = new Date();
+        d.setHours(12, 0, 0, 0);
+        d.setDate(d.getDate() + 1);
+        while (d.getDay() !== days.indexOf(dayName)) d.setDate(d.getDate() + 1);
+        var out = [];
+        for (var i = 0; i < 4; i += 1) {
+          out.push(new Date(d));
+          d.setDate(d.getDate() + 7);
+        }
+        return out;
+      }
+
+      function isoDate(date) {
+        return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
+      }
+
+      function render(dayName) {
+        chosen = dayName;
+        hint.hidden = true;
+        plan.hidden = false;
+        weeks.innerHTML = nextDates(dayName).map(function (date) {
+          return '<li><time datetime="' + isoDate(date) + '">' + fmt.format(date).replace(',', '') + '</time>'
+            + '<span class="tick" aria-hidden="true">&#10003;</span></li>';
+        }).join('');
+        Array.prototype.forEach.call(weeks.children, function (li, i) {
+          if (reduce) { li.classList.add('is-in'); return; }
+          setTimeout(function () { li.classList.add('is-in'); }, 60 + i * 110);
+        });
+      }
+
+      planner.addEventListener('change', function (event) {
+        if (event.target.name === 'planner_day') render(event.target.value);
+      });
+
+      go.addEventListener('submit', function (event) {
+        event.preventDefault();
+        var formAddress = document.getElementById('address');
+        var typed = addressIn.value.trim();
+        if (formAddress && typed) {
+          formAddress.value = typed;
+          formAddress.dispatchEvent(new Event('input', {bubbles: true}));
+        }
+        if (chosen) {
+          var radio = document.querySelector('#signup-form input[name="trash_pickup_day"][value="' + chosen + '"]');
+          if (radio) {
+            radio.checked = true;
+            radio.dispatchEvent(new Event('change', {bubbles: true}));
+          }
+        }
+        var signup = document.getElementById('signup');
+        if (signup) signup.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'start'});
+        var nameIn = document.getElementById('name');
+        if (nameIn) setTimeout(function () { nameIn.focus({preventScroll: true}); }, reduce ? 0 : 600);
+      });
     })();
   </script>
 </body>
