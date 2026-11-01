@@ -364,8 +364,10 @@
       font-size: 0.875rem;
       font-weight: 600;
     }
-    .hero-note span { display: inline-flex; align-items: center; gap: 8px; }
-    .hero-note span::before {
+    .hero-note span, .hero-note a { display: inline-flex; align-items: center; gap: 8px; }
+    .hero-note a { color: inherit; text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 4px; }
+    .hero-note a:hover { color: var(--heading-light); }
+    .hero-note span::before, .hero-note a::before {
       content: "";
       width: 7px;
       height: 7px;
@@ -541,40 +543,120 @@
       line-height: 1.6;
     }
 
-    .pain-grid {
+    /* Before & after: real Google reviews replace the generic pain list. */
+    .proof-head {
       display: grid;
-      grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
-      gap: clamp(2rem, 5vw, 4.5rem);
-      align-items: start;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
+      gap: clamp(1.5rem, 5vw, 4.5rem);
+      align-items: end;
+      margin-bottom: clamp(2.5rem, 5vw, 4rem);
     }
-    .pain-list { margin: 0; padding: 0; list-style: none; counter-reset: pain; }
-    .pain-list li {
-      counter-increment: pain;
+    .proof-head h2 { margin-bottom: 0; max-width: 16ch; }
+    .proof-intro p { color: var(--muted); font-size: 1.0625rem; line-height: 1.6; max-width: 46ch; }
+    .proof-links { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 14px; }
+    .proof-links a {
+      display: inline-flex; align-items: center; min-height: 44px; gap: 6px;
+      color: var(--navy); font-weight: 700; font-size: 0.9375rem;
+      text-decoration: underline; text-decoration-color: var(--gold);
+      text-decoration-thickness: 2px; text-underline-offset: 5px;
+    }
+    .proof-links a span { display: inline-block; }
+    .proof-links a:hover { color: var(--green-press); }
+
+    .proof mark {
+      color: inherit;
+      background: linear-gradient(oklch(0.86 0.13 88 / .75), oklch(0.86 0.13 88 / .75)) 0 88% / 100% 42% no-repeat;
+      -webkit-box-decoration-break: clone; box-decoration-break: clone;
+      padding: 0 .08em;
+      transition: background-size .9s var(--ease) .35s;
+    }
+    .proof-before {
+      display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px;
+      margin: 0 0 14px; color: var(--muted); font-size: 0.9375rem; font-weight: 600;
+    }
+    .proof-before span {
+      flex: none;
+      padding: 3px 9px 2px; border-radius: 999px;
+      background: oklch(0.93 0.03 30); color: oklch(0.45 0.14 28);
+      font-size: 0.6875rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+    }
+    .proof-before s {
+      text-decoration: none;
+      background: linear-gradient(oklch(0.5 0.19 27 / .8), oklch(0.5 0.19 27 / .8)) 0 58% / 100% 2px no-repeat;
+      -webkit-box-decoration-break: clone; box-decoration-break: clone;
+      transition: background-size .6s var(--ease) .1s;
+    }
+    .js .proof .reveal:not(.is-in) mark { background-size: 0% 42%; }
+    .js .proof .reveal:not(.is-in) .proof-before s { background-size: 0% 2px; }
+
+    .proof-who { display: grid; gap: 2px; font-size: 0.875rem; line-height: 1.45; }
+    .proof-who strong { color: var(--navy); font-weight: 700; }
+    .proof-who span { color: var(--muted); }
+    .proof-who a { display: inline-block; padding: 12px 0; margin: -12px 0; color: var(--green-press); font-weight: 700; }
+    .proof blockquote { margin: 0; }
+
+    .proof-feature {
       display: grid;
-      grid-template-columns: 64px 1fr;
-      gap: 18px;
-      align-items: baseline;
-      padding: 22px 0;
-      border-top: 1px solid var(--line);
+      grid-template-columns: minmax(0, .32fr) minmax(0, 1fr);
+      grid-template-areas: "before quote" "who quote";
+      grid-template-rows: auto 1fr;
+      column-gap: clamp(1.25rem, 4vw, 3.5rem);
+      margin: 0;
+      padding: clamp(1.75rem, 4vw, 2.75rem) 0;
+      border-top: 2px solid var(--navy);
+      border-bottom: 1px solid var(--line);
     }
-    .pain-list li:last-child { border-bottom: 1px solid var(--line); }
-    .pain-list li::before {
-      content: counter(pain, decimal-leading-zero);
-      font-family: var(--display);
-      font-weight: 800;
-      font-size: 2rem;
-      line-height: 1;
-      color: var(--green-press);
-    }
-    .pain-list strong {
-      display: block;
+    .proof-feature > .proof-before { grid-area: before; align-self: start; }
+    .proof-feature > blockquote { grid-area: quote; }
+    .proof-feature > .proof-who { grid-area: who; align-self: start; margin-top: 8px; }
+    .proof-feature blockquote p {
+      position: relative;
       font-family: var(--display);
       font-weight: 700;
+      font-size: clamp(1.5rem, 3.1vw, 2.5rem);
+      line-height: 1.16;
+      letter-spacing: -0.012em;
       color: var(--navy);
-      font-size: 1.1875rem;
-      margin-bottom: 4px;
+      text-wrap: pretty;
     }
-    .pain-list span { color: var(--muted); line-height: 1.5; }
+
+    .proof-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0;
+      margin: 0; padding: 0; list-style: none;
+    }
+    .proof-grid li { padding: clamp(1.5rem, 3vw, 2rem) clamp(1rem, 2.4vw, 1.75rem) clamp(1.5rem, 3vw, 2rem) 0; }
+    .proof-grid li + li { padding-left: clamp(1rem, 2.4vw, 1.75rem); border-left: 1px solid var(--line); }
+    .proof-grid figure { margin: 0; display: grid; grid-template-rows: auto 1fr auto; height: 100%; gap: 0; }
+    .proof-grid blockquote p {
+      margin-bottom: 18px;
+      color: var(--ink);
+      font-size: 1.0625rem;
+      line-height: 1.55;
+    }
+
+    .proof-cta {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 28px;
+      margin-top: clamp(1rem, 3vw, 2rem);
+      padding: 22px clamp(1.25rem, 3vw, 2rem);
+      border-radius: var(--radius);
+      background: var(--navy);
+      color: var(--on-navy);
+    }
+    .proof-cta p { max-width: 60ch; line-height: 1.5; }
+    .proof-cta strong { color: var(--heading-light); font-family: var(--display); font-size: 1.25rem; margin-right: 6px; }
+
+    @media (max-width: 980px) {
+      .proof-head, .proof-feature { grid-template-columns: 1fr; }
+      .proof-head h2 { max-width: 20ch; }
+      .proof-feature { grid-template-areas: "before" "quote" "who"; grid-template-rows: auto; }
+      .proof-feature blockquote p { margin-bottom: 18px; }
+      .proof-grid { grid-template-columns: 1fr; }
+      .proof-grid li, .proof-grid li + li { padding: 26px 0; border-left: 0; }
+      .proof-grid li + li { border-top: 1px solid var(--line); }
+      .proof-cta .btn { width: 100%; }
+    }
 
     .service-band {
       color: var(--on-navy);
@@ -1340,7 +1422,7 @@
     }
 
     @media (max-width: 980px) {
-      .hero-grid, .pain-grid, .price-layout, .signup-layout {
+      .hero-grid, .price-layout, .signup-layout {
         grid-template-columns: 1fr;
       }
       .signup-aside { position: static; order: 2; }
@@ -1493,7 +1575,7 @@
             </div>
             <div class="hero-note rise rise-4" aria-label="Service highlights">
               <span>Licensed and insured</span>
-              <span>Five-star Google reviewed</span>
+              <a href="#reviews">Five-star Google reviewed</a>
               <span>No service contract</span>
             </div>
           </div>
@@ -1545,19 +1627,70 @@
         </div>
       </section>
 
-      <section class="on-light" aria-labelledby="pain-title">
-        <div class="container pain-grid">
-          <div class="section-head reveal">
-            <p class="eyebrow">The trash day problem</p>
-            <h2 id="pain-title">Dirty bins and missed roll-ins make the whole property feel harder to manage.</h2>
-            <p>Whether it is a home, storefront, office, short-term rental, or managed property, trash areas create a steady stream of small problems that quickly become visible.</p>
+      <section id="reviews" class="proof on-light" aria-labelledby="proof-title">
+        <div class="container">
+          <div class="proof-head reveal">
+            <div>
+              <p class="eyebrow">Before &amp; after, in their words</p>
+              <h2 id="proof-title">We could describe the trash day problem. Our customers already did.</h2>
+            </div>
+            <div class="proof-intro">
+              <p>Real reviews of the two Charleston crews behind this service, published on their Google profiles. Word for word. We only added the highlighter.</p>
+              <p class="proof-links">
+                <a href="https://share.google/8MuJ0PNx5B0VH13pv" target="_blank" rel="noopener noreferrer">The Bin Boy on Google <span aria-hidden="true">&rarr;</span></a>
+                <a href="https://www.google.com/maps?cid=10094774949745742238" target="_blank" rel="noopener noreferrer">Trash Day Made Easy on Google <span aria-hidden="true">&rarr;</span></a>
+              </p>
+            </div>
           </div>
-          <ul class="pain-list reveal">
-            <li><span><strong>Bins get dirty fast</strong><span>Odors, residue, and pests build up between regular trash days.</span></span></li>
-            <li><span><strong>Cans get missed</strong><span>Late roll-outs, forgotten roll-ins, and overflowing bins create curb appeal issues.</span></span></li>
-            <li><span><strong>Staff time gets wasted</strong><span>Owners and teams end up managing trash instead of running the property.</span></span></li>
-            <li><span><strong>Customers notice</strong><span>Messy service areas, smells, and cans left out too long make a bad first impression.</span></span></li>
+
+          <figure class="proof-feature reveal">
+            <p class="proof-before"><span>Before</span> <s>Fly larva in the bins every summer</s></p>
+            <blockquote>
+              <p>&ldquo;Thanks so much for the wonderful job. Our bin smells so fresh. We have been plagued with disgusting fly larva throughout the summer months in the past, so I am looking forward to <mark>a maggot-free summer</mark> with your wonderful service.&rdquo;</p>
+            </blockquote>
+            <figcaption class="proof-who">
+              <strong>The Bin Boy customer</strong>
+              <span>Bin washing &middot; <a href="https://share.google/8MuJ0PNx5B0VH13pv" target="_blank" rel="noopener noreferrer">Read on Google</a></span>
+            </figcaption>
+          </figure>
+
+          <ul class="proof-grid reveal" aria-label="More customer reviews">
+            <li>
+              <figure>
+                <p class="proof-before"><span>Before</span> <s>Resident complaints about trash</s></p>
+                <blockquote><p>&ldquo;Trash Day Made Easy has <mark>reduced resident complaints about trash almost entirely</mark>. The photo confirmation gives us the accountability we never had with our last vendor.&rdquo;</p></blockquote>
+                <figcaption class="proof-who">
+                  <strong>Property manager, Charleston multifamily</strong>
+                  <span>Bin valet &middot; <a href="https://www.google.com/maps?cid=10094774949745742238" target="_blank" rel="noopener noreferrer">Read on Google</a></span>
+                </figcaption>
+              </figure>
+            </li>
+            <li>
+              <figure>
+                <p class="proof-before"><span>Before</span> <s>Bins between guests</s></p>
+                <blockquote><p>&ldquo;For our STR properties, having trash and bins handled between guests was always a pain point. This service removed it completely. <mark>Guests stopped mentioning it</mark>, in a good way.&rdquo;</p></blockquote>
+                <figcaption class="proof-who">
+                  <strong>Short-term rental operator, Charleston</strong>
+                  <span>Bin valet &middot; <a href="https://www.google.com/maps?cid=10094774949745742238" target="_blank" rel="noopener noreferrer">Read on Google</a></span>
+                </figcaption>
+              </figure>
+            </li>
+            <li>
+              <figure>
+                <p class="proof-before"><span>Before</span> <s>Dirty, smelly recycle bins</s></p>
+                <blockquote><p>&ldquo;So pleased with the cleaning and deodorizing of our garbage and recycle bins by The Bin Boy! <mark>Easy peasy process, too!</mark> Will use them again for sure! Thank you!&rdquo;</p></blockquote>
+                <figcaption class="proof-who">
+                  <strong>The Bin Boy customer</strong>
+                  <span>Bin washing &middot; <a href="https://share.google/8MuJ0PNx5B0VH13pv" target="_blank" rel="noopener noreferrer">Read on Google</a></span>
+                </figcaption>
+              </figure>
+            </li>
           </ul>
+
+          <div class="proof-cta reveal">
+            <p><strong>Your trash day could be next.</strong> One flat $70/month for both crews. $0 today, no contract.</p>
+            <a class="btn" href="#signup">Start My Service</a>
+          </div>
         </div>
       </section>
 
