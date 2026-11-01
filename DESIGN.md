@@ -35,6 +35,8 @@ Strategy: **Committed.** Deep navy carries the hero, the service panel, and the 
 - **Price mark:** rotated circular navy stamp with gold ring, the page's signature object. On mobile it flattens into a full-width band.
 - **Form fields:** 12px radius, 48px min height, navy labels at 600, green focus ring, danger states with tinted background and inline message under the field.
 - **Choice chips:** pill radio labels, green when checked, gold focus-visible outline.
+- **Work-order ticket:** the signup's live summary. A navy "work order" card with gold kicker, dashed field rows, perforated tear line, and the monthly / due-today totals. It fills in as the visitor types (address, bins, trash day, recycling, upcoming route days) and gets a rotated gold "Submitted" stamp on success. Sticky beside the form on desktop; below the form on mobile, with a one-line navy strip (day · bins · $/month · $0 today) at the top of the form.
+- **Stepped signup:** three steps (Your bins → Your info → Secure card) with a dot-and-rail stepper. Each step validates before advancing; Enter advances instead of submitting; final submit re-validates every step and jumps back to the first one with errors. Stripe Elements mount only when the card step is visible.
 - **Numbered lists over icon cards.** Pain points and steps use leading numbers, not icon+heading card grids.
 - No side-stripe accents, no gradient text, no glassmorphism, no identical card grids.
 
@@ -42,7 +44,7 @@ Strategy: **Committed.** Deep navy carries the hero, the service panel, and the 
 
 - Container `min(1140px, 100% - 3rem)`; asymmetric two-column heroes and splits, left-aligned type.
 - Section padding fluid: `clamp(4rem, 9vw, 7.5rem)` with tighter internal groupings for rhythm; navy and paper sections alternate to pace the scroll.
-- The signup section is the destination: sticky summary aside on desktop, single column under 980px.
+- The signup section is the destination: sticky work-order ticket on desktop, single column under 980px with the ticket after the form.
 
 ## Motion
 
