@@ -6,6 +6,7 @@ const {
   notificationConfig,
   sendSignupNotification
 } = require('./_shared/signup-notification');
+const { markLeadConverted } = require('./_shared/leads');
 
 let stripeClient;
 let tableReady = false;
@@ -534,6 +535,10 @@ exports.handler = async function (event) {
     console.error('DB insert error:', err.message);
     return respond(500, { error: 'Your card was authorized, but the account record did not save. Please call 843-955-3132.' });
   }
+
+  // The browser reuses submission_id as the lead_id saved after the contact
+  // step, so this signup closes its own unfinished-signup lead.
+  await markLeadConverted(sql, submissionId);
 
   const notification = await deliverNotification(sql, record, extraRecords, resendConfig);
   if (notification.response) return notification.response;

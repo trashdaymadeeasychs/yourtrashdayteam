@@ -1620,7 +1620,7 @@
                   <div class="field-error" id="err-email"></div>
                 </div>
               </div>
-              <p class="step-reassure">We use this only to confirm your route and send service updates.</p>
+              <p class="step-reassure">We use this to confirm your route and send service updates. If you get interrupted before finishing, we may call or email to help you finish signing up.</p>
               <div class="step-nav">
                 <button type="button" class="step-back" data-go="1">Back</button>
                 <button type="button" class="btn step-next" data-go="3">Continue to secure card</button>
@@ -2186,9 +2186,46 @@
         if (target > currentStep) {
           clearStatus();
           if (!STEP_VALIDATORS[currentStep]()) { focusFirstError(currentStep); return; }
+          if (currentStep === 2) captureLead();
         }
         goToStep(target);
       });
+
+      // Save contact + property details in the background once step 2 is done,
+      // so the team can follow up if the card step is never submitted. Uses the
+      // same submission_id as the final signup, which marks the lead converted.
+      // Never blocks the visitor; failures are ignored.
+      var lastLeadSent = '';
+      function captureLead() {
+        var all = blocks();
+        var primary = propertyData(all[0]);
+        var lead = {
+          lead_id: submissionId,
+          customer_type: checkedValue('customer_type'),
+          name: value('name'),
+          company_name: value('company_name'),
+          phone: value('phone'),
+          email: value('email'),
+          address: primary.address,
+          number_of_bins: primary.number_of_bins,
+          trash_pickup_day: primary.trash_pickup_day,
+          recycling_frequency: primary.recycling_frequency,
+          recycling_pickup_day: primary.recycling_pickup_day,
+          property_count: all.length,
+          source: 'yourtrashdayteam-home'
+        };
+        var body = JSON.stringify(lead);
+        if (body === lastLeadSent) return;
+        lastLeadSent = body;
+        try {
+          fetch('/.netlify/functions/partner-lead', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: body,
+            keepalive: true
+          }).catch(function () {});
+        } catch (err) { /* lead capture is best effort */ }
+      }
 
       // ---------- Live work-order ticket ----------
       var ticket = document.querySelector('[data-role="ticket"]');

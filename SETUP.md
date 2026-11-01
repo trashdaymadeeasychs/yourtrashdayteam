@@ -5,6 +5,8 @@ This site uses a static homepage plus Netlify Functions:
 - `index.html` renders the landing page and Stripe card fields.
 - `/.netlify/functions/partner-config` returns the Stripe publishable key to the browser.
 - `/.netlify/functions/partner-signup` stores the card with Stripe, saves the Pending Approval account record in Neon, and sends the required Resend notification before reporting success.
+- `/.netlify/functions/partner-lead` saves an unfinished signup (contact + property details, never card data) when a visitor finishes step 2 of the form.
+- `lead-followup` is a scheduled function (every 15 minutes, set in `netlify.toml`) that emails the team one digest of unfinished signups.
 
 ## Required Environment Variables
 
@@ -65,6 +67,19 @@ Primary fields include:
 - Resend acceptance status and `resend_message_id`
 
 Raw card number, expiration, and CVC are never stored in Neon.
+
+## Unfinished-Signup Follow-Up
+
+The signup form has three steps: property, contact, card. When a visitor finishes the contact step, the page sends their contact and primary-property details to `partner-lead` in the background. This never blocks the form, and failures are ignored. The record uses the same `submission_id` as the final signup.
+
+- Table: `partner_service_leads`, created automatically. `status` is `open`, `notified` (team was emailed), or `converted` (they finished signing up).
+- When `partner-signup` saves an account, it marks the matching lead `converted`. The follow-up job also closes any open lead whose email later appears in `partner_service_signups`.
+- Every 15 minutes `lead-followup` emails **one digest** of leads that have been open for 30+ minutes (and are less than 7 days old), at most 25 per digest. Each lead is emailed at most once. People who finish signing up are never included.
+- It uses the same `DATABASE_URL`, `RESEND_API_KEY`, `RESEND_FROM`, and `SIGNUP_NOTIFICATION_EMAILS` as signups. No new variables are needed.
+- Netlify runs scheduled functions only on the published (production) deploy, not on deploy previews.
+- To change the 30-minute delay, 7-day window, or batch size, edit the constants in `netlify/functions/_shared/leads.js`.
+
+The contact step tells visitors: "If you get interrupted before finishing, we may call or email to help you finish signing up."
 
 ## Customer Billing Language
 
