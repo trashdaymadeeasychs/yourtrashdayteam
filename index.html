@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>Charleston Bin Cleaning &amp; Trash Can Valet | Your Trash Day Team</title>
-  <meta name="description" content="Charleston bin cleaning plus weekly trash can valet in one flat-rate service. The Bin Boy washes your bins monthly while Trash Day Made Easy rolls them out and back each week. Serving Charleston, Mount Pleasant &amp; Summerville.">
+  <meta name="description" content="Charleston bin cleaning plus weekly trash can valet in one monthly service. The Bin Boy washes your bins monthly while Trash Day Made Easy rolls them out and back each week. Serving Charleston, Mount Pleasant &amp; Summerville.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://yourtrashdayteam.com/">
   <meta property="og:title" content="Clean Bins. Easy Trash Days. One Simple Weekly Service.">
@@ -24,6 +24,25 @@
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
   <noscript><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet"></noscript>
   <script>document.documentElement.classList.replace('no-js', 'js');</script>
+  <script>
+    // PRICING TABLE: the one place prices live in this page's JavaScript (used by the
+    // hero price builder and the signup form). It must match the prices written in the
+    // page copy (hero stamp, "Simple pricing", JSON-LD offer), /faq/, the other pages,
+    // llms.txt, and netlify/functions/_shared/pricing.js, which the server bills from.
+    window.YTDT_PRICING = {
+      basePerProperty: 70, // dollars per month per property: weekly valet + monthly wash
+      includedBins: 2,     // bins covered by the base price
+      perExtraBin: 5,      // dollars per month for each bin beyond includedBins
+      period: 'month'
+    };
+    // Monthly price for one property with this many bins (blank or invalid counts as 1).
+    window.ytdtPropertyPrice = function (bins) {
+      var p = window.YTDT_PRICING;
+      var n = parseInt(bins, 10);
+      if (!(n >= 1)) n = 1;
+      return p.basePerProperty + Math.max(0, n - p.includedBins) * p.perExtraBin;
+    };
+  </script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -43,7 +62,7 @@
         "url": "https://yourtrashdayteam.com/",
         "description": "A combined weekly bin valet and monthly bin washing service offered together by The Bin Boy and Trash Day Made Easy.",
         "telephone": "+1-843-955-3132",
-        "priceRange": "$70/month",
+        "priceRange": "From $70/month",
         "image": "https://yourtrashdayteam.com/og-social-preview.jpg",
         "geo": { "@type": "GeoCoordinates", "latitude": 32.77650, "longitude": -79.93090 },
         "contactPoint": {
@@ -80,7 +99,7 @@
         "@id": "https://yourtrashdayteam.com/#service",
         "name": "Weekly Bin Valet + Monthly Bin Washing",
         "serviceType": "Trash bin roll-out and roll-in valet with monthly bin washing",
-        "description": "Trash Day Made Easy rolls bins to the curb before pickup and brings them back after collection each week. The Bin Boy washes the bins once a month. One flat monthly price for homes, businesses, and properties in the Charleston, SC area.",
+        "description": "Trash Day Made Easy rolls bins to the curb before pickup and brings them back after collection each week. The Bin Boy washes the bins once a month. One simple monthly price for homes, businesses, and properties in the Charleston, SC area.",
         "areaServed": [
           { "@type": "City", "name": "Charleston, SC" },
           { "@type": "City", "name": "North Charleston, SC" },
@@ -99,7 +118,7 @@
           "price": "70.00",
           "priceCurrency": "USD",
           "url": "https://yourtrashdayteam.com/#signup",
-          "description": "$70 per month per property, billed on the 1st after approval. No contract; pause or cancel anytime."
+          "description": "$70 per month per property with 2 bins included, plus $5 per month for each additional bin. Billed on the 1st after approval. No contract; pause or cancel anytime."
         }
       }
     ]
@@ -463,7 +482,7 @@
       color: var(--on-navy);
     }
     .price-builder .pb-kicker {
-      margin: 0 0 2px;
+      margin: 0 0 4px;
       color: var(--gold);
       font-size: 0.75rem;
       font-weight: 700;
@@ -487,6 +506,7 @@
       letter-spacing: -0.01em;
     }
     .price-builder .pb-per { color: var(--on-navy-muted); font-weight: 600; }
+    .price-builder .pb-rule { font-size: 0.8125rem; letter-spacing: 0; text-transform: none; }
     .price-builder .pb-math { margin: 6px 0 0; color: var(--on-navy-muted); font-size: 0.875rem; line-height: 1.4; }
     .price-builder .pb-summary {
       display: flex;
@@ -1733,9 +1753,9 @@
               </select>
             </div>
             <div class="pb-result" aria-live="polite">
-              <p class="pb-kicker">Your price</p>
+              <p class="pb-kicker pb-rule">2 bins included &ndash; $5 for each additional bin</p>
               <p class="pb-price"><span class="pb-amount" data-quote-amount>$70</span> <span class="pb-per" data-quote-per>/ month</span></p>
-              <p class="pb-math" data-quote-math>$70 flat per property &middot; 1 bin included</p>
+              <p class="pb-math" data-quote-math>$70 base &middot; your 1 bin is covered</p>
               <ul class="pb-summary">
                 <li>Bins: <strong data-quote-bins>1</strong></li>
                 <li data-quote-day-row hidden>Trash day: <strong data-quote-day></strong></li>
@@ -1748,10 +1768,10 @@
               <a class="btn" href="#signup" data-quote-book>Book Now</a>
               <a class="pb-sms" data-quote-sms href="sms:+18439553132?&amp;body=Hi!%20I'd%20like%20weekly%20bin%20valet%20%2B%20monthly%20bin%20washing%20for%201%20bin.%20(%2470%20per%20month)">Or text this quote to us: <span class="pb-phone">843-955-3132</span></a>
             </div>
-            <div class="price-stamp" aria-label="$70 per month">
+            <div class="price-stamp" aria-label="$70 per month, 2 bins included, $5 for each additional bin">
               <div>
                 <strong>$70</strong>
-                <span>per month for weekly valet plus monthly wash</span>
+                <span>per month &middot; 2 bins included</span>
               </div>
             </div>
           </div>
@@ -1819,7 +1839,7 @@
           </ul>
 
           <div class="proof-cta reveal">
-            <p><strong>Your trash day could be next.</strong> One flat $70/month for both crews. $0 today, no contract.</p>
+            <p><strong>Your trash day could be next.</strong> $70/month for both crews with 2 bins included. $0 today, no contract.</p>
             <a class="btn" href="#signup">Start My Service</a>
           </div>
         </div>
@@ -1874,7 +1894,7 @@
 
             <div class="tw-cta reveal">
               <a class="btn" href="#signup">Put My Bins On The Route</a>
-              <p>$70/month &middot; $0 today &middot; no contract</p>
+              <p>$70/month with 2 bins included &middot; $0 today &middot; no contract</p>
             </div>
           </div>
 
@@ -1899,8 +1919,9 @@
           </div>
           <div class="reveal">
             <p class="eyebrow">Simple pricing</p>
-            <h2 id="pricing-title">One flat price for the combined service.</h2>
+            <h2 id="pricing-title">One simple price for the combined service.</h2>
             <ul class="price-terms">
+              <li>2 bins included, $5/month for each additional bin</li>
               <li>Weekly bin roll-out and roll-in service</li>
               <li>Monthly bin washing by The Bin Boy</li>
               <li>Auto-billed on the 1st of each month after approval</li>
@@ -2078,7 +2099,7 @@
             <div class="form-section step" data-step="3">
               <h3 tabindex="-1">Secure your spot. $0 today.</h3>
               <div class="payment-summary">
-                <div class="summary-row"><span>Monthly plan</span><strong>$70/month per property</strong></div>
+                <div class="summary-row"><span>Monthly plan</span><strong>$70/month per property, 2 bins included + $5/month each additional bin</strong></div>
                 <div class="summary-row"><span>Properties</span><strong id="summary-count">1</strong></div>
                 <div class="summary-row"><span>Monthly total</span><strong id="summary-total">$70/month</strong></div>
                 <div class="summary-row"><span>Includes</span><strong>Weekly valet plus monthly wash</strong></div>
@@ -2199,7 +2220,6 @@
       var summaryCount = document.getElementById('summary-count');
       var summaryTotal = document.getElementById('summary-total');
       var consentAmount = document.getElementById('consent-amount');
-      var BASE_PRICE = 70;
       var propertyCounter = 1;
       var DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
       var todayISO = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
@@ -2352,12 +2372,20 @@
         });
       }
 
+      // Monthly total across every property, priced by its own bin count.
+      function monthlyTotal() {
+        return blocks().reduce(function (sum, block) {
+          var binsIn = block.querySelector('input[name^="number_of_bins"]');
+          return sum + window.ytdtPropertyPrice(binsIn ? binsIn.value : '');
+        }, 0);
+      }
+
       function updateTotals() {
         var count = blocks().length;
-        var total = BASE_PRICE * count;
+        var total = monthlyTotal();
         summaryCount.textContent = String(count);
         summaryTotal.textContent = '$' + total + '/month';
-        consentAmount.textContent = count > 1 ? '$' + total + ' total ($70 per property)' : '$70';
+        consentAmount.textContent = count > 1 ? '$' + total + ' total for ' + count + ' properties' : '$' + total;
       }
 
       function validateProperties() {
@@ -2723,7 +2751,7 @@
         var count = all.length;
         ticket.querySelector('[data-t-row="props"]').hidden = count < 2;
         setTicket('props', String(count), false);
-        setTicket('total', '$' + (BASE_PRICE * count), false);
+        setTicket('total', '$' + monthlyTotal(), false);
 
         var route = ticket.querySelector('[data-role="ticket-route"]');
         var list = ticket.querySelector('[data-role="ticket-days"]');
@@ -2744,7 +2772,7 @@
           var bits = [];
           if (day) bits.push('Every ' + SHORT[day]);
           if (bins > 0) bits.push(bins + (bins === 1 ? ' bin' : ' bins'));
-          bits.push('$' + (BASE_PRICE * count) + '/month');
+          bits.push('$' + monthlyTotal() + '/month');
           bits.push('$0 today');
           ticketStrip.textContent = bits.join(' \u00b7 ');
         }
@@ -2763,6 +2791,9 @@
       form.addEventListener('change', clearFixedError);
       form.addEventListener('input', renderTicket);
       form.addEventListener('change', renderTicket);
+      form.addEventListener('input', function (event) {
+        if (event.target.name && event.target.name.lastIndexOf('number_of_bins', 0) === 0) updateTotals();
+      });
 
       propertiesEl.addEventListener('change', function (event) {
         if (event.target.name && event.target.name.lastIndexOf('recycling_frequency', 0) === 0) {
@@ -2900,15 +2931,8 @@
     // Hero price builder: bins -> price; trash day and town go into the summary,
     // the text-message quote, and (on "Book Now") step 1 of the signup form.
     (function () {
-      // PRICING TABLE. Must match the pricing shown elsewhere on the site: the hero
-      // price stamp, the "Simple pricing" section, the signup form (BASE_PRICE), the
-      // JSON-LD offer above, /faq/ and /llms.txt. Today: $70/month per property,
-      // any number of bins (perExtraBin: 0).
-      var QUOTE_PRICING = {
-        perProperty: 70,   // dollars, covers weekly valet + monthly wash
-        perExtraBin: 0,    // dollars per bin beyond the first; 0 = all bins included
-        period: 'month'
-      };
+      // Prices come from window.YTDT_PRICING (the table at the top of the page).
+      var PRICING = window.YTDT_PRICING;
       var QUOTE_PHONE = '+18439553132'; // 843-955-3132
 
       var quote = document.querySelector('[data-quote]');
@@ -2933,24 +2957,26 @@
         var binsIn = quote.querySelector('input[name="quote_bins"]:checked');
         var dayIn = quote.querySelector('input[name="quote_day"]:checked');
         var bins = binsIn ? Number(binsIn.value) : 1;
-        var extra = Math.max(0, bins - 1);
+        var plus = bins >= 4; // the "4+" chip: price shown for 4 bins, with a "+"
         return {
           bins: bins,
-          binText: bins >= 4 ? '4+ bins' : bins + ' bin' + (bins > 1 ? 's' : ''),
-          extra: extra,
-          total: QUOTE_PRICING.perProperty + extra * QUOTE_PRICING.perExtraBin,
+          plus: plus,
+          binText: plus ? '4+ bins' : bins + ' bin' + (bins > 1 ? 's' : ''),
+          extra: Math.max(0, bins - PRICING.includedBins),
+          total: window.ytdtPropertyPrice(bins),
           day: dayIn ? dayIn.value : '',
           town: townIn.value
         };
       }
 
+      function priceText(q) { return money(q.total) + (q.plus ? '+' : ''); }
+
       function mathText(q) {
-        if (!QUOTE_PRICING.perExtraBin) {
-          return money(QUOTE_PRICING.perProperty) + ' flat per property · '
-            + (q.bins === 1 ? '1 bin included' : q.bins === 2 ? 'both bins included' : q.bins >= 4 ? 'all your bins included' : 'all ' + q.bins + ' bins included');
-        }
-        return money(QUOTE_PRICING.perProperty) + ' base'
-          + (q.extra ? ' + ' + money(QUOTE_PRICING.perExtraBin) + ' × ' + q.extra + ' extra bin' + (q.extra > 1 ? 's' : '') : ' · 1 bin included');
+        var base = money(PRICING.basePerProperty) + ' base';
+        if (!q.extra) return base + ' \u00b7 ' + (q.bins === 1 ? 'your 1 bin is covered' : 'both bins covered');
+        var text = base + ' + ' + money(PRICING.perExtraBin) + ' \u00d7 ' + q.extra + ' extra bin' + (q.extra > 1 ? 's' : '');
+        if (q.plus) text += ' \u00b7 +' + money(PRICING.perExtraBin) + ' for each bin after 4';
+        return text;
       }
 
       function smsBody(q) {
@@ -2960,16 +2986,16 @@
         if (q.town === 'other') msg += " I'm not in one of your listed areas. Can you service my address?";
         if (q.day === 'Not sure') msg += " I'm not sure what our trash day is.";
         else if (q.day) msg += ' Our trash day is ' + q.day + '.';
-        msg += ' (' + money(q.total) + ' per ' + QUOTE_PRICING.period + ')';
+        msg += ' (' + priceText(q) + ' per ' + PRICING.period + ')';
         return msg;
       }
 
       function render() {
         var q = state();
-        var price = money(q.total);
+        var price = priceText(q);
         var changed = amountEl.textContent !== price;
         amountEl.textContent = price;
-        perEl.textContent = '/ ' + QUOTE_PRICING.period;
+        perEl.textContent = '/ ' + PRICING.period;
         mathEl.textContent = mathText(q);
         binsEl.textContent = q.bins >= 4 ? '4+' : String(q.bins);
         if (changed && !reduce) {

@@ -10,7 +10,7 @@ Charleston-area homeowners, short-term rental owners, business owners, and prope
 
 ## Product Purpose
 
-Your Trash Day Team is a co-branded offer from two established Charleston companies: Trash Day Made Easy (weekly bin roll-out and roll-in valet) and The Bin Boy (monthly bin washing). The page is the entire product surface: one landing page that explains the combined service, earns trust fast, and converts through a Stripe card-on-file signup form (no charge today, Pending Approval, auto-billed $70 on the 1st after approval). Success is a completed signup form, or a phone call to 843-955-3132 from someone who almost signed up.
+Your Trash Day Team is a co-branded offer from two established Charleston companies: Trash Day Made Easy (weekly bin roll-out and roll-in valet) and The Bin Boy (monthly bin washing). The page is the entire product surface: one landing page that explains the combined service, earns trust fast, and converts through a Stripe card-on-file signup form (no charge today, Pending Approval, auto-billed on the 1st after approval: $70/month per property with 2 bins included, +$5/month per additional bin). Success is a completed signup form, or a phone call to 843-955-3132 from someone who almost signed up.
 
 ## Brand Personality
 
