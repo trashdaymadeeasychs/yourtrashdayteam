@@ -381,120 +381,156 @@
       border-radius: 18px;
       box-shadow: 0 30px 80px oklch(0.12 0.04 260 / .45);
     }
-    .planner { padding: clamp(20px, 3vw, 28px); padding-bottom: 40px; }
-    .planner-logos {
+    /* ---------- Hero price builder (scoped: .price-builder) ---------- */
+    .price-builder { padding: clamp(20px, 3vw, 26px); }
+    .price-builder .pb-logos {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding-bottom: 16px;
-      margin-bottom: 18px;
+      padding-bottom: 12px;
+      margin-bottom: 14px;
       border-bottom: 1px solid var(--line);
       color: var(--muted);
       font-weight: 700;
     }
-    .planner-logos a { display: block; border-radius: 8px; }
-    .planner-logos a:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
-    .planner-logos img.bin-boy { height: 46px; width: auto; }
-    .planner-logos img.tdme { height: 30px; width: auto; }
-    .planner-days { margin: 0; padding: 0; border: 0; min-width: 0; }
-    .planner-title {
-      padding: 0;
-      margin-bottom: 14px;
-      color: var(--navy);
-      font-family: var(--display);
+    .price-builder .pb-logos a { display: block; border-radius: 8px; }
+    .price-builder .pb-logos a:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+    .price-builder .pb-logos img.bin-boy { height: 40px; width: auto; }
+    .price-builder .pb-logos img.tdme { height: 26px; width: auto; }
+    .price-builder .pb-title {
+      margin: 0 0 12px;
       font-size: clamp(1.375rem, 2.2vw, 1.625rem);
-      font-weight: 800;
       line-height: 1.1;
     }
-    .planner-day-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
-    .planner-day-grid label { position: relative; }
-    .planner-day-grid input { position: absolute; opacity: 0; pointer-events: none; }
-    .planner-day-grid span {
+    .price-builder .pb-step { margin: 0 0 12px; padding: 0; border: 0; min-width: 0; }
+    .price-builder .pb-step legend,
+    .price-builder .pb-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0;
+      margin: 0 0 7px;
+      color: var(--navy);
+      font-size: 0.9375rem;
+      font-weight: 700;
+    }
+    .price-builder .pb-num {
+      display: inline-grid;
+      place-items: center;
+      flex: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: var(--navy);
+      color: var(--gold);
+      font-family: var(--display);
+      font-size: 0.75rem;
+      font-weight: 800;
+    }
+    .price-builder .pb-chips { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+    .price-builder .pb-chips label { position: relative; min-width: 0; margin: 0; }
+    .price-builder .pb-chips input { position: absolute; inset: 0; width: 100%; height: 100%; min-height: 0; margin: 0; opacity: 0; pointer-events: none; }
+    .price-builder .pb-chips span {
       display: grid;
       place-items: center;
-      min-height: 48px;
+      min-height: 44px;
+      padding: 6px 4px;
       border: 1px solid oklch(0.78 0.02 250);
       border-radius: 12px;
       color: var(--navy);
       background: var(--paper);
       font-size: 0.875rem;
       font-weight: 700;
+      text-align: center;
+      line-height: 1.15;
       cursor: pointer;
       transition: background .18s var(--ease), border-color .18s var(--ease), transform .18s var(--ease);
     }
-    .planner-day-grid span:hover { border-color: var(--green-press); }
-    .planner-day-grid input:checked + span {
+    .price-builder .pb-chips span:hover { border-color: var(--green-press); }
+    .price-builder .pb-chips input:checked + span {
       color: oklch(0.99 0.005 150);
       border-color: var(--green-press);
       background: var(--green-press);
     }
-    .planner-day-grid input:focus-visible + span { outline: 3px solid var(--gold); outline-offset: 2px; }
-    .planner-day-grid span:active { transform: translateY(1px); }
-    .planner-hint {
-      margin: 16px 0 0;
-      color: var(--muted);
-      font-size: 0.9375rem;
+    .price-builder .pb-chips input:focus-visible + span { outline: 3px solid var(--gold); outline-offset: 2px; }
+    .price-builder .pb-chips span:active { transform: translateY(1px); }
+    .price-builder select { cursor: pointer; }
+    .price-builder .pb-result {
+      margin-top: 4px;
+      padding: 14px 18px;
+      border-radius: var(--radius);
+      background: var(--navy);
+      color: var(--on-navy);
     }
-    .planner-kicker {
-      margin: 20px 0 4px;
-      color: var(--green-press);
-      font-size: 0.8125rem;
+    .price-builder .pb-kicker {
+      margin: 0 0 2px;
+      color: var(--gold);
+      font-size: 0.75rem;
       font-weight: 700;
-      letter-spacing: .1em;
+      letter-spacing: .12em;
       text-transform: uppercase;
     }
-    .planner-sub { margin: 0 0 12px; color: var(--muted); font-size: 0.9375rem; }
-    .planner-weeks {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-    }
-    .planner-weeks li {
+    .price-builder .pb-price {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      min-height: 48px;
-      padding: 8px 10px 8px 14px;
-      background: var(--paper);
-      border-radius: 10px;
-      font-size: 0.9375rem;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 4px 8px;
+      margin: 0;
+      color: var(--heading-light);
     }
-    .planner-weeks time { color: var(--navy); font-weight: 700; }
-    .planner-weeks .tick {
-      display: grid;
-      place-items: center;
-      width: 26px;
-      height: 26px;
-      border-radius: 999px;
-      background: var(--green-press);
-      color: oklch(0.99 0.005 150);
-      font-size: 0.875rem;
+    .price-builder .pb-amount {
+      display: inline-block;
+      font-family: var(--display);
+      font-size: clamp(2.5rem, 5vw, 2.875rem);
       font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.01em;
     }
-    .js .planner-weeks li { opacity: 0; transform: translateY(8px); }
-    .js .planner-weeks li.is-in {
-      opacity: 1;
-      transform: none;
-      transition: opacity .45s var(--ease), transform .45s var(--ease);
-    }
-    .js .planner-weeks li .tick { transform: scale(0); }
-    .js .planner-weeks li.is-in .tick { transform: scale(1); transition: transform .35s var(--ease) .18s; }
-    .planner-wash {
+    .price-builder .pb-per { color: var(--on-navy-muted); font-weight: 600; }
+    .price-builder .pb-math { margin: 6px 0 0; color: var(--on-navy-muted); font-size: 0.875rem; line-height: 1.4; }
+    .price-builder .pb-summary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 16px;
+      list-style: none;
       margin: 10px 0 0;
-      color: var(--navy);
+      padding: 8px 0 0;
+      border-top: 1px dashed oklch(1 0 0 / .24);
+      color: var(--on-navy-muted);
+      font-size: 0.875rem;
+    }
+    .price-builder .pb-summary strong { color: var(--heading-light); font-weight: 700; }
+    .price-builder .pb-area {
+      margin: 10px 0 0;
+      padding: 8px 12px;
+      border-radius: 10px;
+      background: oklch(0.62 0.17 150 / .2);
+      color: var(--heading-light);
       font-size: 0.875rem;
       font-weight: 600;
+      line-height: 1.4;
     }
-    .planner-wash span { color: var(--green-press); font-weight: 800; margin-right: 4px; }
-    .planner-go { margin-top: 18px; }
-    .planner-go label { display: block; margin-bottom: 8px; color: var(--navy); font-weight: 700; }
-    .planner-go-row { display: flex; flex-wrap: wrap; gap: 8px; }
-    .planner-go-row input { flex: 1 1 200px; min-width: 0; }
-    .planner-go-row .btn { flex: 1 0 auto; white-space: nowrap; }
+    .price-builder .pb-area.is-out { background: oklch(0.78 0.14 85 / .18); }
+    .price-builder .pb-fine { margin: 6px 0 0; color: var(--on-navy-muted); font-size: 0.8125rem; }
+    .price-builder .pb-actions { display: grid; justify-items: center; gap: 8px; margin-top: 12px; }
+    .price-builder .pb-actions .btn { width: 100%; }
+    .price-builder .pb-sms {
+      color: var(--navy);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      text-align: center;
+      text-decoration: underline;
+      text-decoration-color: var(--gold);
+      text-underline-offset: 4px;
+    }
+    .price-builder .pb-sms:hover { color: var(--green-press); }
+    .price-builder .pb-phone { white-space: nowrap; font-weight: 700; }
+    .price-builder .pb-amount.is-bumping { animation: pb-bump .4s var(--ease); }
+    @keyframes pb-bump {
+      0% { transform: scale(.94); }
+      60% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
     .price-stamp {
       position: absolute;
       right: -26px;
@@ -1420,7 +1456,7 @@
     .btn[href="#signup"]:not(.nav-actions .btn):hover::after,
     .btn[href="#signup"]:not(.nav-actions .btn):focus-visible::after { transform: translateX(4px); }
     /* 3. Day and option chips pop when chosen. */
-    .js .planner-day-grid input:checked + span,
+    .js .price-builder .pb-chips input:checked + span,
     .js .choice input:checked + span { animation: chip-pop .34s var(--ease); }
     .js .stepper li.is-done .dot::after { display: inline-block; animation: chip-pop .34s var(--ease); }
     @keyframes chip-pop {
@@ -1486,7 +1522,7 @@
       }
       .js .reveal { opacity: 1; transform: none; }
       .ticket-rows dd.is-fresh { animation: none; }
-      .js .hero .price-stamp, .js .planner-day-grid input:checked + span,
+      .js .hero .price-stamp, .js .price-builder .pb-chips input:checked + span, .price-builder .pb-amount.is-bumping,
       .js .choice input:checked + span, .js .stepper li.is-done .dot::after { animation: none; }
       .js .price-section .reveal .price-terms li, .js .price-section .reveal .price-terms li::before,
       .js .included-grid > div::before { transition-delay: 0s !important; }
@@ -1528,9 +1564,6 @@
       .phone-link { font-size: 0.8125rem; }
       .nav-actions .btn { min-height: 44px; padding: 9px 14px; font-size: 0.875rem; }
       .hero-actions .btn { width: 100%; }
-      .planner-day-grid { grid-template-columns: repeat(4, 1fr); }
-      .planner-go-row { grid-template-columns: 1fr; }
-      .planner { padding-bottom: 22px; }
       .price-stamp {
         position: static;
         width: auto;
@@ -1652,8 +1685,8 @@
               <span>No service contract</span>
             </div>
           </div>
-          <div class="hero-card planner rise rise-3">
-            <div class="planner-logos" aria-label="Your Trash Day Team partners">
+          <div class="hero-card price-builder rise rise-3" data-quote role="group" aria-labelledby="pb-title">
+            <div class="pb-logos" aria-label="Your Trash Day Team partners">
               <a href="https://www.thebinboy.com/" target="_blank" rel="noopener noreferrer" aria-label="Visit The Bin Boy website (opens in a new tab)">
                 <img src="/assets/images/the-bin-boy-logo.webp" alt="The Bin Boy logo" width="298" height="320" loading="lazy" class="bin-boy">
               </a>
@@ -1662,33 +1695,58 @@
                 <img src="/logo-nav.jpg" alt="Trash Day Made Easy logo" width="482" height="97" loading="lazy" class="tdme">
               </a>
             </div>
-            <fieldset class="planner-days">
-              <legend class="planner-title">What day does your trash get picked up?</legend>
-              <div class="planner-day-grid">
-                <label><input type="radio" name="planner_day" value="Monday"><span>Mon</span></label>
-                <label><input type="radio" name="planner_day" value="Tuesday"><span>Tue</span></label>
-                <label><input type="radio" name="planner_day" value="Wednesday"><span>Wed</span></label>
-                <label><input type="radio" name="planner_day" value="Thursday"><span>Thu</span></label>
-                <label><input type="radio" name="planner_day" value="Friday"><span>Fri</span></label>
-                <label><input type="radio" name="planner_day" value="Saturday"><span>Sat</span></label>
-                <label><input type="radio" name="planner_day" value="Sunday"><span>Sun</span></label>
+            <h2 id="pb-title" class="pb-title">Your price in three taps</h2>
+            <fieldset class="pb-step">
+              <legend><span class="pb-num" aria-hidden="true">1</span>How many bins?</legend>
+              <div class="pb-chips">
+                  <label><input type="radio" name="quote_bins" value="1" checked><span>1</span></label>
+                  <label><input type="radio" name="quote_bins" value="2"><span>2</span></label>
+                  <label><input type="radio" name="quote_bins" value="3"><span>3</span></label>
+                  <label><input type="radio" name="quote_bins" value="4"><span>4+</span></label>
               </div>
             </fieldset>
-            <div class="planner-result" aria-live="polite">
-              <p class="planner-hint" data-role="hint">Tap your day to see your next month with us.</p>
-              <div class="planner-plan" data-role="plan" hidden>
-                <p class="planner-kicker">Your next four trash days, handled</p>
-                <p class="planner-sub">Bins out before pickup, back after collection. You don&rsquo;t touch a lid.</p>
-                <ol class="planner-weeks" data-role="weeks"></ol>
-                <p class="planner-wash"><span aria-hidden="true">+</span> One full wash each month by The Bin Boy</p>
-                <form class="planner-go" data-role="go">
-                  <label for="planner-address">Where should we start?</label>
-                  <div class="planner-go-row">
-                    <input id="planner-address" autocomplete="street-address" placeholder="Service address">
-                    <button class="btn" type="submit">Reserve My Route</button>
-                  </div>
-                </form>
+            <fieldset class="pb-step">
+              <legend><span class="pb-num" aria-hidden="true">2</span>What day is your trash day?</legend>
+              <div class="pb-chips">
+                  <label><input type="radio" name="quote_day" value="Monday"><span>Mon</span></label>
+                  <label><input type="radio" name="quote_day" value="Tuesday"><span>Tue</span></label>
+                  <label><input type="radio" name="quote_day" value="Wednesday"><span>Wed</span></label>
+                  <label><input type="radio" name="quote_day" value="Thursday"><span>Thu</span></label>
+                  <label><input type="radio" name="quote_day" value="Friday"><span>Fri</span></label>
+                  <label><input type="radio" name="quote_day" value="Saturday"><span>Sat</span></label>
+                  <label><input type="radio" name="quote_day" value="Sunday"><span>Sun</span></label>
+                  <label><input type="radio" name="quote_day" value="Not sure"><span>Not sure</span></label>
               </div>
+            </fieldset>
+            <div class="pb-step">
+              <label class="pb-label" for="pb-town"><span class="pb-num" aria-hidden="true">3</span>Where are your bins?</label>
+              <select id="pb-town" name="quote_town">
+                <option value="">Choose your area</option>
+                <option>Charleston</option>
+                <option>North Charleston</option>
+                <option>West Ashley</option>
+                <option>Mount Pleasant</option>
+                <option>Summerville</option>
+                <option>James Island</option>
+                <option>Daniel Island</option>
+                <option value="other">Somewhere else</option>
+              </select>
+            </div>
+            <div class="pb-result" aria-live="polite">
+              <p class="pb-kicker">Your price</p>
+              <p class="pb-price"><span class="pb-amount" data-quote-amount>$70</span> <span class="pb-per" data-quote-per>/ month</span></p>
+              <p class="pb-math" data-quote-math>$70 flat per property &middot; 1 bin included</p>
+              <ul class="pb-summary">
+                <li>Bins: <strong data-quote-bins>1</strong></li>
+                <li data-quote-day-row hidden>Trash day: <strong data-quote-day></strong></li>
+                <li data-quote-town-row hidden>Area: <strong data-quote-town></strong></li>
+              </ul>
+              <p class="pb-area" data-quote-area hidden></p>
+              <p class="pb-fine">$0 today &middot; billed on the 1st after approval &middot; no contract</p>
+            </div>
+            <div class="pb-actions">
+              <a class="btn" href="#signup" data-quote-book>Book Now</a>
+              <a class="pb-sms" data-quote-sms href="sms:+18439553132?&amp;body=Hi!%20I'd%20like%20weekly%20bin%20valet%20%2B%20monthly%20bin%20washing%20for%201%20bin.%20(%2470%20per%20month)">Or text this quote to us: <span class="pb-phone">843-955-3132</span></a>
             </div>
             <div class="price-stamp" aria-label="$70 per month">
               <div>
@@ -2839,84 +2897,136 @@
     })();
   </script>
   <script>
-    // Trash-day planner: preview the next four trash days for the chosen weekday,
-    // then carry the day + address into the signup form (property 1 fields).
+    // Hero price builder: bins -> price; trash day and town go into the summary,
+    // the text-message quote, and (on "Book Now") step 1 of the signup form.
     (function () {
-      var planner = document.querySelector('.planner');
-      if (!planner) return;
-      var hint = planner.querySelector('[data-role="hint"]');
-      var plan = planner.querySelector('[data-role="plan"]');
-      var weeks = planner.querySelector('[data-role="weeks"]');
-      var go = planner.querySelector('[data-role="go"]');
-      var addressIn = document.getElementById('planner-address');
-      var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-      var fmt = new Intl.DateTimeFormat('en-US', {weekday: 'short', month: 'short', day: 'numeric'});
+      // PRICING TABLE. Must match the pricing shown elsewhere on the site: the hero
+      // price stamp, the "Simple pricing" section, the signup form (BASE_PRICE), the
+      // JSON-LD offer above, /faq/ and /llms.txt. Today: $70/month per property,
+      // any number of bins (perExtraBin: 0).
+      var QUOTE_PRICING = {
+        perProperty: 70,   // dollars, covers weekly valet + monthly wash
+        perExtraBin: 0,    // dollars per bin beyond the first; 0 = all bins included
+        period: 'month'
+      };
+      var QUOTE_PHONE = '+18439553132'; // 843-955-3132
+
+      var quote = document.querySelector('[data-quote]');
+      if (!quote) return;
+      function $(sel) { return quote.querySelector(sel); }
+      var amountEl = $('[data-quote-amount]');
+      var perEl = $('[data-quote-per]');
+      var mathEl = $('[data-quote-math]');
+      var binsEl = $('[data-quote-bins]');
+      var dayRow = $('[data-quote-day-row]');
+      var dayEl = $('[data-quote-day]');
+      var townRow = $('[data-quote-town-row]');
+      var townEl = $('[data-quote-town]');
+      var areaEl = $('[data-quote-area]');
+      var smsEl = $('[data-quote-sms]');
+      var bookEl = $('[data-quote-book]');
+      var townIn = document.getElementById('pb-town');
       var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      var chosen = null;
+      function money(n) { return '$' + n; }
 
-      function nextDates(dayName) {
-        var d = new Date();
-        d.setHours(12, 0, 0, 0);
-        d.setDate(d.getDate() + 1);
-        while (d.getDay() !== days.indexOf(dayName)) d.setDate(d.getDate() + 1);
-        var out = [];
-        for (var i = 0; i < 4; i += 1) {
-          out.push(new Date(d));
-          d.setDate(d.getDate() + 7);
+      function state() {
+        var binsIn = quote.querySelector('input[name="quote_bins"]:checked');
+        var dayIn = quote.querySelector('input[name="quote_day"]:checked');
+        var bins = binsIn ? Number(binsIn.value) : 1;
+        var extra = Math.max(0, bins - 1);
+        return {
+          bins: bins,
+          binText: bins >= 4 ? '4+ bins' : bins + ' bin' + (bins > 1 ? 's' : ''),
+          extra: extra,
+          total: QUOTE_PRICING.perProperty + extra * QUOTE_PRICING.perExtraBin,
+          day: dayIn ? dayIn.value : '',
+          town: townIn.value
+        };
+      }
+
+      function mathText(q) {
+        if (!QUOTE_PRICING.perExtraBin) {
+          return money(QUOTE_PRICING.perProperty) + ' flat per property · '
+            + (q.bins === 1 ? '1 bin included' : q.bins === 2 ? 'both bins included' : q.bins >= 4 ? 'all your bins included' : 'all ' + q.bins + ' bins included');
         }
-        return out;
+        return money(QUOTE_PRICING.perProperty) + ' base'
+          + (q.extra ? ' + ' + money(QUOTE_PRICING.perExtraBin) + ' × ' + q.extra + ' extra bin' + (q.extra > 1 ? 's' : '') : ' · 1 bin included');
       }
 
-      function isoDate(date) {
-        return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
+      function smsBody(q) {
+        var msg = "Hi! I'd like weekly bin valet + monthly bin washing for " + q.binText;
+        if (q.town && q.town !== 'other') msg += ' in ' + q.town;
+        msg += '.';
+        if (q.town === 'other') msg += " I'm not in one of your listed areas. Can you service my address?";
+        if (q.day === 'Not sure') msg += " I'm not sure what our trash day is.";
+        else if (q.day) msg += ' Our trash day is ' + q.day + '.';
+        msg += ' (' + money(q.total) + ' per ' + QUOTE_PRICING.period + ')';
+        return msg;
       }
 
-      function render(dayName) {
-        chosen = dayName;
-        hint.hidden = true;
-        plan.hidden = false;
-        weeks.innerHTML = nextDates(dayName).map(function (date) {
-          return '<li><time datetime="' + isoDate(date) + '">' + fmt.format(date).replace(',', '') + '</time>'
-            + '<span class="tick" aria-hidden="true">&#10003;</span></li>';
-        }).join('');
-        Array.prototype.forEach.call(weeks.children, function (li, i) {
-          if (reduce) { li.classList.add('is-in'); return; }
-          setTimeout(function () { li.classList.add('is-in'); }, 60 + i * 110);
-        });
-      }
-
-      planner.addEventListener('change', function (event) {
-        if (event.target.name === 'planner_day') render(event.target.value);
-      });
-
-      go.addEventListener('submit', function (event) {
-        event.preventDefault();
-        var formAddress = document.getElementById('address');
-        var typed = addressIn.value.trim();
-        if (formAddress && typed) {
-          formAddress.value = typed;
-          formAddress.dispatchEvent(new Event('input', {bubbles: true}));
+      function render() {
+        var q = state();
+        var price = money(q.total);
+        var changed = amountEl.textContent !== price;
+        amountEl.textContent = price;
+        perEl.textContent = '/ ' + QUOTE_PRICING.period;
+        mathEl.textContent = mathText(q);
+        binsEl.textContent = q.bins >= 4 ? '4+' : String(q.bins);
+        if (changed && !reduce) {
+          amountEl.classList.remove('is-bumping');
+          void amountEl.offsetWidth; // restart the animation
+          amountEl.classList.add('is-bumping');
         }
-        if (chosen) {
-          var radio = document.querySelector('#signup-form input[name="trash_pickup_day"][value="' + chosen + '"]');
+
+        dayRow.hidden = !q.day;
+        dayEl.textContent = q.day === 'Not sure' ? 'not sure yet' : q.day;
+
+        townRow.hidden = !q.town;
+        townEl.textContent = q.town === 'other' ? 'Somewhere else' : q.town;
+        areaEl.hidden = !q.town;
+        areaEl.classList.toggle('is-out', q.town === 'other');
+        areaEl.textContent = q.town === 'other'
+          ? "We may not service your area yet. Text us your address and we’ll let you know."
+          : '✓ ' + q.town + ' is in our service area. We confirm every address before approval.';
+
+        smsEl.href = 'sms:' + QUOTE_PHONE + '?&body=' + encodeURIComponent(smsBody(q));
+      }
+
+      quote.addEventListener('change', render);
+
+      // "Book Now": carry bins + trash day into step 1 of the signup form, then let
+      // the #signup link scroll there as usual.
+      bookEl.addEventListener('click', function () {
+        var q = state();
+        var formBins = document.getElementById('number_of_bins');
+        if (formBins) {
+          var current = Number(formBins.value);
+          if (q.bins < 4) formBins.value = String(q.bins);
+          else if (!current || current < 4) formBins.value = '4';
+          formBins.dispatchEvent(new Event('input', {bubbles: true}));
+          formBins.dispatchEvent(new Event('change', {bubbles: true}));
+        }
+        if (q.day && q.day !== 'Not sure') {
+          var radio = document.querySelector('#signup-form input[name="trash_pickup_day"][value="' + q.day + '"]');
           if (radio) {
             radio.checked = true;
             radio.dispatchEvent(new Event('change', {bubbles: true}));
           }
         }
-        var signup = document.getElementById('signup');
-        if (signup) signup.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'start'});
-        // Land on the first still-empty field of step 1 (address and day may be prefilled).
-        var nextIn = !typed ? document.getElementById('address') : document.getElementById('number_of_bins');
-        if (nextIn) setTimeout(function () { nextIn.focus({preventScroll: true}); }, reduce ? 0 : 600);
+        var address = document.getElementById('address');
+        if (address && !address.value.trim()) {
+          setTimeout(function () { address.focus({preventScroll: true}); }, reduce ? 0 : 600);
+        }
       });
+
+      render();
     })();
   </script>
   <script>
     // Trash week: an illustrated, playable version of "how it works".
     // Autoplays once scrolled into view, pauses on hover/focus, stops for good
     // when the visitor picks a step, and names the visitor's own trash day once
-    // they choose one in the hero planner or the signup form.
+    // they choose one in the hero price builder or the signup form.
     (function () {
       var root = document.querySelector('[data-role="trash-week"]');
       if (!root) return;
@@ -3042,7 +3152,7 @@
       }
       document.addEventListener('change', function (event) {
         var name = event.target && event.target.name;
-        if ((name === 'planner_day' || name === 'trash_pickup_day') && event.target.checked) applyDay(event.target.value);
+        if ((name === 'quote_day' || name === 'trash_pickup_day') && event.target.checked) applyDay(event.target.value === 'Not sure' ? '' : event.target.value);
       });
     })();
   </script>
