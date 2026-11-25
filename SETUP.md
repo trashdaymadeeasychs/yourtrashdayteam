@@ -31,7 +31,7 @@ Create a dedicated Stripe account or dedicated API keys for this offer.
 2. Copy the secret key into `STRIPE_SECRET_KEY`.
 3. The current flow does not charge today and does not create a subscription automatically.
 4. The form creates a Stripe Customer, stores the payment method with a SetupIntent, and marks the account Pending Approval.
-5. The page language tells customers they will be auto-billed $70 on the 1st of each month after approval until they ask to pause or cancel.
+5. The page language tells customers they will be auto-billed their monthly total on the 1st of each month after approval until they ask to pause or cancel. Pricing is $70/month per property with 2 bins included, plus $5/month for each additional bin. The server prices each property from its bin count in `netlify/functions/_shared/pricing.js`; the page uses the matching table at the top of `index.html` (`window.YTDT_PRICING`). `test/pricing.test.js` fails if the two disagree.
 
 ## Resend Setup
 
@@ -59,7 +59,7 @@ Primary fields include:
 - `recycling_frequency`
 - `recycling_pickup_day`
 - `recycling_next_pickup` (customer-picked next recycling pickup date for bi-weekly recycling; Week A/B is determined manually from it. The legacy `recycling_week` column remains for old rows.)
-- `$70/month` plan details
+- Plan details, with `monthly_price` priced per property from its bin count ($70 with 2 bins included, +$5/month per additional bin)
 - Pending Approval status fields
 - Stripe customer, payment method, and SetupIntent references
 - Safe card display fields, brand and last four digits only
@@ -85,7 +85,7 @@ The contact step tells visitors: "If you get interrupted before finishing, we ma
 
 The page tells customers:
 
-- Service is $70/month.
+- Service is $70/month per property with 2 bins included, plus $5/month for each additional bin.
 - Weekly bin roll-out and roll-in service is included.
 - Monthly bin washing is included.
 - The card is stored securely with Stripe.

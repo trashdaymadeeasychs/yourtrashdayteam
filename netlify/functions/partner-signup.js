@@ -7,6 +7,7 @@ const {
   sendSignupNotification
 } = require('./_shared/signup-notification');
 const { markLeadConverted } = require('./_shared/leads');
+const { propertyMonthlyPrice, describePropertyPrice } = require('./_shared/pricing');
 
 let stripeClient;
 let tableReady = false;
@@ -192,6 +193,7 @@ function propertyRows(record) {
   return [
     ['Address', record.address],
     ['Number of Bins', String(record.number_of_bins)],
+    ['Monthly Price', describePropertyPrice(record.number_of_bins)],
     ['Trash Day', record.trash_pickup_day],
     ['Recycling', record.recycling_frequency],
     ['Recycling Day', record.recycling_pickup_day],
@@ -200,12 +202,19 @@ function propertyRows(record) {
   ];
 }
 
+// The price saved with the row; falls back to the current price for its bin count.
+function recordMonthlyPrice(row) {
+  const saved = Number(row.monthly_price);
+  return saved > 0 ? saved : propertyMonthlyPrice(row.number_of_bins);
+}
+
 function emailHtml(record, extraRecords) {
   const extras = extraRecords || [];
   const count = 1 + extras.length;
+  const total = [record].concat(extras).reduce((sum, row) => sum + recordMonthlyPrice(row), 0);
   const planText = count > 1
-    ? '$70/month per property, ' + count + ' properties ($' + (count * 70) + '/month total), pending approval'
-    : '$70/month, pending approval';
+    ? count + ' properties, $' + total + '/month total (each $70 with 2 bins included, +$5/month per additional bin), pending approval'
+    : describePropertyPrice(record.number_of_bins) + ', pending approval';
   const accountRows = [
     ['Name', record.name],
     ['Customer Type', record.customer_type],
@@ -406,6 +415,9 @@ exports.handler = async function (event) {
   const recyclingNextPickup = recyclingFrequency === 'Bi-Weekly Recycling' ? s(body.recycling_next_pickup) : '';
   const extras = extraProperties(body);
   const propertyCount = 1 + extras.length;
+  // Each property is priced from its own bin count (see _shared/pricing.js).
+  const primaryPrice = propertyMonthlyPrice(bins);
+  const monthlyTotal = extras.reduce((sum, property) => sum + propertyMonthlyPrice(property.number_of_bins), primaryPrice);
 
   let customer;
   let setupIntent;
@@ -419,7 +431,7 @@ exports.handler = async function (event) {
       metadata: {
         source: s(body.source) || 'yourtrashdayteam-home',
         service_plan: 'Your Trash Day Team',
-        monthly_price: '70.00',
+        monthly_price: primaryPrice.toFixed(2),
         account_status: 'Pending Approval'
       }
     });
@@ -438,9 +450,9 @@ exports.handler = async function (event) {
         recycling_pickup_day: recyclingDay,
         recycling_next_pickup: recyclingNextPickup,
         service_plan: 'Your Trash Day Team',
-        monthly_price: '70.00',
+        monthly_price: primaryPrice.toFixed(2),
         property_count: String(propertyCount),
-        monthly_price_total: (propertyCount * 70).toFixed(2),
+        monthly_price_total: monthlyTotal.toFixed(2),
         account_status: 'Pending Approval'
       }
     });
@@ -454,7 +466,8 @@ exports.handler = async function (event) {
         description: 'Card authorization - Your Trash Day Team pending approval',
         metadata: {
           service_plan: 'Your Trash Day Team',
-          monthly_price: '70.00',
+          monthly_price: primaryPrice.toFixed(2),
+          monthly_price_total: monthlyTotal.toFixed(2),
           billing_cadence: 'Monthly on the 1st',
           account_status: 'Pending Approval'
         },
@@ -493,7 +506,7 @@ exports.handler = async function (event) {
         ${s(body.customer_type)}, ${cleanName}, ${s(body.company_name)}, ${s(body.address)}, ${s(body.phone)}, ${cleanEmail},
         ${bins}, ${s(body.trash_pickup_day)}, ${recyclingFrequency},
         ${recyclingDay}, ${recyclingNextPickup}, ${scheduleText(body)}, ${s(body.notes)},
-        'Your Trash Day Team', ${70.00}, 'Monthly on the 1st',
+        'Your Trash Day Team', ${primaryPrice}, 'Monthly on the 1st',
         'Pending Approval', 'Pending Approval', 'Pending Approval', ${s(body.source) || 'yourtrashdayteam-home'},
         ${true}, ${s(body.name_on_card)}, ${s(body.billing_zip)},
         ${customer.id}, ${s(body.payment_method_id)}, ${setupIntent.id},
@@ -521,7 +534,7 @@ exports.handler = async function (event) {
           ${s(body.customer_type)}, ${cleanName}, ${s(body.company_name)}, ${s(property.address)}, ${s(body.phone)}, ${cleanEmail},
           ${Number(property.number_of_bins)}, ${s(property.trash_pickup_day)}, ${propertyFrequency},
           ${propertyDay}, ${propertyNextPickup}, ${scheduleText(property)}, ${s(property.notes)},
-          'Your Trash Day Team', ${70.00}, 'Monthly on the 1st',
+          'Your Trash Day Team', ${propertyMonthlyPrice(property.number_of_bins)}, 'Monthly on the 1st',
           'Pending Approval', 'Pending Approval', 'Pending Approval', ${s(body.source) || 'yourtrashdayteam-home'},
           ${true}, ${s(body.name_on_card)}, ${s(body.billing_zip)},
           ${customer.id}, ${s(body.payment_method_id)}, ${setupIntent.id},
